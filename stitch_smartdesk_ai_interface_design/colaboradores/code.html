@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Collaborators | SmartDesk</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Manrope:wght@200..800&display=swap');
+        
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #fbf8ff;
+            color: #1a1b22;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e3e1ec;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #dad9e3;
+        }
+
+        .collaborator-row:hover .row-actions {
+            opacity: 1;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-container": "#091f21",
+                    "outline-variant": "#cfc4c5",
+                    "on-error-container": "#93000a",
+                    "inverse-surface": "#2f3038",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed-variant": "#474747",
+                    "secondary": "#5d5e60",
+                    "on-primary-container": "#848484",
+                    "on-error": "#ffffff",
+                    "secondary-fixed-dim": "#c6c6c7",
+                    "inverse-primary": "#c6c6c6",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container": "#eeedf7",
+                    "surface-bright": "#fbf8ff",
+                    "surface-dim": "#dad9e3",
+                    "surface-tint": "#5e5e5e",
+                    "primary-fixed-dim": "#c6c6c6",
+                    "primary-container": "#1b1b1b",
+                    "primary": "#000000",
+                    "tertiary-fixed-dim": "#b4cbce",
+                    "on-tertiary-fixed": "#091f21",
+                    "secondary-fixed": "#e2e2e3",
+                    "secondary-container": "#dfdfe0",
+                    "on-tertiary-fixed-variant": "#364a4d",
+                    "on-secondary-container": "#616364",
+                    "background": "#fbf8ff",
+                    "on-secondary": "#ffffff",
+                    "surface-container-low": "#f4f2fd",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed": "#1b1b1b",
+                    "on-surface": "#1a1b22",
+                    "surface": "#fbf8ff",
+                    "on-primary": "#ffffff",
+                    "on-background": "#1a1b22",
+                    "surface-container-highest": "#e3e1ec",
+                    "outline": "#7e7576",
+                    "surface-variant": "#e3e1ec",
+                    "on-tertiary-container": "#72888b",
+                    "tertiary": "#000000",
+                    "on-surface-variant": "#4c4546",
+                    "on-secondary-fixed-variant": "#454748",
+                    "primary-fixed": "#e2e2e2",
+                    "inverse-on-surface": "#f1effa",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed": "#1a1c1d",
+                    "tertiary-fixed": "#d0e7ea"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "base": "8px",
+                    "sm": "12px",
+                    "lg": "48px",
+                    "margin": "32px",
+                    "xl": "80px",
+                    "md": "24px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "headline-md": ["geist"],
+                    "body-lg": ["manrope"],
+                    "label-md": ["geist"],
+                    "body-md": ["manrope"],
+                    "headline-xl": ["geist"],
+                    "headline-lg": ["geist"],
+                    "label-sm": ["geist"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- Shell Layout: SideNavBar -->
+<aside class="fixed left-0 top-0 h-full flex flex-col py-lg bg-white border-r border-surface-container w-64 z-50">
+<div class="px-margin mb-xl">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white" data-icon="smart_toy">smart_toy</span>
+</div>
+<div>
+<h1 class="text-headline-md font-headline-md font-black text-primary">SmartDesk</h1>
+<p class="text-label-sm text-secondary">AI Support Engine</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-base text-secondary hover:text-primary px-4 py-3 mx-2 font-body-md text-body-md transition-colors hover:bg-surface-container-low rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-base text-secondary hover:text-primary px-4 py-3 mx-2 font-body-md text-body-md transition-colors hover:bg-surface-container-low rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="confirmation_number">confirmation_number</span>
+                My Tickets
+            </a>
+<a class="flex items-center gap-base text-secondary hover:text-primary px-4 py-3 mx-2 font-body-md text-body-md transition-colors hover:bg-surface-container-low rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="group_work">group_work</span>
+                Area Tickets
+            </a>
+<a class="flex items-center gap-base bg-primary text-on-primary rounded-full px-4 py-3 mx-2 font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+                Collaborators
+            </a>
+<a class="flex items-center gap-base text-secondary hover:text-primary px-4 py-3 mx-2 font-body-md text-body-md transition-colors hover:bg-surface-container-low rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="domain">domain</span>
+                Areas
+            </a>
+<a class="flex items-center gap-base text-secondary hover:text-primary px-4 py-3 mx-2 font-body-md text-body-md transition-colors hover:bg-surface-container-low rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+                Reports
+            </a>
+<a class="flex items-center gap-base text-secondary hover:text-primary px-4 py-3 mx-2 font-body-md text-body-md transition-colors hover:bg-surface-container-low rounded-full mt-auto" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Settings
+            </a>
+</nav>
+<div class="px-margin mt-auto pt-lg">
+<div class="p-base bg-surface-container rounded-xl flex items-center gap-base">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A sharp, executive-style headshot of a professional in their late 30s, looking directly at the camera with a confident yet approachable expression. The lighting is soft and studio-quality, emphasizing high contrast between the subject and a minimalist, light grey background. The image evokes a sense of technical leadership and refined B2B SaaS professionalism." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCo0BHSyHzNvTPgBu5_0NpZbgk8uHr9IZkrdDEthFVio3XbGGcXKu-7w7QRQlEs6ScrblwiFMqWsQB7W5Nd_fZb8aIdTx1oyVgIdmtKMCVUZvRcAFlerpVs4OjjRdEPFTWsFbnak51MV9XYGBBLzXIyK1nMseZzRVMNjQ6-Zv0cUUF-NTcrxBhDOlHM8K-VpJ_Y7uJei13V2a0bP7hG_-J635OlRgbVgEAmASDQbhfLFNJNdcItaWXH_AtsAzsvwH4D_0D-D1w996cz"/>
+</div>
+<div class="overflow-hidden">
+<p class="text-label-md font-bold truncate">Alex Rivera</p>
+<p class="text-label-sm text-secondary truncate">Super Admin</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Shell Layout: TopNavBar -->
+<header class="fixed top-0 right-0 left-64 z-40 flex justify-between items-center px-margin h-20 bg-white/80 backdrop-blur-md border-b border-surface-container-highest">
+<div class="flex items-center gap-md flex-1">
+<div class="relative w-full max-w-md group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-secondary group-focus-within:text-primary transition-colors" data-icon="search">search</span>
+<input class="w-full pl-12 pr-4 py-base bg-surface-container-low border-transparent focus:bg-white focus:border-primary rounded-full transition-all outline-none text-body-md" placeholder="Search collaborators..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-base">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors text-secondary">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="flex items-center gap-base px-4 py-2 bg-primary text-on-primary rounded-full hover:opacity-90 transition-opacity font-label-md">
+<span class="material-symbols-outlined text-[20px]" data-icon="person_add">person_add</span>
+                Invite Collaborator
+            </button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 mt-20 p-margin">
+<div class="max-w-7xl mx-auto">
+<!-- Header Section -->
+<div class="flex justify-between items-end mb-xl">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight">Collaborators</h2>
+<p class="text-body-md text-secondary mt-xs">Manage your team access, roles, and platform activity.</p>
+</div>
+<div class="flex gap-base">
+<div class="flex bg-surface-container p-1 rounded-full">
+<button class="px-4 py-2 rounded-full bg-white text-primary font-label-md shadow-sm">All Members</button>
+<button class="px-4 py-2 rounded-full text-secondary font-label-md hover:text-primary transition-colors">Admin Only</button>
+</div>
+</div>
+</div>
+<!-- Dashboard Stats Bar (Subtle) -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter mb-lg">
+<div class="p-md bg-white border border-surface-container-highest rounded-xl">
+<p class="text-label-sm text-secondary uppercase tracking-wider">Total Seats</p>
+<h3 class="text-headline-md mt-xs">24 / 50</h3>
+</div>
+<div class="p-md bg-white border border-surface-container-highest rounded-xl">
+<p class="text-label-sm text-secondary uppercase tracking-wider">Active Now</p>
+<h3 class="text-headline-md mt-xs flex items-center gap-xs">
+                        18
+                        <span class="w-2 h-2 rounded-full bg-green-500"></span>
+</h3>
+</div>
+<div class="p-md bg-white border border-surface-container-highest rounded-xl">
+<p class="text-label-sm text-secondary uppercase tracking-wider">Invited</p>
+<h3 class="text-headline-md mt-xs">4</h3>
+</div>
+<div class="p-md bg-white border border-surface-container-highest rounded-xl">
+<p class="text-label-sm text-secondary uppercase tracking-wider">Suspended</p>
+<h3 class="text-headline-md mt-xs">2</h3>
+</div>
+</div>
+<!-- Table Container -->
+<div class="bg-white border border-surface-container-highest rounded-xl overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low">
+<th class="px-md py-md font-label-md text-secondary border-b border-surface-container">Name</th>
+<th class="px-md py-md font-label-md text-secondary border-b border-surface-container">Role</th>
+<th class="px-md py-md font-label-md text-secondary border-b border-surface-container">Status</th>
+<th class="px-md py-md font-label-md text-secondary border-b border-surface-container">Last Activity</th>
+<th class="px-md py-md font-label-md text-secondary border-b border-surface-container text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<!-- Row 1 -->
+<tr class="collaborator-row group hover:bg-surface-container-lowest transition-colors">
+<td class="px-md py-md">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a woman with a sleek, minimalist aesthetic. She wears a black architectural blazer and thin silver glasses. The background is a crisp white studio environment with subtle shadows, embodying a high-end corporate tech vibe for a modern AI software company." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEaUqrYpNI0uJqTOCUKoAhpWxEFNkQZ2Hc341jkA69CqPVwXh6L9ISBpn_3TgmfRlrbSrzB2wJfNWFLvTEx9ZheN9I2_8Ld0Hgeul63K_G2lCSnPSDxPZJ2ljbts-5m7TcpH_WZCDUmXcNFxvKsHDH3oYXStyNrJTPuCpXHUGi7dkssffqSdzwfozTyk0V7pmdon3QsEkA8yiHRM-hxPzbhfDKFz03ZA5YZoV8KILXE54oy6E1aqn2OKe7m8ueGO5tZ-NR6imjFyMI"/>
+</div>
+<div>
+<p class="font-bold text-body-md text-primary">Sarah Chen</p>
+<p class="text-label-sm text-secondary">sarah.chen@smartdesk.ai</p>
+</div>
+</div>
+</td>
+<td class="px-md py-md">
+<span class="px-3 py-1 bg-primary text-on-primary text-label-sm rounded-full">Admin</span>
+</td>
+<td class="px-md py-md">
+<div class="flex items-center gap-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+<span class="text-label-md text-primary">Active</span>
+</div>
+</td>
+<td class="px-md py-md">
+<p class="text-label-md text-secondary">Today, 10:42 AM</p>
+</td>
+<td class="px-md py-md text-right">
+<button class="row-actions opacity-0 group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined text-secondary" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="collaborator-row group hover:bg-surface-container-lowest transition-colors">
+<td class="px-md py-md">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A focused headshot of a male software engineer with a tidy beard and a minimal black t-shirt. He has a calm, intelligent expression. The lighting is directional, creating deep blacks and crisp whites, set against a blurred modern office background with geometric glass panels." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBS4CKbIslLRZrncK6w9ju6fjoo17rQGJhC8yZnXPChN-ZSQ8znMd5XWk-raIEBWkaEnMw76230_qr1VEsb-jc7_zlzH9YZqeSC28uNYLOdLjSWinkArWYLc9VCBk3hNmAsruc96fK-Dn5h9Xhh6p0rKzwKdFtRpB6HaCzVThkFtuTCFlaXzanKLNf6hZ6emvI6X5X-NifBaTBLyGVUhZmwYfuwjBMas0ni-OAILrTYKKEO8IvmUsOlczrTAWgehbaGiT1mchKfnjGu"/>
+</div>
+<div>
+<p class="font-bold text-body-md text-primary">Marcus Holloway</p>
+<p class="text-label-sm text-secondary">marcus.h@smartdesk.ai</p>
+</div>
+</div>
+</td>
+<td class="px-md py-md">
+<span class="px-3 py-1 bg-surface-container text-primary text-label-sm rounded-full">Agent</span>
+</td>
+<td class="px-md py-md">
+<div class="flex items-center gap-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+<span class="text-label-md text-primary">Active</span>
+</div>
+</td>
+<td class="px-md py-md">
+<p class="text-label-md text-secondary">2 hours ago</p>
+</td>
+<td class="px-md py-md text-right">
+<button class="row-actions opacity-0 group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined text-secondary" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="collaborator-row group hover:bg-surface-container-lowest transition-colors">
+<td class="px-md py-md">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A warm, professional portrait of a customer success manager. She is wearing a light grey silk blouse. The aesthetic is bright, airy, and high-contrast light mode. Her expression is helpful and executive-level. The background is a softly lit minimalist studio space with clean lines." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqRzsj4Ra4H97AGut0nRIFkvqXMHp8itx9OWFueefHpwkbaf4jacc_xJLaqAoY5IcztNoqYLjcbevGlN4VDa4ttuqG0Z86ZdaT0RdWZ6GV1cgxudNygLp5tIqeneI_PYSy_-r7edWxF1w2l590okfDhoGV8LU-s3hykUkTOUC_jDngqE1oepKFx0gNZFL7xyS3biyyA8okAUKbZ-N6Pe9cj_JsxvbUmYq7vur0y7s4jxlnrVuQSOhOxs4lSbLkaPZPoJCSlj3AEwlq"/>
+</div>
+<div>
+<p class="font-bold text-body-md text-primary">Elena Rodriguez</p>
+<p class="text-label-sm text-secondary">elena.rod@smartdesk.ai</p>
+</div>
+</div>
+</td>
+<td class="px-md py-md">
+<span class="px-3 py-1 bg-surface-container text-primary text-label-sm rounded-full">Agent</span>
+</td>
+<td class="px-md py-md">
+<div class="flex items-center gap-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+<span class="text-label-md text-primary">Invited</span>
+</div>
+</td>
+<td class="px-md py-md">
+<p class="text-label-md text-secondary">Never</p>
+</td>
+<td class="px-md py-md text-right">
+<button class="row-actions opacity-0 group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined text-secondary" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="collaborator-row group hover:bg-surface-container-lowest transition-colors">
+<td class="px-md py-md">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional male figure with a clean, sharp appearance. He wears a tailored charcoal sweater. The mood is calm and analytical, suitable for a B2B SaaS platform. The background is monochromatic and minimalist, focusing on clear facial features and professional demeanor." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFc5b3yh_aEvkfdyx_yEdNDBMCMFWVRhfYgbcQt4_sCBj52ln8FXGvVpumAAwtf8QUsLXIpT1OK9KpB0HgextrsJjLJeAmAhwH1PHvMlut4Lwb0YFc_B6SDuLoty3fuMW5F_kD9tRUsWq0vfBTa18oW8Rdk9MCdluka8v6A6mO1_-3U8XL9Z91SSsnbiW0k5qCKEVC8TS8w8aqp4iHP89IpwqckCN8XdrPZx0fbarQpMb3fkQlJ6Um8GIw7edRW3U4wt6QMVNJ0y2l"/>
+</div>
+<div>
+<p class="font-bold text-body-md text-primary">Jordan Smith</p>
+<p class="text-label-sm text-secondary">jsmith@partner.com</p>
+</div>
+</div>
+</td>
+<td class="px-md py-md">
+<span class="px-3 py-1 bg-surface-container text-primary text-label-sm rounded-full">Viewer</span>
+</td>
+<td class="px-md py-md">
+<div class="flex items-center gap-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+<span class="text-label-md text-primary">Suspended</span>
+</div>
+</td>
+<td class="px-md py-md">
+<p class="text-label-md text-secondary">3 days ago</p>
+</td>
+<td class="px-md py-md text-right">
+<button class="row-actions opacity-0 group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined text-secondary" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="collaborator-row group hover:bg-surface-container-lowest transition-colors">
+<td class="px-md py-md">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A portrait of a tech professional woman with a minimalist aesthetic. She is wearing a white high-neck top. High contrast between her dark hair and the white background. The image represents modern professional diversity and technical capability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeCp0aC8AX7dsAIRVG-fH3aR4NNpKJsX4WyXBtN6pqcEMABMIxGiourXpOrZoD8vPYgz1UiC3qbUsSI1YSuWM9kOg3A4W_vaoBCq8yiPuYIi3RCTBf0IZ5R_3_jCeRwQTci6cL192tx5LosUN6JL9DBli8uiSEH5UNvuOSnS9u1eUDyHSSlpec2AikASfT_3FbfCHLt0NCRozl9mUg56n_n9K8Qae1qJQWFFWx_fwN3ddtc2Io0yGOHAww-1m0Gh3dlzVVR9aDexqq"/>
+</div>
+<div>
+<p class="font-bold text-body-md text-primary">Aisha Khan</p>
+<p class="text-label-sm text-secondary">aisha.k@smartdesk.ai</p>
+</div>
+</div>
+</td>
+<td class="px-md py-md">
+<span class="px-3 py-1 bg-surface-container text-primary text-label-sm rounded-full">Agent</span>
+</td>
+<td class="px-md py-md">
+<div class="flex items-center gap-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+<span class="text-label-md text-primary">Active</span>
+</div>
+</td>
+<td class="px-md py-md">
+<p class="text-label-md text-secondary">Oct 24, 4:15 PM</p>
+</td>
+<td class="px-md py-md text-right">
+<button class="row-actions opacity-0 group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined text-secondary" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Pagination -->
+<div class="px-md py-md bg-surface-container-low flex justify-between items-center border-t border-surface-container">
+<p class="text-label-sm text-secondary">Showing 1 to 5 of 24 members</p>
+<div class="flex gap-xs">
+<button class="w-10 h-10 flex items-center justify-center border border-surface-container rounded-full hover:bg-white transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-[18px]" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center border border-surface-container rounded-full hover:bg-white transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Role Permissions Overview (Contextual Information) -->
+<div class="mt-xl grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<div class="p-lg bg-surface-container-low rounded-xl border border-surface-container">
+<h4 class="font-bold text-body-lg mb-sm">Admin Access</h4>
+<p class="text-label-md text-secondary mb-md">Full system control including billing, security settings, and API integrations.</p>
+<ul class="space-y-base">
+<li class="flex items-center gap-xs text-label-sm text-primary">
+<span class="material-symbols-outlined text-[16px] text-green-600" data-icon="check_circle">check_circle</span>
+                            Can manage all tickets
+                        </li>
+<li class="flex items-center gap-xs text-label-sm text-primary">
+<span class="material-symbols-outlined text-[16px] text-green-600" data-icon="check_circle">check_circle</span>
+                            Can invite new members
+                        </li>
+<li class="flex items-center gap-xs text-label-sm text-primary">
+<span class="material-symbols-outlined text-[16px] text-green-600" data-icon="check_circle">check_circle</span>
+                            Access to financial reports
+                        </li>
+</ul>
+</div>
+<div class="p-lg bg-surface-container-low rounded-xl border border-surface-container">
+<h4 class="font-bold text-body-lg mb-sm">Agent Access</h4>
+<p class="text-label-md text-secondary mb-md">Operational access focused on ticket resolution and customer interaction.</p>
+<ul class="space-y-base">
+<li class="flex items-center gap-xs text-label-sm text-primary">
+<span class="material-symbols-outlined text-[16px] text-green-600" data-icon="check_circle">check_circle</span>
+                            Can resolve assigned tickets
+                        </li>
+<li class="flex items-center gap-xs text-label-sm text-primary">
+<span class="material-symbols-outlined text-[16px] text-green-600" data-icon="check_circle">check_circle</span>
+                            View area performance
+                        </li>
+<li class="flex items-center gap-xs text-label-sm text-secondary">
+<span class="material-symbols-outlined text-[16px]" data-icon="cancel">cancel</span>
+                            Cannot manage users
+                        </li>
+</ul>
+</div>
+<div class="p-lg bg-surface-container-low rounded-xl border border-surface-container">
+<h4 class="font-bold text-body-lg mb-sm">Viewer Access</h4>
+<p class="text-label-md text-secondary mb-md">Read-only access for stakeholders needing visibility without interaction.</p>
+<ul class="space-y-base">
+<li class="flex items-center gap-xs text-label-sm text-primary">
+<span class="material-symbols-outlined text-[16px] text-green-600" data-icon="check_circle">check_circle</span>
+                            View dashboards &amp; reports
+                        </li>
+<li class="flex items-center gap-xs text-label-sm text-secondary">
+<span class="material-symbols-outlined text-[16px]" data-icon="cancel">cancel</span>
+                            Cannot edit data
+                        </li>
+<li class="flex items-center gap-xs text-label-sm text-secondary">
+<span class="material-symbols-outlined text-[16px]" data-icon="cancel">cancel</span>
+                            Cannot interact with customers
+                        </li>
+</ul>
+</div>
+</div>
+</div>
+</main>
+<!-- Context Menu (Abstracted Interaction) -->
+<div class="hidden fixed bg-white border border-surface-container-highest shadow-xl rounded-xl w-48 py-2 z-[100]" id="context-menu">
+<button class="w-full text-left px-4 py-2 hover:bg-surface-container text-label-md transition-colors flex items-center gap-base">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+            Edit Details
+        </button>
+<button class="w-full text-left px-4 py-2 hover:bg-surface-container text-label-md transition-colors flex items-center gap-base">
+<span class="material-symbols-outlined text-[18px]" data-icon="admin_panel_settings">admin_panel_settings</span>
+            Change Role
+        </button>
+<div class="h-[1px] bg-surface-container my-1"></div>
+<button class="w-full text-left px-4 py-2 hover:bg-error-container text-error text-label-md transition-colors flex items-center gap-base">
+<span class="material-symbols-outlined text-[18px]" data-icon="block">block</span>
+            Suspend Access
+        </button>
+</div>
+<script>
+        // Simple context menu interaction logic
+        const menu = document.getElementById('context-menu');
+        const actionButtons = document.querySelectorAll('.row-actions');
+
+        actionButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const rect = btn.getBoundingClientRect();
+                menu.style.top = `${rect.bottom + 5}px`;
+                menu.style.left = `${rect.right - 192}px`;
+                menu.classList.remove('hidden');
+            });
+        });
+
+        document.addEventListener('click', () => {
+            menu.classList.add('hidden');
+        });
+    </script>
+</body></html>

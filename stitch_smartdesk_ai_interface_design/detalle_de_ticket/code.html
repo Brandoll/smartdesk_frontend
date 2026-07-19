@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ticket Detail - SmartDesk AI Premium</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Manrope:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#e2e2e2",
+                        "tertiary-container": "#091f21",
+                        "on-surface": "#1a1b22",
+                        "background": "#fbf8ff",
+                        "primary-fixed-dim": "#c6c6c6",
+                        "outline-variant": "#cfc4c5",
+                        "error": "#ba1a1a",
+                        "tertiary": "#000000",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#b4cbce",
+                        "on-primary-container": "#848484",
+                        "on-error": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#fbf8ff",
+                        "on-tertiary-fixed": "#091f21",
+                        "surface": "#fbf8ff",
+                        "on-error-container": "#93000a",
+                        "on-background": "#1a1b22",
+                        "secondary-fixed": "#e2e2e3",
+                        "surface-container-highest": "#e3e1ec",
+                        "inverse-primary": "#c6c6c6",
+                        "on-secondary-fixed": "#1a1c1d",
+                        "secondary-fixed-dim": "#c6c6c7",
+                        "secondary-container": "#dfdfe0",
+                        "on-primary-fixed-variant": "#474747",
+                        "secondary": "#5d5e60",
+                        "on-surface-variant": "#4c4546",
+                        "on-primary-fixed": "#1b1b1b",
+                        "surface-container-high": "#e8e7f1",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#f4f2fd",
+                        "tertiary-fixed": "#d0e7ea",
+                        "surface-container": "#eeedf7",
+                        "primary-container": "#1b1b1b",
+                        "outline": "#7e7576",
+                        "surface-dim": "#dad9e3",
+                        "inverse-on-surface": "#f1effa",
+                        "surface-tint": "#5e5e5e",
+                        "inverse-surface": "#2f3038",
+                        "on-primary": "#ffffff",
+                        "primary": "#000000",
+                        "on-tertiary-fixed-variant": "#364a4d",
+                        "on-tertiary-container": "#72888b",
+                        "on-secondary-fixed-variant": "#454748",
+                        "surface-variant": "#e3e1ec",
+                        "on-secondary-container": "#616364"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "12px",
+                        "lg": "48px",
+                        "xl": "80px",
+                        "gutter": "24px",
+                        "base": "8px",
+                        "margin": "32px",
+                        "md": "24px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["geist"],
+                        "body-lg": ["manrope"],
+                        "body-md": ["manrope"],
+                        "headline-xl": ["geist"],
+                        "label-md": ["geist"],
+                        "headline-lg": ["geist"],
+                        "headline-lg-mobile": ["geist"],
+                        "label-sm": ["geist"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "500"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+        .premium-border {
+            position: relative;
+            background: #ffffff;
+            background-clip: padding-box;
+            border: 1px solid #cfc4c5;
+        }
+        body {
+            font-family: 'manrope', sans-serif;
+        }
+        h1, h2, h3, .headline {
+            font-family: 'geist', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary-fixed-dim selection:text-on-primary-fixed">
+<div class="flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="w-[280px] h-screen sticky top-0 left-0 flex flex-col p-md gap-sm bg-surface border-r border-outline-variant">
+<div class="mb-lg px-sm">
+<h1 class="text-headline-md font-bold text-primary">SmartDesk</h1>
+<p class="text-on-surface-variant text-label-md">AI Ticket Management</p>
+</div>
+<button class="w-full flex items-center justify-center gap-sm bg-primary text-on-primary py-md rounded-full text-label-md mb-md hover:opacity-90 transition-all" onclick="openModal()">
+<span class="material-symbols-outlined">add</span>
+            New Ticket
+        </button>
+<nav class="flex-1 space-y-xs overflow-y-auto custom-scrollbar">
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200 rounded-full" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm bg-secondary-container text-on-secondary-container rounded-full" href="#">
+<span class="material-symbols-outlined">confirmation_number</span>
+<span class="text-body-md">My Tickets</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200 rounded-full" href="#">
+<span class="material-symbols-outlined">group_work</span>
+<span class="text-body-md">Area Tickets</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200 rounded-full" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-body-md">Collaborators</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200 rounded-full" href="#">
+<span class="material-symbols-outlined">domain</span>
+<span class="text-body-md">Areas</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200 rounded-full" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-body-md">Reports</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200 rounded-full" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-body-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-md border-t border-outline-variant space-y-xs">
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200 rounded-full" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="text-body-md">Support</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200 rounded-full" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="text-body-md">What's New</span>
+</a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col overflow-hidden bg-background">
+<!-- TopNavBar -->
+<header class="w-full h-20 sticky top-0 z-50 bg-surface border-b border-outline-variant flex justify-between items-center px-lg">
+<div class="flex items-center gap-lg flex-1">
+<div class="relative w-full max-w-md group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-12 pr-md py-3 bg-surface-container rounded-full border-none focus:ring-2 focus:ring-primary/10 text-body-md placeholder:text-outline transition-all" placeholder="Search tickets..." type="text"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 px-2 py-0.5 rounded border border-outline-variant text-[10px] text-outline font-bold">⌘ K</span>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">history</button>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant"></div>
+<div class="flex items-center gap-sm">
+<div class="text-right hidden sm:block">
+<p class="text-label-md text-on-surface leading-none font-bold">Alex Rivera</p>
+<p class="text-[10px] text-on-surface-variant">Senior Lead</p>
+</div>
+<img class="w-10 h-10 rounded-full border border-outline-variant" data-alt="Profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2BUd9JhJs-nJ_m0qwQRitSig4OUsGrnCbiejlp-2jh93p9rZ_CGBML4lw1bCtG-gvFuM2aGJVB4G1tFsnXvOYepH4zpa-CmOar34PCySEfotkhSKITLP6AOBh0bSmXW8vyt1WL5MuXywADSTvd47S2b_a-frGa9bIrHqx5TaSqAaYdIlvWANB6jRDYHpUqHWCtpQxUdfByZTCCkzrTYsyKT8azYUiqaG-9qCda1rBTC971jK7EAR7haAooudsDHpC_Kq1ZNxsD7Tw"/>
+</div>
+</div>
+</header>
+<!-- Ticket Detail Layout -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Left Column: Conversation -->
+<div class="flex-1 flex flex-col overflow-y-auto custom-scrollbar bg-white border-r border-outline-variant">
+<!-- Ticket Header Information -->
+<div class="p-lg border-b border-outline-variant bg-white">
+<div class="flex items-center gap-sm mb-base">
+<span class="text-primary text-label-sm px-3 py-1 bg-primary-fixed rounded-full">SD-8492</span>
+<span class="text-outline text-label-sm">• Created 2 hours ago</span>
+</div>
+<h2 class="text-headline-lg text-on-surface mb-lg">Integration mismatch in Production API endpoints for regional clusters</h2>
+<div class="flex items-center gap-md">
+<div class="flex -space-x-3">
+<img class="w-8 h-8 rounded-full border-2 border-white" data-alt="Avatar 1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3EBxHiDW_sZrZaUlUG68lYC3k6fqDcJpMI3JwrA99rGQkxZPa1HQ-IVz4L3D-WI52rweC23-I-whAL0X8aKJIGJI9HVVCkSO6b36M5y1889Clbo9RoVStuE9VeHiXP9byFJDdi8H3pWYjuq9EVggdxUBHTwxk5TQ6ghWUNe7ZFGEU-5Jkws57rZpAdv-HZUglZa3VXCgKeIchCqz1qYCy5egW1UXd44NUUs7AKUbLT5qRfKcVN_G_I8-Tu8fbFzgCDiQTIM_ZhicQ"/>
+<img class="w-8 h-8 rounded-full border-2 border-white" data-alt="Avatar 2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-7IPanKMEtPVEb5qPiQiQbIDyIRi2smSvRBhS0_xJ3RnrQXv2UpAspvVpX5gYH-4IWiVjwV6PeEHGurtlwVNVEpQjJZoOr7ULFNRNH0MWWla9o61x-YH9g_kmdWkLNeeHxuUh3bs4vkBnhLFLmBDMhvhaQdbR9dKYRsKPBKe-UNygHW8Kq5jJvVHnaE9lW0Kf9QLRCtsA6001sMwIR25mOILWOLqgYuMaftkbcv4lEJUdoQDS2ujvxMwgUeL_wSEMY5wC9qVK_6k7"/>
+</div>
+<span class="text-body-sm text-on-surface-variant">Shared with 3 others</span>
+</div>
+</div>
+<!-- Chat Feed -->
+<div class="flex-1 p-lg space-y-lg bg-surface-container-lowest">
+<!-- Message 1 -->
+<div class="flex gap-md group">
+<img class="w-10 h-10 rounded-full flex-shrink-0" data-alt="Sarah Jenkins" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpOwjDr0RiJrl1fhFgFQKmd9tfyHLIlq5td4Z8VVkW1wEk__IWd7d2Q57svRqaXroytN_1jGPjnpsGcWKiENojl0ERUvBvO_TMG2uAF_pQHz_Yl7qayCVKfSfSGFtN9HV3w6Zq-VAalw07KmuYSo9YDCAuxkJd688JrE85bfq4f1dw7lSrkJBAieQDeV1280eARGs50GxfV1-hoGoEex-LSqvh42_OEal4LTnYlMdtE3G7YZaCotakfGRUtXLZzstmKKskBrfFUmyN"/>
+<div class="flex-1">
+<div class="flex items-baseline gap-sm mb-xs">
+<span class="text-label-md text-on-surface font-bold">Sarah Jenkins</span>
+<span class="text-label-sm text-outline">10:45 AM</span>
+</div>
+<div class="bg-white p-md rounded-lg border border-outline-variant shadow-sm max-w-2xl">
+<p class="text-body-md text-on-surface leading-relaxed">
+                                    Hi team, we're seeing some unexpected 404s on the `/v2/cluster/sync` endpoint in the EU-WEST-1 region. It seems the load balancer is routing traffic to outdated instances after the last midnight deployment.
+                                </p>
+</div>
+</div>
+</div>
+<!-- Internal Comment -->
+<div class="flex gap-md flex-row-reverse">
+<div class="flex-1 text-right">
+<div class="flex items-baseline justify-end gap-sm mb-xs">
+<span class="text-label-sm text-outline">11:02 AM</span>
+<span class="text-label-md text-on-surface font-bold">Internal Note</span>
+</div>
+<div class="bg-primary-container p-md rounded-lg border border-outline shadow-sm inline-block text-left max-w-2xl relative text-on-primary">
+<span class="material-symbols-outlined absolute -left-3 top-3 text-on-primary bg-primary-container rounded-full p-1 text-sm border border-outline" style="font-variation-settings: 'FILL' 1;">lock</span>
+<p class="text-body-md leading-relaxed italic">
+                                    I've checked the deployment logs. It looks like the blue-green switch failed silently due to a timeout in the health check. Looking into the specific node group now.
+                                </p>
+</div>
+</div>
+</div>
+<!-- Attachment Card -->
+<div class="flex gap-md">
+<div class="w-10 flex-shrink-0"></div>
+<div class="flex-1">
+<div class="flex items-center gap-md p-md bg-white border border-outline-variant rounded-lg max-w-sm hover:border-primary transition-all cursor-pointer group">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">description</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-label-md text-on-surface truncate font-bold">error_logs_eu_west.json</p>
+<p class="text-label-sm text-outline">1.2 MB • JSON</p>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary">download</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Input Area -->
+<div class="p-lg bg-white border-t border-outline-variant">
+<div class="border border-outline-variant rounded-lg focus-within:ring-2 focus-within:ring-primary/10 transition-all overflow-hidden">
+<div class="flex items-center gap-md px-md py-sm border-b border-outline-variant bg-surface-container-lowest">
+<button class="text-label-md text-primary font-bold hover:bg-primary/5 px-3 py-1 rounded-full">Reply</button>
+<button class="text-label-md text-on-surface-variant hover:bg-surface-container-low px-3 py-1 rounded-full">Note</button>
+<div class="flex-1"></div>
+<button class="material-symbols-outlined text-outline hover:text-on-surface">format_bold</button>
+<button class="material-symbols-outlined text-outline hover:text-on-surface">format_italic</button>
+<button class="material-symbols-outlined text-outline hover:text-on-surface">link</button>
+</div>
+<textarea class="w-full p-md min-h-[140px] border-none focus:ring-0 resize-none text-body-md placeholder:text-outline" placeholder="Type your message here..."></textarea>
+<div class="flex items-center justify-between p-md border-t border-outline-variant bg-surface-container-lowest">
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-outline hover:text-on-surface">attach_file</button>
+<button class="material-symbols-outlined text-outline hover:text-on-surface">alternate_email</button>
+</div>
+<div class="flex items-center gap-sm">
+<button class="text-on-surface-variant px-md py-2 text-label-md hover:bg-surface-container-low rounded-full">Discard</button>
+<button class="bg-primary text-on-primary px-lg py-2 text-label-md rounded-full shadow-md hover:opacity-90 active:scale-95 transition-all">Send Response</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Sidebar -->
+<div class="w-80 flex flex-col overflow-y-auto custom-scrollbar bg-surface border-l border-outline-variant">
+<!-- AI Insights -->
+<div class="p-lg">
+<div class="premium-border p-md rounded-lg shadow-sm border-black">
+<div class="flex items-center gap-sm mb-md">
+<span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="text-label-sm text-primary tracking-widest font-bold">AI INSIGHTS</span>
+</div>
+<div class="space-y-md">
+<div>
+<p class="text-[10px] text-outline uppercase tracking-tighter mb-xs font-bold">Classification Logic</p>
+<p class="text-body-sm text-on-surface">Identified 'Deployment Outage' pattern in logs. High correlation with <span class="text-primary font-bold">Cluster Sync</span> issues.</p>
+</div>
+<div class="flex justify-between items-center bg-surface-container-low p-sm rounded-lg border border-outline-variant">
+<span class="text-label-sm text-on-surface-variant">Confidence</span>
+<span class="text-label-sm font-bold text-primary">98.4%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Ticket Metadata -->
+<div class="px-lg pb-lg space-y-lg">
+<div class="space-y-sm">
+<label class="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">Status</label>
+<div class="relative group">
+<select class="w-full pl-4 pr-10 py-3 bg-surface-container rounded-full border-none text-label-md text-on-surface appearance-none cursor-pointer focus:ring-2 focus:ring-primary/10">
+<option>In Progress</option>
+<option>Waiting for Customer</option>
+<option>Resolved</option>
+<option>Closed</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-outline">expand_more</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div>
+<label class="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest block mb-sm">Priority</label>
+<div class="flex items-center gap-xs text-error text-label-md font-bold">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">priority_high</span>
+                                P1 - Critical
+                            </div>
+</div>
+<div>
+<label class="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest block mb-sm">Area</label>
+<div class="text-on-surface text-label-md font-bold">Infrastructure</div>
+</div>
+</div>
+<div>
+<label class="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest block mb-sm">Assignee</label>
+<div class="flex items-center gap-md p-3 bg-white border border-outline-variant rounded-lg hover:border-primary transition-all cursor-pointer">
+<img class="w-8 h-8 rounded-full" data-alt="Assignee" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZUULVG3TvSdNySCyIhhdLNT8Q_rubCT0eGJqbDLFu1MuwMrNJaLOrF4cA4vpU7A6dsAQrCfrmfKb2Ou4taQi5HDetaGRnJCn9UpBdUJ7j59E3DmASZEbu-5A-xka0FjkjP2N7f7wGJEx9VTE55s3B9HgtsCzHAzRVM38UbCieunP3myJ626NSdDarFp_MUECllayYoRGPxzJGxqA4k1Il1UWf7POcwMat_iVSBuESEeyuHNi9-1ayBvGlcJN6IfCNgjsNzLHDB-Wt"/>
+<div class="flex-1 min-w-0">
+<p class="text-label-md text-on-surface truncate font-bold">Alex Rivera</p>
+</div>
+<span class="material-symbols-outlined text-outline text-sm">edit</span>
+</div>
+</div>
+<div class="p-lg bg-primary text-on-primary rounded-lg">
+<div class="flex justify-between items-center mb-xs">
+<span class="text-[10px] opacity-70 uppercase font-bold tracking-widest">SLA Countdown</span>
+<span class="text-[10px] font-bold text-on-primary-container bg-white/20 px-2 py-0.5 rounded-full">ACTIVE</span>
+</div>
+<div class="text-headline-md font-bold tracking-tight">00:42:18</div>
+<div class="mt-md w-full bg-white/20 h-1.5 rounded-full overflow-hidden">
+<div class="bg-white h-full w-[65%]"></div>
+</div>
+</div>
+</div>
+<!-- Timeline/History -->
+<div class="mt-auto border-t border-outline-variant bg-surface-container-lowest p-lg">
+<h3 class="text-label-md text-on-surface mb-lg flex items-center gap-sm font-bold">
+<span class="material-symbols-outlined text-lg">history</span>
+                        Ticket History
+                    </h3>
+<div class="relative space-y-lg before:absolute before:left-3 before:top-2 before:bottom-2 before:w-[1px] before:bg-outline-variant">
+<div class="relative pl-10">
+<div class="absolute left-0.5 top-1 w-5 h-5 rounded-full bg-white border-2 border-primary flex items-center justify-center z-10">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+</div>
+<p class="text-body-sm text-on-surface leading-tight">Status changed to <span class="font-bold">In Progress</span></p>
+<p class="text-[10px] text-outline mt-xs font-bold">Alex Rivera • 11:30 AM</p>
+</div>
+<div class="relative pl-10">
+<div class="absolute left-0.5 top-1 w-5 h-5 rounded-full bg-white border-2 border-outline-variant flex items-center justify-center z-10">
+<div class="w-2 h-2 rounded-full bg-outline-variant"></div>
+</div>
+<p class="text-body-sm text-on-surface leading-tight">Ticket Reassigned to Alex Rivera</p>
+<p class="text-[10px] text-outline mt-xs font-bold">System • 10:55 AM</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Create Ticket Modal Overlay -->
+<div class="fixed inset-0 z-[100] hidden bg-on-background/40 backdrop-blur-sm flex items-center justify-center p-md" id="modalOverlay">
+<div class="bg-white w-full max-w-2xl rounded-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+<div class="px-lg py-lg border-b border-outline-variant flex items-center justify-between">
+<div>
+<h3 class="text-headline-md text-on-surface font-bold">Create New Ticket</h3>
+<p class="text-label-sm text-on-surface-variant">Our AI will automatically suggest fields as you type.</p>
+</div>
+<button class="w-12 h-12 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors" onclick="closeModal()">
+<span class="material-symbols-outlined text-outline">close</span>
+</button>
+</div>
+<div class="p-lg space-y-lg">
+<div class="space-y-sm">
+<label class="text-label-md text-on-surface font-bold">Issue Subject</label>
+<input class="w-full px-lg py-3 rounded-full border border-outline-variant focus:ring-2 focus:ring-primary/10 transition-all text-body-md" placeholder="e.g., Performance degradation in APAC region" type="text"/>
+</div>
+<div class="space-y-sm relative">
+<label class="text-label-md text-on-surface font-bold">Detailed Description</label>
+<textarea class="w-full p-lg min-h-[180px] rounded-lg border border-outline-variant focus:ring-2 focus:ring-primary/10 transition-all text-body-md resize-none" id="issueDescription" placeholder="Describe what's happening..."></textarea>
+<div class="absolute bottom-4 right-4 bg-primary text-on-primary px-lg py-2 rounded-full shadow-lg flex items-center gap-sm animate-pulse cursor-pointer hidden" id="aiSuggestion">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="text-label-sm">AI Suggested: <span class="font-bold underline">Billing Issue</span></span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-lg">
+<div class="space-y-sm">
+<label class="text-label-md text-on-surface font-bold">Assigned Area</label>
+<div class="px-lg py-3 rounded-full bg-surface-container border border-outline-variant text-primary font-bold text-body-md flex items-center justify-between">
+                        Finance &amp; Billing
+                        <span class="material-symbols-outlined text-sm">bolt</span>
+</div>
+</div>
+<div class="space-y-sm">
+<label class="text-label-md text-on-surface font-bold">Initial Priority</label>
+<div class="flex items-center gap-md h-[48px]">
+<div class="flex-1 flex items-center justify-center h-full rounded-full bg-surface-container-low text-on-surface-variant border border-outline-variant text-label-sm font-bold cursor-pointer">Low</div>
+<div class="flex-1 flex items-center justify-center h-full rounded-full bg-primary text-on-primary border border-primary text-label-sm font-bold cursor-pointer">Med</div>
+<div class="flex-1 flex items-center justify-center h-full rounded-full bg-surface-container-low text-on-surface-variant border border-outline-variant text-label-sm font-bold cursor-pointer">High</div>
+</div>
+</div>
+</div>
+</div>
+<div class="px-lg py-lg bg-surface-container-lowest border-t border-outline-variant flex justify-end gap-md">
+<button class="px-lg py-3 text-label-md text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors font-bold" onclick="closeModal()">Cancel</button>
+<button class="px-xl py-3 bg-primary text-on-primary text-label-md rounded-full shadow-md hover:opacity-90 active:scale-95 transition-all font-bold" onclick="closeModal()">Create Ticket</button>
+</div>
+</div>
+</div>
+<script>
+    function openModal() {
+        const modal = document.getElementById('modalOverlay');
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('modalOverlay');
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    const textarea = document.getElementById('issueDescription');
+    const suggestion = document.getElementById('aiSuggestion');
+    
+    textarea.addEventListener('input', (e) => {
+        if (e.target.value.length > 10) {
+            suggestion.classList.remove('hidden');
+            suggestion.style.opacity = '1';
+            suggestion.style.transform = 'translateY(0)';
+        } else {
+            suggestion.classList.add('hidden');
+            suggestion.style.opacity = '0';
+            suggestion.style.transform = 'translateY(10px)';
+        }
+    });
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+    });
+</script>
+</body></html>

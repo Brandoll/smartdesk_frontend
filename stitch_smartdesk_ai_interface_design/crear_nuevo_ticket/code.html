@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SmartDesk - Create Ticket</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&amp;family=Geist:wght@400;500;600;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+    }
+    
+    body {
+      font-family: 'Manrope', sans-serif;
+      background-color: #fbf8ff;
+      color: #1a1b22;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid #f4f4f5;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #eeedf7;
+      border-radius: 10px;
+    }
+
+    /* Active State for Nav items as per JSON keys */
+    .nav-active {
+      background-color: #000000;
+      color: #ffffff;
+      border-radius: 9999px;
+    }
+
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    .ai-shimmer {
+      animation: pulse-subtle 3s infinite ease-in-out;
+    }
+  </style>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "tertiary-container": "#091f21",
+                  "outline-variant": "#cfc4c5",
+                  "on-error-container": "#93000a",
+                  "inverse-surface": "#2f3038",
+                  "error": "#ba1a1a",
+                  "on-primary-fixed-variant": "#474747",
+                  "secondary": "#5d5e60",
+                  "on-primary-container": "#848484",
+                  "on-error": "#ffffff",
+                  "secondary-fixed-dim": "#c6c6c7",
+                  "inverse-primary": "#c6c6c6",
+                  "surface-container-lowest": "#ffffff",
+                  "surface-container": "#eeedf7",
+                  "surface-bright": "#fbf8ff",
+                  "surface-container-high": "#e8e7f1",
+                  "surface-dim": "#dad9e3",
+                  "surface-tint": "#5e5e5e",
+                  "primary-fixed-dim": "#c6c6c6",
+                  "primary-container": "#1b1b1b",
+                  "primary": "#000000",
+                  "tertiary-fixed-dim": "#b4cbce",
+                  "on-tertiary-fixed": "#091f21",
+                  "secondary-fixed": "#e2e2e3",
+                  "secondary-container": "#dfdfe0",
+                  "on-tertiary-fixed-variant": "#364a4d",
+                  "on-secondary-container": "#616364",
+                  "background": "#fbf8ff",
+                  "on-secondary": "#ffffff",
+                  "surface-container-low": "#f4f2fd",
+                  "on-tertiary": "#ffffff",
+                  "on-primary-fixed": "#1b1b1b",
+                  "on-surface": "#1a1b22",
+                  "surface": "#fbf8ff",
+                  "on-primary": "#ffffff",
+                  "on-background": "#1a1b22",
+                  "surface-container-highest": "#e3e1ec",
+                  "outline": "#7e7576",
+                  "surface-variant": "#e3e1ec",
+                  "on-tertiary-container": "#72888b",
+                  "tertiary": "#000000",
+                  "on-surface-variant": "#4c4546",
+                  "on-secondary-fixed-variant": "#454748",
+                  "primary-fixed": "#e2e2e2",
+                  "inverse-on-surface": "#f1effa",
+                  "error-container": "#ffdad6",
+                  "on-secondary-fixed": "#1a1c1d",
+                  "tertiary-fixed": "#d0e7ea"
+          },
+          "borderRadius": {
+                  "DEFAULT": "1rem",
+                  "lg": "2rem",
+                  "xl": "3rem",
+                  "full": "9999px"
+          },
+          "spacing": {
+                  "xs": "4px",
+                  "base": "8px",
+                  "sm": "12px",
+                  "lg": "48px",
+                  "margin": "32px",
+                  "xl": "80px",
+                  "md": "24px",
+                  "gutter": "24px"
+          },
+          "fontFamily": {
+                  "headline-md": ["geist"],
+                  "body-lg": ["manrope"],
+                  "label-md": ["geist"],
+                  "body-md": ["manrope"],
+                  "headline-xl": ["geist"],
+                  "headline-lg": ["geist"],
+                  "label-sm": ["geist"]
+          },
+          "fontSize": {
+                  "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "500"}],
+                  "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                  "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                  "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                  "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                  "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                  "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "600"}]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-background overflow-hidden">
+<!-- SideNavBar Anchor -->
+<aside class="fixed left-0 top-0 h-full flex flex-col py-lg bg-white dark:bg-black w-64 border-r border-surface-container-highest z-40">
+<div class="px-6 mb-12">
+<h1 class="text-headline-md font-headline-md font-black text-primary">SmartDesk</h1>
+<p class="text-label-sm text-secondary tracking-widest uppercase opacity-60">AI Support Engine</p>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Active navigation set to "My Tickets" because we are in a ticket flow -->
+<a class="flex items-center gap-base text-secondary hover:text-primary px-4 py-3 mx-2 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-base bg-primary text-on-primary rounded-full px-4 py-3 mx-2 transition-opacity" href="#">
+<span class="material-symbols-outlined" data-icon="confirmation_number">confirmation_number</span>
+<span class="font-body-md text-body-md">My Tickets</span>
+</a>
+<a class="flex items-center gap-base text-secondary hover:text-primary px-4 py-3 mx-2 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="group_work">group_work</span>
+<span class="font-body-md text-body-md">Area Tickets</span>
+</a>
+<a class="flex items-center gap-base text-secondary hover:text-primary px-4 py-3 mx-2 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-body-md text-body-md">Collaborators</span>
+</a>
+<a class="flex items-center gap-base text-secondary hover:text-primary px-4 py-3 mx-2 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="domain">domain</span>
+<span class="font-body-md text-body-md">Areas</span>
+</a>
+<a class="flex items-center gap-base text-secondary hover:text-primary px-4 py-3 mx-2 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-body-md text-body-md">Reports</span>
+</a>
+</nav>
+<div class="px-2 mt-auto">
+<a class="flex items-center gap-base text-secondary hover:text-primary px-4 py-3 mx-2 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+<div class="mt-6 px-4 py-4 flex items-center gap-3 border-t border-surface-container">
+<img class="w-10 h-10 rounded-full bg-surface-container-highest" data-alt="A clean, minimalist logo for a tech corporation featuring abstract geometric shapes in black and white against a light grey background. The lighting is crisp and modern, reflecting a premium B2B software aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA24vSlFwWUOu4-9myIOt83JkpntS_HWOJsqSliBuldP1wGkoL8jk3uby79G7XPCssyyPYihgd4VKMQULUCRdBhEtxLLBIgGIXTUBwcEu38H-u9tQbtJQToG_azkt4FBEehcmgdbxmqNKiXbq29ns_zKMJU5e0gbSwzrjCLBPUrMTDyo34wrAecfVqkrrVJvF4TcVf9PtYBadEJhHbv9ygOd5BhCu0SU5W6eGib5QNWFW3vYz3zgL-OtAF7HT6m-pkyqS30Iwe_1iLL"/>
+<div class="overflow-hidden">
+<p class="text-label-md font-bold truncate">Alex Rivera</p>
+<p class="text-label-sm text-secondary truncate">Standard User</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopNavBar Anchor -->
+<header class="fixed top-0 right-0 left-64 z-30 flex justify-between items-center px-margin h-20 bg-white/80 backdrop-blur-md border-b border-surface-container-highest">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-secondary group-focus-within:text-primary transition-colors" data-icon="search">search</span>
+<input class="w-full pl-12 pr-4 py-2 bg-surface-container-low border-transparent focus:border-primary focus:ring-0 rounded-full text-body-md placeholder:text-secondary/50 transition-all" placeholder="Search for documentation or existing tickets..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="relative p-2 text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="flex items-center gap-2 p-2 text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="ml-64 mt-20 p-margin h-[calc(100vh-5rem)] overflow-y-auto custom-scrollbar">
+<div class="max-w-5xl mx-auto py-base">
+<!-- Header Section -->
+<div class="flex justify-between items-end mb-12">
+<div>
+<nav class="flex items-center gap-2 text-label-md text-secondary mb-2">
+<span>Tickets</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-primary font-bold">New Ticket</span>
+</nav>
+<h2 class="font-headline-xl text-headline-xl text-primary tracking-tight">Create Request</h2>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-6 py-3 text-secondary font-label-md hover:text-primary transition-colors">Cancel</button>
+<button class="px-8 py-3 bg-primary text-on-primary rounded-full font-label-md transition-all active:scale-95 shadow-lg shadow-black/5">Submit Ticket</button>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Form Content (Asymmetric Layout) -->
+<div class="col-span-12 lg:col-span-8 space-y-gutter">
+<!-- Basic Info Card -->
+<div class="bg-white border border-surface-container-highest rounded-lg p-8">
+<div class="space-y-8">
+<div class="group">
+<label class="block text-label-sm text-secondary uppercase tracking-widest mb-3">Ticket Title</label>
+<input class="w-full bg-transparent border-0 border-b border-surface-container-highest focus:border-primary focus:ring-0 text-headline-md font-headline-md placeholder:text-surface-container-highest transition-all px-0 pb-2" placeholder="Briefly summarize your request" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-gutter">
+<div>
+<label class="block text-label-sm text-secondary uppercase tracking-widest mb-3">Area</label>
+<div class="relative">
+<select class="w-full appearance-none bg-surface-container-low border-transparent focus:border-primary focus:ring-0 rounded-lg px-4 py-3 text-body-md transition-all cursor-pointer">
+<option>Operations (Ops)</option>
+<option>Information Technology (IT)</option>
+<option>Human Resources (HR)</option>
+<option>Facilities</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-secondary" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div>
+<label class="block text-label-sm text-secondary uppercase tracking-widest mb-3">Priority</label>
+<div class="flex gap-2">
+<button class="flex-1 py-3 rounded-lg border border-surface-container-highest text-label-md hover:bg-surface-container-low transition-colors">Low</button>
+<button class="flex-1 py-3 rounded-lg border border-primary bg-primary text-on-primary text-label-md">Medium</button>
+<button class="flex-1 py-3 rounded-lg border border-surface-container-highest text-label-md hover:bg-surface-container-low transition-colors">High</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Description & AI Assist -->
+<div class="bg-white border border-surface-container-highest rounded-lg p-8 relative overflow-hidden">
+<label class="block text-label-sm text-secondary uppercase tracking-widest mb-3">Detailed Description</label>
+<textarea class="w-full bg-transparent border-0 focus:ring-0 text-body-lg resize-none placeholder:text-surface-container-highest custom-scrollbar" id="main-description" oninput="handleTyping(this)" placeholder="Describe your situation or request in detail..." rows="12"></textarea>
+<div class="flex items-center justify-between mt-6 pt-6 border-t border-surface-container">
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 px-4 py-2 rounded-full bg-surface-container-low text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="attach_file">attach_file</span>
+<span class="text-label-md">Attachments</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-full bg-surface-container-low text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="alternate_email">alternate_email</span>
+<span class="text-label-md">Mention Team</span>
+</button>
+</div>
+<p class="text-label-sm text-secondary/40">Autosaved 2m ago</p>
+</div>
+</div>
+</div>
+<!-- Right Panel (AI & Context) -->
+<div class="col-span-12 lg:col-span-4 space-y-gutter">
+<!-- Smart Suggestions Box -->
+<div class="bg-primary text-on-primary rounded-lg p-8 min-h-[320px] flex flex-col shadow-2xl shadow-black/10 transition-all">
+<div class="flex items-center gap-3 mb-8">
+<div class="w-8 h-8 rounded-full bg-on-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px] ai-shimmer" data-icon="auto_awesome" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<h3 class="font-headline-md text-label-md uppercase tracking-widest">AI Classification</h3>
+</div>
+<div class="flex-1 flex flex-col justify-center items-center text-center space-y-4" id="ai-placeholder">
+<p class="text-on-primary/40 font-body-md italic">Start typing to see AI classification and smart suggestions...</p>
+</div>
+<div class="hidden flex-1 space-y-6" id="ai-active">
+<div>
+<p class="text-on-primary/60 text-label-sm uppercase tracking-tighter mb-2">Predicted Category</p>
+<div class="flex items-center gap-2">
+<span class="bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1 rounded-full text-label-sm font-bold">Network Connectivity</span>
+<span class="text-on-primary/40 text-label-sm">84% confidence</span>
+</div>
+</div>
+<div>
+<p class="text-on-primary/60 text-label-sm uppercase tracking-tighter mb-3">Relevant Solutions</p>
+<ul class="space-y-2">
+<li class="bg-on-primary/10 p-3 rounded-lg flex items-center justify-between group cursor-pointer hover:bg-on-primary/20 transition-colors">
+<span class="text-label-md">Resetting VPN credentials</span>
+<span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity" data-icon="arrow_forward">arrow_forward</span>
+</li>
+<li class="bg-on-primary/10 p-3 rounded-lg flex items-center justify-between group cursor-pointer hover:bg-on-primary/20 transition-colors">
+<span class="text-label-md">Server Status Dashboard</span>
+<span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity" data-icon="arrow_forward">arrow_forward</span>
+</li>
+</ul>
+</div>
+</div>
+<div class="mt-8 pt-4 border-t border-on-primary/10">
+<p class="text-label-sm text-on-primary/40">AI is analyzing intent, severity, and similar historical requests.</p>
+</div>
+</div>
+<!-- Attachment Preview -->
+<div class="bg-white border border-surface-container-highest rounded-lg p-6">
+<h4 class="text-label-sm text-secondary uppercase tracking-widest mb-6">Related Context</h4>
+<div class="space-y-4">
+<div class="flex items-center gap-4 p-4 rounded-lg bg-surface-container-low">
+<div class="w-10 h-10 rounded bg-white flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-primary" data-icon="history">history</span>
+</div>
+<div>
+<p class="text-label-md font-bold">Last Request</p>
+<p class="text-label-sm text-secondary">3 days ago • Resolved</p>
+</div>
+</div>
+<div class="p-6 border-2 border-dashed border-surface-container-highest rounded-lg flex flex-col items-center justify-center text-center cursor-pointer hover:border-primary/30 transition-colors group">
+<span class="material-symbols-outlined text-secondary group-hover:text-primary mb-2 transition-colors" data-icon="add_circle">add_circle</span>
+<p class="text-label-sm font-bold">Drop files here</p>
+<p class="text-[10px] text-secondary uppercase mt-1">PNG, PDF, logs up to 10MB</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+    function handleTyping(textarea) {
+      const placeholder = document.getElementById('ai-placeholder');
+      const active = document.getElementById('ai-active');
+      const len = textarea.value.length;
+      
+      if (len > 10) {
+        placeholder.classList.add('hidden');
+        active.classList.remove('hidden');
+      } else {
+        placeholder.classList.remove('hidden');
+        active.classList.add('hidden');
+      }
+    }
+
+    // Interactive priority buttons
+    const priorityButtons = document.querySelectorAll('button.flex-1.py-3.rounded-lg.border');
+    priorityButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        priorityButtons.forEach(b => {
+          b.classList.remove('bg-primary', 'text-on-primary', 'border-primary');
+          b.classList.add('border-surface-container-highest', 'text-secondary');
+        });
+        btn.classList.remove('border-surface-container-highest', 'text-secondary');
+        btn.classList.add('bg-primary', 'text-on-primary', 'border-primary');
+      });
+    });
+  </script>
+</body></html>

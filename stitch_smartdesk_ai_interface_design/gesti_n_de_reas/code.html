@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SmartDesk | Area Management</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Design System Tokens -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-container": "#091f21",
+                    "outline-variant": "#cfc4c5",
+                    "on-error-container": "#93000a",
+                    "inverse-surface": "#2f3038",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed-variant": "#474747",
+                    "secondary": "#5d5e60",
+                    "on-primary-container": "#848484",
+                    "on-error": "#ffffff",
+                    "secondary-fixed-dim": "#c6c6c7",
+                    "inverse-primary": "#c6c6c6",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container": "#eeedf7",
+                    "surface-bright": "#fbf8ff",
+                    "surface-dim": "#dad9e3",
+                    "surface-tint": "#5e5e5e",
+                    "primary-fixed-dim": "#c6c6c6",
+                    "primary-container": "#1b1b1b",
+                    "primary": "#000000",
+                    "tertiary-fixed-dim": "#b4cbce",
+                    "on-tertiary-fixed": "#091f21",
+                    "secondary-fixed": "#e2e2e3",
+                    "secondary-container": "#dfdfe0",
+                    "on-tertiary-fixed-variant": "#364a4d",
+                    "on-secondary-container": "#616364",
+                    "background": "#fbf8ff",
+                    "on-secondary": "#ffffff",
+                    "surface-container-low": "#f4f2fd",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed": "#1b1b1b",
+                    "on-surface": "#1a1b22",
+                    "surface": "#fbf8ff",
+                    "on-primary": "#ffffff",
+                    "on-background": "#1a1b22",
+                    "surface-container-highest": "#e3e1ec",
+                    "outline": "#7e7576",
+                    "surface-variant": "#e3e1ec",
+                    "on-tertiary-container": "#72888b",
+                    "tertiary": "#000000",
+                    "on-surface-variant": "#4c4546",
+                    "on-secondary-fixed-variant": "#454748",
+                    "primary-fixed": "#e2e2e2",
+                    "inverse-on-surface": "#f1effa",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed": "#1a1c1d",
+                    "tertiary-fixed": "#d0e7ea"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "base": "8px",
+                    "sm": "12px",
+                    "lg": "48px",
+                    "margin": "32px",
+                    "xl": "80px",
+                    "md": "24px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter", "sans-serif"],
+                    "body-lg": ["Inter", "sans-serif"],
+                    "label-md": ["Inter", "sans-serif"],
+                    "body-md": ["Inter", "sans-serif"],
+                    "headline-xl": ["Inter", "sans-serif"],
+                    "headline-lg": ["Inter", "sans-serif"],
+                    "label-sm": ["Inter", "sans-serif"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #fbf8ff;
+            color: #1a1b22;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e3e1ec;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md antialiased overflow-hidden">
+<!-- Side Navigation -->
+<aside class="fixed left-0 top-0 h-full flex flex-col py-lg bg-white dark:bg-black w-64 border-r border-surface-container-highest z-50">
+<div class="px-margin mb-xl">
+<h1 class="text-headline-md font-headline-md font-black text-primary dark:text-on-primary-fixed">SmartDesk</h1>
+<p class="text-label-sm text-secondary tracking-widest uppercase mt-1">AI Support Engine</p>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Active Navigation Logic: Areas is active -->
+<a class="flex items-center gap-base text-secondary hover:text-primary px-4 py-3 mx-2 transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-base text-secondary hover:text-primary px-4 py-3 mx-2 transition-colors" href="#">
+<span class="material-symbols-outlined">confirmation_number</span>
+<span class="font-body-md">My Tickets</span>
+</a>
+<a class="flex items-center gap-base text-secondary hover:text-primary px-4 py-3 mx-2 transition-colors" href="#">
+<span class="material-symbols-outlined">group_work</span>
+<span class="font-body-md">Area Tickets</span>
+</a>
+<a class="flex items-center gap-base text-secondary hover:text-primary px-4 py-3 mx-2 transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-body-md">Collaborators</span>
+</a>
+<a class="flex items-center gap-base bg-primary text-on-primary rounded-full px-4 py-3 mx-2" href="#">
+<span class="material-symbols-outlined">domain</span>
+<span class="font-body-md">Areas</span>
+</a>
+<a class="flex items-center gap-base text-secondary hover:text-primary px-4 py-3 mx-2 transition-colors" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-body-md">Reports</span>
+</a>
+<a class="flex items-center gap-base text-secondary hover:text-primary px-4 py-3 mx-2 transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<div class="flex items-center gap-base p-2 rounded-xl bg-surface-container-low">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A professional corporate headshot of a senior administrator, wearing a minimalist black turtleneck, looking confidently at the camera against a neutral studio background. The lighting is high-key and soft, creating a modern, high-end B2B SaaS professional aesthetic. Monochrome accents and crisp details reflect executive-level precision." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1-Zx7AK9UVZ9fk8Mb7Rq-fP4E31JbUCgIXdbq-0yNcCIrgVIFDc3i75OY23A4eO10FXorQbtgl0XnPlrB-i0fvQXwz0B127Ju8oReZ5V_gOGlzJrBmIiqLau5Lo4yCoijmMIIvc-P-yypwbpF7-TmLYrjAYZJDUQo0kbCj1q7jnar5UwIXx9HxjUUztHr-PFruXUMyrqURhBSh2naqPhhNukjkZNdQXeSvzh-LZ1j-1LEHrbM6UA-1PDA2iwfaiigV9GstAeTvrl4"/>
+<div>
+<p class="text-label-md font-bold">Admin User</p>
+<p class="text-[10px] text-secondary">Super Administrator</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Top Navigation -->
+<header class="fixed top-0 right-0 left-64 z-40 flex justify-between items-center px-margin h-20 bg-white/80 backdrop-blur-md border-b border-surface-container-highest">
+<div class="flex items-center gap-lg flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-secondary">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2.5 pl-12 pr-4 focus:ring-1 focus:ring-primary text-body-md outline-none transition-all" placeholder="Search areas or leads..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-secondary">notifications</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-secondary">account_circle</span>
+</button>
+<button class="bg-primary text-on-primary px-6 py-2.5 rounded-full font-label-md hover:opacity-90 transition-opacity flex items-center gap-xs">
+<span class="material-symbols-outlined !text-[20px]">add</span>
+                Add New Area
+            </button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 mt-20 p-margin h-[calc(100vh-80px)] overflow-y-auto custom-scrollbar">
+<!-- Hero Section -->
+<div class="mb-lg">
+<h2 class="text-headline-xl font-headline-xl text-primary tracking-tight">Area Management</h2>
+<p class="text-body-lg text-secondary max-w-2xl mt-base">Configure organizational departments, define AI routing logic, and monitor performance metrics across your support ecosystem.</p>
+</div>
+<!-- Areas Grid (Bento Style) -->
+<div class="bento-grid mb-xl">
+<!-- IT Department Card -->
+<div class="col-span-12 lg:col-span-4 bg-white border border-surface-container p-md rounded-lg flex flex-col justify-between hover:border-primary transition-all group">
+<div>
+<div class="flex justify-between items-start mb-md">
+<div class="w-12 h-12 bg-surface-container-low rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">terminal</span>
+</div>
+<span class="px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-bold rounded-full uppercase tracking-widest">Active</span>
+</div>
+<h3 class="text-headline-md font-bold mb-xs">IT</h3>
+<p class="text-label-md text-secondary mb-md">Hardware, Software, and Network Infra</p>
+<div class="space-y-sm">
+<div class="flex items-center justify-between">
+<span class="text-label-sm text-secondary">Area Lead</span>
+<span class="text-label-sm font-bold">Marcus Chen</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-label-sm text-secondary">Active Tickets</span>
+<span class="text-label-sm font-bold">124</span>
+</div>
+</div>
+</div>
+<div class="mt-lg pt-md border-t border-surface-container-low">
+<div class="flex items-center justify-between mb-2">
+<span class="text-label-sm text-secondary">AI Accuracy</span>
+<span class="text-label-sm font-bold">94.2%</span>
+</div>
+<div class="w-full bg-surface-container-low h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full transition-all duration-1000" style="width: 94.2%;"></div>
+</div>
+</div>
+</div>
+<!-- Human Resources Card -->
+<div class="col-span-12 lg:col-span-4 bg-white border border-surface-container p-md rounded-lg flex flex-col justify-between hover:border-primary transition-all group">
+<div>
+<div class="flex justify-between items-start mb-md">
+<div class="w-12 h-12 bg-surface-container-low rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">badge</span>
+</div>
+<span class="px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-bold rounded-full uppercase tracking-widest">Active</span>
+</div>
+<h3 class="text-headline-md font-bold mb-xs">Human Resources</h3>
+<p class="text-label-md text-secondary mb-md">Payroll, Benefits, and Employee Relations</p>
+<div class="space-y-sm">
+<div class="flex items-center justify-between">
+<span class="text-label-sm text-secondary">Area Lead</span>
+<span class="text-label-sm font-bold">Sarah Jenkins</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-label-sm text-secondary">Active Tickets</span>
+<span class="text-label-sm font-bold">42</span>
+</div>
+</div>
+</div>
+<div class="mt-lg pt-md border-t border-surface-container-low">
+<div class="flex items-center justify-between mb-2">
+<span class="text-label-sm text-secondary">AI Accuracy</span>
+<span class="text-label-sm font-bold">88.5%</span>
+</div>
+<div class="w-full bg-surface-container-low h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full transition-all duration-1000" style="width: 88.5%;"></div>
+</div>
+</div>
+</div>
+<!-- Operations Card -->
+<div class="col-span-12 lg:col-span-4 bg-white border border-surface-container p-md rounded-lg flex flex-col justify-between hover:border-primary transition-all group">
+<div>
+<div class="flex justify-between items-start mb-md">
+<div class="w-12 h-12 bg-surface-container-low rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">settings_suggest</span>
+</div>
+<span class="px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-bold rounded-full uppercase tracking-widest">Active</span>
+</div>
+<h3 class="text-headline-md font-bold mb-xs">Operations</h3>
+<p class="text-label-md text-secondary mb-md">Logistics, Facilities, and Supply Chain</p>
+<div class="space-y-sm">
+<div class="flex items-center justify-between">
+<span class="text-label-sm text-secondary">Area Lead</span>
+<span class="text-label-sm font-bold">David Miller</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-label-sm text-secondary">Active Tickets</span>
+<span class="text-label-sm font-bold">67</span>
+</div>
+</div>
+</div>
+<div class="mt-lg pt-md border-t border-surface-container-low">
+<div class="flex items-center justify-between mb-2">
+<span class="text-label-sm text-secondary">AI Accuracy</span>
+<span class="text-label-sm font-bold">91.8%</span>
+</div>
+<div class="w-full bg-surface-container-low h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full transition-all duration-1000" style="width: 91.8%;"></div>
+</div>
+</div>
+</div>
+<!-- Logic Mapping Settings Section (Asymmetric Large Area) -->
+<div class="col-span-12 lg:col-span-8 bg-primary text-on-primary rounded-lg p-lg relative overflow-hidden">
+<div class="relative z-10">
+<div class="flex items-center gap-sm mb-md">
+<span class="material-symbols-outlined text-tertiary-fixed">hub</span>
+<h3 class="text-headline-lg font-bold">Global Logic Mapping</h3>
+</div>
+<p class="text-body-md opacity-80 max-w-xl mb-lg">Define the intelligence core. Use semantic mapping to route tickets automatically based on intent detection and keyword clustering.</p>
+<div class="grid grid-cols-2 gap-md">
+<div class="p-md bg-white/10 rounded-xl border border-white/10 backdrop-blur-sm">
+<p class="text-label-sm uppercase tracking-widest text-tertiary-fixed mb-sm">Keyword Focus</p>
+<div class="flex flex-wrap gap-xs">
+<span class="bg-white/20 text-[10px] px-2 py-1 rounded-full">SERVER_DOWN</span>
+<span class="bg-white/20 text-[10px] px-2 py-1 rounded-full">PAYROLL_QUERY</span>
+<span class="bg-white/20 text-[10px] px-2 py-1 rounded-full">VPN_ERROR</span>
+<span class="bg-white/20 text-[10px] px-2 py-1 rounded-full">FACILITY_REPAIR</span>
+</div>
+</div>
+<div class="p-md bg-white/10 rounded-xl border border-white/10 backdrop-blur-sm">
+<p class="text-label-sm uppercase tracking-widest text-tertiary-fixed mb-sm">Intent Classifiers</p>
+<ul class="text-label-sm space-y-1 opacity-90">
+<li class="flex items-center gap-xs"><span class="material-symbols-outlined !text-[14px]">check_circle</span> Urgent Technical Support</li>
+<li class="flex items-center gap-xs"><span class="material-symbols-outlined !text-[14px]">check_circle</span> Admin Document Request</li>
+</ul>
+</div>
+</div>
+<button class="mt-lg flex items-center gap-sm text-label-md font-bold hover:underline">
+                        Configure Routing Engine <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+<!-- Abstract visual element -->
+<div class="absolute -right-20 -bottom-20 w-80 h-80 border-4 border-white/5 rounded-full"></div>
+<div class="absolute -right-40 -bottom-40 w-80 h-80 border-4 border-white/5 rounded-full"></div>
+</div>
+<!-- Finance Card (Compact/Data Heavy) -->
+<div class="col-span-12 lg:col-span-4 bg-white border border-surface-container p-md rounded-lg flex flex-col justify-between hover:border-primary transition-all">
+<div>
+<div class="flex justify-between items-start mb-md">
+<div class="w-12 h-12 bg-surface-container-low rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">payments</span>
+</div>
+<span class="px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-bold rounded-full uppercase tracking-widest">Active</span>
+</div>
+<h3 class="text-headline-md font-bold mb-xs">Finance</h3>
+<p class="text-label-md text-secondary mb-md">Invoicing, Expenses, and Financial Compliance</p>
+<div class="space-y-sm">
+<div class="flex items-center justify-between">
+<span class="text-label-sm text-secondary">Area Lead</span>
+<span class="text-label-sm font-bold">Elena Rodriguez</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-label-sm text-secondary">Active Tickets</span>
+<span class="text-label-sm font-bold">19</span>
+</div>
+</div>
+</div>
+<div class="mt-lg pt-md border-t border-surface-container-low">
+<div class="flex items-center justify-between mb-2">
+<span class="text-label-sm text-secondary">AI Accuracy</span>
+<span class="text-label-sm font-bold">96.5%</span>
+</div>
+<div class="w-full bg-surface-container-low h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full transition-all duration-1000" style="width: 96.5%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Detailed List / History Section -->
+<div class="bg-white rounded-lg border border-surface-container overflow-hidden">
+<div class="px-md py-md border-b border-surface-container flex items-center justify-between">
+<h3 class="text-headline-md font-bold">Detailed Performance Matrix</h3>
+<div class="flex gap-sm">
+<button class="px-4 py-2 border border-surface-container rounded-full text-label-sm hover:bg-surface-container-low transition-colors">Export Report</button>
+<button class="px-4 py-2 bg-primary text-on-primary rounded-full text-label-sm hover:opacity-90 transition-colors">Filter View</button>
+</div>
+</div>
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low text-secondary text-[10px] uppercase tracking-widest font-bold">
+<th class="px-md py-4">Department</th>
+<th class="px-md py-4">Lead</th>
+<th class="px-md py-4 text-center">Open Tickets</th>
+<th class="px-md py-4 text-center">Avg. Response</th>
+<th class="px-md py-4 text-right">AI Efficiency</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-low">
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-md py-4 font-bold text-label-md">IT Support</td>
+<td class="px-md py-4 text-body-md text-secondary">Marcus Chen</td>
+<td class="px-md py-4 text-center text-body-md">124</td>
+<td class="px-md py-4 text-center text-body-md">2.4m</td>
+<td class="px-md py-4 text-right font-bold text-primary">94.2%</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-md py-4 font-bold text-label-md">Human Resources</td>
+<td class="px-md py-4 text-body-md text-secondary">Sarah Jenkins</td>
+<td class="px-md py-4 text-center text-body-md">42</td>
+<td class="px-md py-4 text-center text-body-md">1.1h</td>
+<td class="px-md py-4 text-right font-bold text-primary">88.5%</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-md py-4 font-bold text-label-md">Operations</td>
+<td class="px-md py-4 text-body-md text-secondary">David Miller</td>
+<td class="px-md py-4 text-center text-body-md">67</td>
+<td class="px-md py-4 text-center text-body-md">45m</td>
+<td class="px-md py-4 text-right font-bold text-primary">91.8%</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-md py-4 font-bold text-label-md">Finance &amp; Audit</td>
+<td class="px-md py-4 text-body-md text-secondary">Elena Rodriguez</td>
+<td class="px-md py-4 text-center text-body-md">19</td>
+<td class="px-md py-4 text-center text-body-md">3.2h</td>
+<td class="px-md py-4 text-right font-bold text-primary">96.5%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</main>
+<!-- Micro-interaction Script -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.bento-grid > div');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,254 @@
+/* SmartDesk Global Styles - Monochrome Premium Design System */
+
+/* ====== Reset & Base ====== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* LIGHT THEME (Default) */
+  --surface: #fbf8ff;
+  --surface-dim: #dad9e3;
+  --surface-bright: #fbf8ff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f4f2fd;
+  --surface-container: #eeedf7;
+  --surface-container-high: #e8e7f1;
+  --surface-container-highest: #e3e1ec;
+  --surface-variant: #e3e1ec;
+
+  /* Content Colors */
+  --on-surface: #1a1b22;
+  --on-surface-variant: #4c4546;
+  --on-background: #1a1b22;
+  --background: #fbf8ff;
+
+  /* Primary */
+  --primary: #000000;
+  --primary-container: #1b1b1b;
+  --on-primary: #ffffff;
+  --primary-fixed: #e2e2e2;
+  --primary-fixed-dim: #c6c6c6;
+
+  /* Secondary */
+  --secondary: #5d5e60;
+  --on-secondary: #ffffff;
+
+  /* Outline */
+  --outline: #7e7576;
+  --outline-variant: #cfc4c5;
+
+  /* Error */
+  --error: #ba1a1a;
+  --error-container: #ffdad6;
+}
+
+/* DARK THEME */
+.dark {
+  --surface: #121212;
+  --surface-dim: #0a0a0a;
+  --surface-bright: #1a1b22;
+  --surface-container-lowest: #000000;
+  --surface-container-low: #111111;
+  --surface-container: #1c1c1c;
+  --surface-container-high: #2a2a2a;
+  --surface-container-highest: #333333;
+  --surface-variant: #2d2d2d;
+
+  /* Content Colors */
+  --on-surface: #ffffff;
+  --on-surface-variant: #a0a0a0;
+  --on-background: #ffffff;
+  --background: #121212;
+
+  /* Primary */
+  --primary: #ffffff;
+  --primary-container: #e2e2e2;
+  --on-primary: #000000;
+  --primary-fixed: #1b1b1b;
+  --primary-fixed-dim: #333333;
+
+  /* Secondary */
+  --secondary: #a0a0a0;
+  --on-secondary: #000000;
+
+  /* Outline */
+  --outline: #7e7576;
+  --outline-variant: #444444;
+
+  /* Error */
+  --error: #ffb4ab;
+  --error-container: #93000a;
+}
+
+html {
+  font-family: 'Manrope', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  height: 100%;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--on-surface);
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* ====== Material Symbols ====== */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+  vertical-align: middle;
+  font-size: 20px;
+  user-select: none;
+}
+
+/* ====== Scrollbar ====== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--surface-container-highest);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--outline-variant);
+}
+
+/* ====== Premium Card ====== */
+.premium-card {
+  background: var(--surface-container-lowest);
+  border: 1px solid var(--surface-container);
+  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 1rem;
+}
+
+.premium-card:hover {
+  border-color: var(--outline-variant);
+  box-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.dark .premium-card {
+  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.5);
+}
+
+/* ====== AI Glow Border ====== */
+.ai-glow-border {
+  position: relative;
+  background: var(--surface-container-lowest);
+  z-index: 1;
+  border-radius: 1rem;
+}
+
+.ai-glow-border::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--surface-container-highest) 100%);
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0.3;
+}
+
+/* ====== Nav Items ====== */
+.nav-item-active {
+  background-color: var(--primary-container);
+  color: var(--on-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.nav-item-active .icon-box {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dark .nav-item-active .icon-box {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+  background: var(--surface-container-low);
+  transition: all 0.2s;
+}
+
+/* ====== Chart Animations ====== */
+.chart-bar {
+  transition: height 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ====== Typography Helpers ====== */
+.font-geist {
+  font-family: 'Geist', sans-serif;
+}
+
+.text-headline-xl {
+  font-family: 'Geist', sans-serif;
+  font-size: 48px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+
+.text-headline-lg {
+  font-family: 'Geist', sans-serif;
+  font-size: 32px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+
+.text-headline-md {
+  font-family: 'Geist', sans-serif;
+  font-size: 24px;
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+.text-label-md {
+  font-family: 'Geist', sans-serif;
+  font-size: 14px;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  font-weight: 500;
+}
+
+.text-label-sm {
+  font-family: 'Geist', sans-serif;
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+.text-body-lg {
+  font-family: 'Manrope', sans-serif;
+  font-size: 18px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.text-body-md {
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+}

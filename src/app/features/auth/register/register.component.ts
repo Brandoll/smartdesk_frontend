@@ -242,7 +242,7 @@ export class RegisterComponent {
       next: () => {
         this.loading.set(false);
         this.notification.success('Registro exitoso. Revisa tu correo para verificar tu cuenta.');
-        this.router.navigate(['/auth/login']);
+        this.router.navigate(['/auth/verify']);
       },
       error: (err) => {
         this.loading.set(false);

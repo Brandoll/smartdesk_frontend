@@ -137,8 +137,14 @@ export class VerifyComponent implements OnInit {
 
   ngOnInit() {
     const token = this.route.snapshot.queryParamMap.get('token');
-    if (token) {
-      this.verifyForm.patchValue({ token });
+    const savedCompanyName = localStorage.getItem('pendingCompanyName');
+    
+    const patchData: any = {};
+    if (token) patchData.token = token;
+    if (savedCompanyName) patchData.companyName = savedCompanyName;
+
+    if (Object.keys(patchData).length > 0) {
+      this.verifyForm.patchValue(patchData);
     }
   }
 

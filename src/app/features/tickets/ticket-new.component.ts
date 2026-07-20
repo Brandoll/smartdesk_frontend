@@ -281,7 +281,7 @@ export class TicketNewComponent implements OnInit {
   title = '';
   description = '';
   priority = 'MEDIA';
-  areaId: number | null = null;
+  areaId: string | null = null;
 
   ngOnInit() {
     this.areaService.getAll().subscribe({
@@ -296,7 +296,14 @@ export class TicketNewComponent implements OnInit {
   }
 
   onSubmit() {
-    if (!this.title.trim()) return;
+    if (!this.title.trim()) {
+      this.notification.error('El título es obligatorio');
+      return;
+    }
+    if (this.description.trim().length < 20) {
+      this.notification.error('La descripción debe tener al menos 20 caracteres');
+      return;
+    }
     this.loading.set(true);
 
     const payload: any = {
@@ -312,8 +319,16 @@ export class TicketNewComponent implements OnInit {
         this.loading.set(false);
         this.router.navigate(['/app/tickets', res.id || '']);
       },
-      error: () => {
-        this.notification.error('Error al crear el caso');
+      error: (err) => {
+        let errorMsg = 'Error al crear el caso';
+        if (err.error && typeof err.error === 'object' && err.error.message) {
+          errorMsg = err.error.message;
+        } else if (err.error && typeof err.error === 'string') {
+          errorMsg = err.error;
+        } else if (err.status === 400) {
+          errorMsg = 'Datos inválidos. Por favor, revisa los campos.';
+        }
+        this.notification.error(errorMsg);
         this.loading.set(false);
       }
     });

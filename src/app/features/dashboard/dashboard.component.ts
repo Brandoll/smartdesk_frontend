@@ -12,7 +12,7 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
       <div>
         <h2 class="text-headline-lg">Panel Ejecutivo</h2>
         <p class="text-body-md" style="color:var(--on-surface-variant); opacity:0.8; margin-top:4px">
-          Operaciones en tiempo real y métricas de rendimiento de IA.
+          Operaciones en tiempo real y métricas de rendimiento.
         </p>
       </div>
       <div class="time-filter">
@@ -79,116 +79,90 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
 
     <!-- Main Grid -->
     <div class="insights-grid">
-      <!-- Volume Dynamics -->
-      <div class="premium-card chart-card">
-        <div class="chart-header">
-          <div>
-            <h4 class="text-headline-md">Dinámica de Volumen</h4>
-            <p class="text-body-md" style="color:var(--on-surface-variant); opacity:0.8; margin-top:2px">
-              Comparativa de creación vs resolución
-            </p>
-          </div>
-          <div class="chart-legend">
-            <div class="legend-item">
-              <span class="legend-dot" style="background:var(--primary)"></span>
-              <span>Ingreso</span>
+      <!-- Left Column -->
+      <div class="main-column">
+        <!-- Volume Dynamics -->
+        <div class="premium-card chart-card">
+          <div class="chart-header">
+            <div>
+              <h4 class="text-headline-md">Dinámica de Volumen</h4>
+              <p class="text-body-md" style="color:var(--on-surface-variant); opacity:0.8; margin-top:2px">
+                Comparativa de creación vs resolución
+              </p>
             </div>
-            <div class="legend-item">
-              <span class="legend-dot" style="background:var(--outline-variant)"></span>
-              <span>Cierre</span>
-            </div>
-          </div>
-        </div>
-        <div class="chart-bars">
-          @for (day of weekDays; track day.name; let i = $index) {
-            <div class="bar-group">
-              <div class="bar" [style.height.%]="day.height"></div>
-            </div>
-          }
-        </div>
-        <div class="chart-labels">
-          @for (day of weekDays; track day.name) {
-            <span>{{ day.name }}</span>
-          }
-        </div>
-      </div>
-
-      <!-- AI Diagnostics -->
-      <div class="premium-card ai-card">
-        <div class="ai-header">
-          <span class="material-symbols-outlined ai-header-icon">auto_awesome</span>
-          <h4 class="text-headline-md">IA Diagnósticos</h4>
-        </div>
-        <div class="ai-ring-container">
-          <svg class="ai-ring" viewBox="0 0 160 160">
-            <circle cx="80" cy="80" r="74" fill="transparent" stroke="var(--surface-container)" stroke-width="6"></circle>
-            <circle cx="80" cy="80" r="74" fill="transparent" stroke="var(--primary)" stroke-width="6"
-              stroke-dasharray="465" stroke-dashoffset="18" stroke-linecap="round"
-              style="transform:rotate(-90deg); transform-origin:center; transition:stroke-dashoffset 1s ease"></circle>
-          </svg>
-          <div class="ai-ring-label">
-            <span class="ai-ring-value">96<span class="ai-ring-percent">%</span></span>
-            <span class="ai-ring-text">PRECISIÓN</span>
-          </div>
-        </div>
-        <div class="ai-metrics">
-          <div class="ai-metric-row">
-            <span>Confianza del Modelo</span><span class="ai-metric-val">98.2%</span>
-          </div>
-          <div class="ai-metric-row">
-            <span>Detección de Intención</span><span class="ai-metric-val">94.5%</span>
-          </div>
-          <div class="ai-metric-row" style="border:none">
-            <span>Auto-Resolución</span><span class="ai-metric-val">89.0%</span>
-          </div>
-        </div>
-        <button class="ai-config-btn">Configurar Lógica IA</button>
-      </div>
-
-      <!-- Categorical Density -->
-      <div class="premium-card density-card">
-        <h4 class="text-headline-md" style="margin-bottom:24px">Densidad por Categoría</h4>
-        <div class="density-list">
-          @for (cat of categories; track cat.name) {
-            <div class="density-item">
-              <div class="density-item-header">
-                <span class="text-label-md">{{ cat.name }}</span>
-                <span class="text-label-sm" style="color:var(--on-surface-variant)">{{ cat.pct }}%</span>
+            <div class="chart-legend">
+              <div class="legend-item">
+                <span class="legend-dot" style="background:var(--primary)"></span>
+                <span>Ingreso</span>
               </div>
-              <div class="density-bar">
-                <div class="density-bar-fill" [style.width.%]="cat.pct" [style.background]="cat.color"></div>
+              <div class="legend-item">
+                <span class="legend-dot" style="background:var(--outline-variant)"></span>
+                <span>Cierre</span>
               </div>
             </div>
-          }
-        </div>
-        <div class="density-insight">
-          <span class="material-symbols-outlined insight-icon">lightbulb</span>
-          <p class="text-body-md">Tickets de infraestructura dominan el volumen. IA sugiere redistribución de carga.</p>
+          </div>
+          <div class="chart-bars">
+            @for (day of weekDays; track day.name; let i = $index) {
+              <div class="bar-group">
+                <div class="bar" [style.height.%]="day.height"></div>
+              </div>
+            }
+          </div>
+          <div class="chart-labels">
+            @for (day of weekDays; track day.name) {
+              <span>{{ day.name }}</span>
+            }
+          </div>
         </div>
       </div>
-
-      <!-- Area Summary -->
-      <div class="premium-card area-summary-card">
-        <div class="area-summary-header">
-          <div>
-            <h4 class="text-headline-md">Resumen por Áreas</h4>
-            <p class="text-body-md" style="color:var(--on-surface-variant); opacity:0.8; margin-top:2px">
-              Distribución de carga entre departamentos
-            </p>
+      
+      <!-- Right Column -->
+      <div class="side-column">
+        <!-- Categorical Density -->
+        <div class="premium-card density-card">
+          <h4 class="text-headline-md" style="margin-bottom:24px">Densidad por Categoría</h4>
+          <div class="density-list">
+            @for (cat of categories; track cat.name) {
+              <div class="density-item">
+                <div class="density-item-header">
+                  <span class="text-label-md">{{ cat.name }}</span>
+                  <span class="text-label-sm" style="color:var(--on-surface-variant)">{{ cat.pct }}%</span>
+                </div>
+                <div class="density-bar">
+                  <div class="density-bar-fill" [style.width.%]="cat.pct" [style.background]="cat.color"></div>
+                </div>
+              </div>
+            }
+          </div>
+          <div class="density-insight">
+            <span class="material-symbols-outlined insight-icon">lightbulb</span>
+            <p class="text-body-md">Tickets de infraestructura dominan el volumen. Se sugiere revisar carga.</p>
           </div>
         </div>
-        <div class="area-regions">
-          <div class="area-region">
-            <p class="text-headline-xl text-primary">{{ metrics()?.totalAreas || 0 }}</p>
-            <p class="text-label-sm area-label">ÁREAS ACTIVAS</p>
+
+        <!-- Area Summary -->
+        <div class="premium-card area-summary-card">
+          <div class="area-summary-header">
+            <div>
+              <h4 class="text-headline-md">Resumen por Áreas</h4>
+              <p class="text-body-md" style="color:var(--on-surface-variant); opacity:0.8; margin-top:2px">
+                Distribución de carga
+              </p>
+            </div>
           </div>
-          <div class="area-region">
-            <p class="text-headline-xl">{{ metrics()?.totalTickets || 0 }}</p>
-            <p class="text-label-sm area-label">TICKETS TOTALES</p>
-          </div>
-          <div class="area-region">
-            <p class="text-headline-xl text-error">{{ metrics()?.highPriority || 0 }}</p>
-            <p class="text-label-sm area-label">PRIORIDAD ALTA</p>
+          <div class="area-regions">
+            <div class="area-region">
+              <p class="text-headline-xl text-primary">{{ metrics()?.totalAreas || 0 }}</p>
+              <p class="text-label-sm area-label">ÁREAS</p>
+            </div>
+            <div class="area-region">
+              <p class="text-headline-xl">{{ metrics()?.totalTickets || 0 }}</p>
+              <p class="text-label-sm area-label">TICKETS</p>
+            </div>
+            <div class="area-region">
+              <p class="text-headline-xl text-error">{{ metrics()?.highPriority || 0 }}</p>
+              <p class="text-label-sm area-label">ALTA PR.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -355,8 +329,24 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
       gap: 24px;
     }
 
+    .main-column {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .side-column {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
     /* Chart Card */
-    .chart-card { padding: 40px; display: flex; flex-direction: column; }
+    .chart-card { 
+      padding: 40px; 
+      display: flex; 
+      flex-direction: column; 
+      height: 100%;
+    }
 
     .chart-header {
       display: flex;
@@ -428,121 +418,6 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
       color: var(--on-surface-variant);
     }
 
-    /* AI Card */
-    .ai-card {
-      padding: 40px;
-      display: flex;
-      flex-direction: column;
-      border: 1px solid rgba(240, 80, 35, 0.15);
-      background: linear-gradient(180deg, var(--surface-container-lowest) 0%, rgba(255, 219, 206, 0.2) 100%);
-    }
-
-    .ai-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 32px;
-    }
-    
-    .ai-header-icon {
-      color: var(--primary);
-      font-size: 28px;
-      font-variation-settings: 'FILL' 1;
-    }
-
-    .ai-ring-container {
-      position: relative;
-      display: flex;
-      justify-content: center;
-      padding: 16px 0;
-    }
-
-    .ai-ring {
-      width: 180px;
-      height: 180px;
-    }
-
-    .ai-ring-label {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .ai-ring-value {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 48px;
-      font-weight: 700;
-      color: var(--on-surface);
-      line-height: 1;
-    }
-
-    .ai-ring-percent {
-      font-size: 20px;
-      color: var(--primary);
-    }
-
-    .ai-ring-text {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--on-surface-variant);
-      letter-spacing: 0.15em;
-      margin-top: 8px;
-    }
-
-    .ai-metrics {
-      margin-top: 32px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .ai-metric-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-family: 'Hanken Grotesk', sans-serif;
-      font-size: 15px;
-      color: var(--on-surface-variant);
-    }
-
-    .ai-metric-val {
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 600;
-      color: var(--on-surface);
-      background: var(--surface-container-lowest);
-      border: 1px solid var(--outline-variant);
-      padding: 4px 10px;
-      border-radius: 8px;
-    }
-
-    .ai-config-btn {
-      margin-top: 32px;
-      width: 100%;
-      padding: 16px;
-      border: 1px solid var(--primary);
-      border-radius: 12px;
-      background: transparent;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--primary);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .ai-config-btn:hover {
-      background: var(--primary);
-      color: var(--on-primary);
-    }
-
-    .ai-config-btn:active {
-      transform: scale(0.98);
-    }
-
     /* Density Card */
     .density-card { padding: 40px; }
 
@@ -600,13 +475,13 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 40px;
+      margin-bottom: 32px;
     }
 
     .area-regions {
       display: flex;
       justify-content: space-around;
-      padding: 20px 0;
+      gap: 16px;
     }
 
     .area-region { text-align: center; }

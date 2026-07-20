@@ -45,6 +45,11 @@ export class TicketService {
     return this.http.get<Page<TicketDTO>>(this.apiUrl, { params });
   }
 
+  getByArea(areaId: string, page: number = 0, size: number = 10): Observable<Page<TicketDTO>> {
+    let params = new HttpParams().set('page', page).set('size', size).set('areaId', areaId);
+    return this.http.get<Page<TicketDTO>>(this.apiUrl, { params });
+  }
+
   getById(id: string): Observable<TicketDTO> {
     return this.http.get<TicketDTO>(`${this.apiUrl}/${id}`);
   }

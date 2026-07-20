@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AppStateService } from '../../core/state/app-state.service';
 import { AuthService } from '../../core/services/auth.service';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
   selector: 'app-topbar',
@@ -28,12 +29,43 @@ import { AuthService } from '../../core/services/auth.service';
       <!-- Actions -->
       <div class="topbar-actions">
         <div class="topbar-icons">
-          <button class="icon-btn" title="Notificaciones">
-            <span class="material-symbols-outlined">notifications</span>
-          </button>
-          <button class="icon-btn" title="Historial">
-            <span class="material-symbols-outlined">history</span>
-          </button>
+          <div class="notif-container">
+            <button class="icon-btn" title="Notificaciones" (click)="toggleNotifMenu($event)">
+              <span class="material-symbols-outlined">notifications</span>
+              @if (notifService.unreadCount() > 0) {
+                <span class="notif-badge">{{ notifService.unreadCount() }}</span>
+              }
+            </button>
+            @if (showNotifMenu()) {
+              <div class="notif-dropdown">
+                <div class="notif-dropdown-header">
+                  <span class="notif-dropdown-title">Notificaciones</span>
+                  @if (notifService.unreadCount() > 0) {
+                    <button class="notif-mark-read" (click)="notifService.markAllRead()">Marcar leídas</button>
+                  }
+                </div>
+                <div class="notif-dropdown-body">
+                  @if (notifService.notifications().length === 0) {
+                    <div class="notif-empty">
+                      <span class="material-symbols-outlined" style="font-size:36px; opacity:0.2">notifications_off</span>
+                      <p>Sin notificaciones</p>
+                    </div>
+                  } @else {
+                    @for (n of notifService.notifications(); track n.id) {
+                      <div class="notif-item" [class.unread]="!n.read">
+                        <span class="material-symbols-outlined notif-item-icon" style="font-variation-settings:'FILL' 1">circle_notifications</span>
+                        <div class="notif-item-content">
+                          <p class="notif-item-msg">{{ n.message }}</p>
+                          <p class="notif-item-time">{{ n.timestamp | date:'short' }}</p>
+                        </div>
+                      </div>
+                    }
+                  }
+                </div>
+              </div>
+              <div class="dropdown-overlay" (click)="showNotifMenu.set(false)"></div>
+            }
+          </div>
         </div>
 
         <div class="topbar-divider"></div>
@@ -342,14 +374,79 @@ import { AuthService } from '../../core/services/auth.service';
       from { opacity: 0; transform: translateY(-8px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    /* Notification container */
+    .notif-container { position: relative; }
+    .notif-badge {
+      position: absolute; top: 2px; right: 2px;
+      min-width: 18px; height: 18px; padding: 0 5px;
+      background: var(--error, #ba1a1a); color: white;
+      border-radius: 9999px; font-size: 10px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Space Grotesk', sans-serif;
+      border: 2px solid var(--surface, #fbf8ff);
+    }
+    .notif-dropdown {
+      position: absolute; top: calc(100% + 8px); right: 0;
+      width: 340px; background: var(--surface-container-lowest, white);
+      border: 1px solid var(--outline-variant); border-radius: 16px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.12); z-index: 101;
+      animation: slideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+    }
+    .notif-dropdown-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 20px; border-bottom: 1px solid var(--outline-variant);
+    }
+    .notif-dropdown-title {
+      font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700;
+    }
+    .notif-mark-read {
+      background: none; border: none; color: var(--primary);
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      font-family: 'Hanken Grotesk', sans-serif;
+    }
+    .notif-dropdown-body {
+      max-height: 320px; overflow-y: auto;
+    }
+    .notif-empty {
+      padding: 40px 20px; text-align: center;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: var(--on-surface-variant); opacity: 0.6;
+      font-size: 14px;
+    }
+    .notif-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 14px 20px; transition: background 0.15s; cursor: default;
+    }
+    .notif-item:hover { background: var(--surface-container-low); }
+    .notif-item.unread { background: rgba(240, 80, 35, 0.04); }
+    .notif-item-icon { color: var(--primary); font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+    .notif-item-content { flex: 1; min-width: 0; }
+    .notif-item-msg {
+      font-size: 13px; font-weight: 500; color: var(--on-surface); line-height: 1.4;
+      overflow: hidden; text-overflow: ellipsis;
+    }
+    .notif-item-time {
+      font-size: 11px; color: var(--on-surface-variant); opacity: 0.6; margin-top: 4px;
+    }
   `]
 })
 export class TopbarComponent {
   private router = inject(Router);
   public appState = inject(AppStateService);
   private authService = inject(AuthService);
+  public notifService = inject(NotificationService);
 
   showUserMenu = signal(false);
+  showNotifMenu = signal(false);
+
+  toggleNotifMenu(event: MouseEvent) {
+    event.stopPropagation();
+    this.showNotifMenu.set(!this.showNotifMenu());
+    if (this.showNotifMenu()) {
+      this.showUserMenu.set(false);
+    }
+  }
 
   navigateToProfile() {
     this.showUserMenu.set(false);

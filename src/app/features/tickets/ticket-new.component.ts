@@ -18,9 +18,9 @@ import { NotificationService } from '../../core/services/notification.service';
           <nav class="breadcrumb">
             <span (click)="goBack()" class="breadcrumb-link">Tickets</span>
             <span class="material-symbols-outlined" style="font-size:14px">chevron_right</span>
-            <span class="breadcrumb-current">Nuevo Ticket</span>
+            <span class="breadcrumb-current">Nuevo Caso</span>
           </nav>
-          <h1 class="page-title">Create Request</h1>
+          <h1 class="page-title">Nuevo Caso</h1>
         </div>
         <div class="header-actions">
           <button class="btn-cancel" (click)="goBack()">Cancelar</button>
@@ -28,7 +28,7 @@ import { NotificationService } from '../../core/services/notification.service';
             @if (loading()) {
               <span class="material-symbols-outlined spinning" style="font-size:16px">sync</span>
             }
-            Submit Ticket
+            Enviar Caso
           </button>
         </div>
       </div>
@@ -40,17 +40,16 @@ import { NotificationService } from '../../core/services/notification.service';
           <!-- Basic Info Card -->
           <div class="form-card">
             <div class="title-field">
-              <label class="field-label-sm">TICKET TITLE</label>
+              <label class="field-label-sm">TÍTULO DEL CASO</label>
               <input 
                 class="title-input"
                 [(ngModel)]="title"
-                placeholder="Briefly summarize your request"
-                (input)="onTyping()">
+                placeholder="Resume brevemente tu solicitud">
             </div>
 
             <div class="row-fields">
               <div class="field-group">
-                <label class="field-label-sm">AREA</label>
+                <label class="field-label-sm">ÁREA</label>
                 <div class="select-wrapper">
                   <select class="field-select" [(ngModel)]="areaId">
                     <option [ngValue]="null">Asignación automática (IA)</option>
@@ -63,11 +62,11 @@ import { NotificationService } from '../../core/services/notification.service';
               </div>
 
               <div class="field-group">
-                <label class="field-label-sm">PRIORITY</label>
+                <label class="field-label-sm">PRIORIDAD</label>
                 <div class="priority-pills">
-                  <button class="priority-pill" [class.active]="priority === 'BAJA'" (click)="priority = 'BAJA'">Low</button>
-                  <button class="priority-pill" [class.active]="priority === 'MEDIA'" (click)="priority = 'MEDIA'">Medium</button>
-                  <button class="priority-pill" [class.active]="priority === 'ALTA'" (click)="priority = 'ALTA'">High</button>
+                  <button class="priority-pill" [class.active]="priority === 'BAJA'" (click)="priority = 'BAJA'">Baja</button>
+                  <button class="priority-pill" [class.active]="priority === 'MEDIA'" (click)="priority = 'MEDIA'">Media</button>
+                  <button class="priority-pill" [class.active]="priority === 'ALTA'" (click)="priority = 'ALTA'">Alta</button>
                 </div>
               </div>
             </div>
@@ -75,90 +74,45 @@ import { NotificationService } from '../../core/services/notification.service';
 
           <!-- Description Card -->
           <div class="form-card description-card">
-            <label class="field-label-sm">DETAILED DESCRIPTION</label>
+            <label class="field-label-sm">DESCRIPCIÓN DETALLADA</label>
             <textarea
               class="desc-textarea"
               [(ngModel)]="description"
-              placeholder="Describe your situation or request in detail..."
-              rows="10"
-              (input)="onTyping()"></textarea>
+              placeholder="Describe tu situación o solicitud con el mayor detalle posible..."
+              rows="10"></textarea>
             <div class="desc-footer">
-              <div class="desc-actions">
-                <button class="action-pill">
-                  <span class="material-symbols-outlined" style="font-size:20px">attach_file</span>
-                  Attachments
-                </button>
-                <button class="action-pill">
-                  <span class="material-symbols-outlined" style="font-size:20px">alternate_email</span>
-                  Mention Team
-                </button>
-              </div>
-              <span class="autosave-hint">Autosaved just now</span>
+              <span class="char-count">{{ description.length }} / 5000 caracteres</span>
             </div>
           </div>
         </div>
 
-        <!-- Right: AI Panel -->
+        <!-- Right: AI Info Panel -->
         <div class="ai-column">
-          <!-- AI Classification -->
-          <div class="ai-panel" [class.ai-active]="aiTyping()">
+          <div class="ai-panel">
             <div class="ai-header">
               <div class="ai-icon-wrap">
                 <span class="material-symbols-outlined ai-shimmer" style="font-size:18px; font-variation-settings:'FILL' 1">auto_awesome</span>
               </div>
-              <h3 class="ai-title">AI Classification</h3>
+              <h3 class="ai-title">Análisis IA</h3>
             </div>
 
-            @if (!aiTyping()) {
-              <div class="ai-placeholder">
-                <p>Start typing to see AI classification and smart suggestions...</p>
+            <div class="ai-info-content">
+              <div class="ai-info-item">
+                <span class="material-symbols-outlined" style="font-size:18px; opacity:0.6">psychology</span>
+                <p>Al enviar tu caso, la IA analizará el contenido y propondrá una solución automática.</p>
               </div>
-            } @else {
-              <div class="ai-results">
-                <div class="ai-result-item">
-                  <p class="ai-result-label">PREDICTED CATEGORY</p>
-                  <div class="ai-tags">
-                    <span class="ai-tag">{{ aiCategory }}</span>
-                    <span class="ai-confidence">{{ aiConfidence }}% confidence</span>
-                  </div>
-                </div>
-                <div class="ai-result-item">
-                  <p class="ai-result-label">RELEVANT SOLUTIONS</p>
-                  <ul class="ai-solutions">
-                    @for (sol of aiSolutions; track sol) {
-                      <li class="ai-solution-item">
-                        <span>{{ sol }}</span>
-                        <span class="material-symbols-outlined" style="font-size:16px; opacity:0">arrow_forward</span>
-                      </li>
-                    }
-                  </ul>
-                </div>
+              <div class="ai-info-item">
+                <span class="material-symbols-outlined" style="font-size:18px; opacity:0.6">route</span>
+                <p>Si no seleccionas un área, la IA asignará automáticamente la más adecuada.</p>
               </div>
-            }
+              <div class="ai-info-item">
+                <span class="material-symbols-outlined" style="font-size:18px; opacity:0.6">priority_high</span>
+                <p>La prioridad también será evaluada según el contenido de tu descripción.</p>
+              </div>
+            </div>
 
             <div class="ai-footer">
-              <p>AI is analyzing intent, severity, and similar historical requests.</p>
-            </div>
-          </div>
-
-          <!-- Related Context -->
-          <div class="context-panel">
-            <h4 class="context-title">RELATED CONTEXT</h4>
-            <div class="context-items">
-              <div class="context-item">
-                <div class="context-icon">
-                  <span class="material-symbols-outlined" style="color:var(--primary,#1b1b1b)">history</span>
-                </div>
-                <div>
-                  <p class="context-name">Last Request</p>
-                  <p class="context-desc">3 days ago • Resolved</p>
-                </div>
-              </div>
-              <div class="drop-zone">
-                <span class="material-symbols-outlined drop-icon">add_circle</span>
-                <p class="drop-title">Drop files here</p>
-                <p class="drop-types">PNG, PDF, logs up to 10MB</p>
-              </div>
+              <p>La sugerencia de la IA aparecerá en el detalle del caso una vez creado.</p>
             </div>
           </div>
         </div>
@@ -184,7 +138,7 @@ import { NotificationService } from '../../core/services/notification.service';
     .breadcrumb-link:hover { color: var(--primary, #1b1b1b); }
     .breadcrumb-current { font-weight: 700; color: var(--primary, #1b1b1b); }
     .page-title {
-      font-family: 'Geist', sans-serif; font-size: 40px;
+      font-family: 'Geist', sans-serif; font-size: 36px;
       font-weight: 700; letter-spacing: -0.02em; color: var(--primary, #1b1b1b);
     }
     .header-actions { display: flex; align-items: center; gap: 16px; }
@@ -213,7 +167,7 @@ import { NotificationService } from '../../core/services/notification.service';
 
     /* Cards */
     .form-card {
-      background: white; border: 1px solid var(--outline-variant, #cfc4c5);
+      background: var(--surface-container-lowest, white); border: 1px solid var(--outline-variant, #cfc4c5);
       border-radius: 16px; padding: 32px;
     }
 
@@ -235,7 +189,6 @@ import { NotificationService } from '../../core/services/notification.service';
 
     /* Row fields */
     .row-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-    .field-group {}
     .select-wrapper { position: relative; }
     .field-select {
       width: 100%; padding: 12px 40px 12px 16px; appearance: none;
@@ -264,7 +217,6 @@ import { NotificationService } from '../../core/services/notification.service';
     }
 
     /* Description */
-    .description-card {}
     .desc-textarea {
       width: 100%; min-height: 200px; border: none; outline: none;
       resize: vertical; font-family: 'Manrope', sans-serif; font-size: 15px;
@@ -273,27 +225,16 @@ import { NotificationService } from '../../core/services/notification.service';
     }
     .desc-textarea::placeholder { color: var(--surface-container-highest, #e3e1ec); }
     .desc-footer {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-top: 24px; padding-top: 20px;
+      margin-top: 16px; padding-top: 16px;
       border-top: 1px solid var(--surface-container, #eeedf7);
     }
-    .desc-actions { display: flex; gap: 8px; }
-    .action-pill {
-      display: flex; align-items: center; gap: 6px;
-      padding: 6px 16px; background: var(--surface-container-low, #f4f2fd);
-      border: none; border-radius: 9999px;
-      font-family: 'Geist', sans-serif; font-size: 13px; font-weight: 500;
-      color: var(--on-surface-variant, #4c4546); cursor: pointer; transition: all 0.15s;
-    }
-    .action-pill:hover { color: var(--primary, #1b1b1b); }
-    .autosave-hint { font-size: 11px; color: var(--on-surface-variant, #4c4546); opacity: 0.5; }
+    .char-count { font-size: 12px; color: var(--on-surface-variant); opacity: 0.5; }
 
     /* AI Panel */
     .ai-panel {
       background: var(--primary, #1b1b1b); color: white;
-      border-radius: 16px; padding: 28px; min-height: 280px;
+      border-radius: 16px; padding: 28px;
       display: flex; flex-direction: column; box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-      transition: all 0.3s;
     }
     .ai-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
     .ai-icon-wrap {
@@ -307,69 +248,17 @@ import { NotificationService } from '../../core/services/notification.service';
     .ai-shimmer { animation: shimmer 3s ease-in-out infinite; }
     @keyframes shimmer { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-    .ai-placeholder {
-      flex: 1; display: flex; align-items: center; justify-content: center; text-align: center;
+    .ai-info-content { display: flex; flex-direction: column; gap: 18px; flex: 1; }
+    .ai-info-item {
+      display: flex; align-items: flex-start; gap: 12px;
     }
-    .ai-placeholder p { color: rgba(255,255,255,0.35); font-style: italic; font-size: 14px; line-height: 1.5; }
-
-    .ai-results { flex: 1; display: flex; flex-direction: column; gap: 20px; }
-    .ai-result-item {}
-    .ai-result-label {
-      font-family: 'Geist', sans-serif; font-size: 10px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.6; margin-bottom: 8px;
-    }
-    .ai-tags { display: flex; align-items: center; gap: 8px; }
-    .ai-tag {
-      padding: 3px 12px; background: #d0e7ea; color: #364a4d;
-      border-radius: 9999px; font-family: 'Geist', sans-serif; font-size: 12px; font-weight: 700;
-    }
-    .ai-confidence { font-size: 12px; opacity: 0.5; }
-    .ai-solutions { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
-    .ai-solution-item {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 12px; background: rgba(255,255,255,0.08);
-      border-radius: 8px; font-size: 13px; cursor: pointer; transition: background 0.15s;
-    }
-    .ai-solution-item:hover { background: rgba(255,255,255,0.15); }
+    .ai-info-item p { font-size: 13px; line-height: 1.5; opacity: 0.85; }
 
     .ai-footer {
       margin-top: 24px; padding-top: 16px;
       border-top: 1px solid rgba(255,255,255,0.1);
     }
     .ai-footer p { font-size: 11px; opacity: 0.4; }
-
-    /* Context Panel */
-    .context-panel {
-      background: white; border: 1px solid var(--outline-variant, #cfc4c5);
-      border-radius: 16px; padding: 24px; margin-top: 24px;
-    }
-    .context-title {
-      font-family: 'Geist', sans-serif; font-size: 10px;
-      font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
-      color: var(--on-surface-variant, #4c4546); margin-bottom: 16px;
-    }
-    .context-items { display: flex; flex-direction: column; gap: 12px; }
-    .context-item {
-      display: flex; align-items: center; gap: 14px;
-      padding: 14px; background: var(--surface-container-low, #f4f2fd); border-radius: 10px;
-    }
-    .context-icon {
-      width: 40px; height: 40px; background: white;
-      border-radius: 8px; display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-    }
-    .context-name { font-weight: 700; font-size: 13px; }
-    .context-desc { font-size: 11px; color: var(--on-surface-variant, #4c4546); }
-
-    .drop-zone {
-      padding: 20px; border: 2px dashed var(--outline-variant, #cfc4c5);
-      border-radius: 10px; display: flex; flex-direction: column;
-      align-items: center; text-align: center; cursor: pointer; transition: border-color 0.2s;
-    }
-    .drop-zone:hover { border-color: rgba(27,27,27,0.3); }
-    .drop-icon { color: var(--on-surface-variant, #4c4546); margin-bottom: 6px; }
-    .drop-title { font-weight: 700; font-size: 12px; }
-    .drop-types { font-size: 10px; text-transform: uppercase; color: var(--on-surface-variant, #4c4546); margin-top: 4px; }
 
     .spinning { animation: spin 1s linear infinite; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
@@ -388,18 +277,11 @@ export class TicketNewComponent implements OnInit {
 
   loading = signal(false);
   areas = signal<any[]>([]);
-  aiTyping = signal(false);
 
   title = '';
   description = '';
   priority = 'MEDIA';
   areaId: number | null = null;
-
-  aiCategory = 'Network Connectivity';
-  aiConfidence = 84;
-  aiSolutions = ['Resetting VPN credentials', 'Server Status Dashboard'];
-
-  private typingTimer: any;
 
   ngOnInit() {
     this.areaService.getAll().subscribe({
@@ -407,15 +289,6 @@ export class TicketNewComponent implements OnInit {
         this.areas.set(Array.isArray(data) ? data : data.content || []);
       }
     });
-  }
-
-  onTyping() {
-    clearTimeout(this.typingTimer);
-    if (this.title.length > 10 || this.description.length > 10) {
-      this.typingTimer = setTimeout(() => this.aiTyping.set(true), 800);
-    } else {
-      this.aiTyping.set(false);
-    }
   }
 
   goBack() {
@@ -435,12 +308,12 @@ export class TicketNewComponent implements OnInit {
 
     this.ticketService.create(payload).subscribe({
       next: (res: any) => {
-        this.notification.success('Ticket creado exitosamente');
+        this.notification.success('Caso creado exitosamente');
         this.loading.set(false);
         this.router.navigate(['/app/tickets', res.id || '']);
       },
       error: () => {
-        this.notification.error('Error al crear el ticket');
+        this.notification.error('Error al crear el caso');
         this.loading.set(false);
       }
     });

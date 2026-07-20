@@ -71,7 +71,7 @@ import { NotificationService } from '../../core/services/notification.service';
               <tr>
                 <td colspan="5" class="empty-state">
                   <span class="material-symbols-outlined" style="font-size:48px; opacity:0.2; margin-bottom:12px">group</span>
-                  <p class="text-body-md" style="opacity:0.5">No hay colaboradores</p>
+                  <p class="text-body-md" style="opacity:0.5">No se encontraron usuarios</p>
                 </td>
               </tr>
             } @else {

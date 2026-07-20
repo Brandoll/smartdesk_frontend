@@ -17,6 +17,7 @@ export const routes: Routes = [
       { path: 'tickets/:id', loadComponent: () => import('./features/tickets/ticket-detail.component').then(c => c.TicketDetailComponent) },
       { path: 'users', loadComponent: () => import('./features/users/users.component').then(c => c.UsersComponent) },
       { path: 'areas', loadComponent: () => import('./features/areas/areas.component').then(c => c.AreasComponent) },
+      { path: 'area-tickets', loadComponent: () => import('./features/area-tickets/area-tickets.component').then(c => c.AreaTicketsComponent) },
       { path: 'settings', loadComponent: () => import('./features/settings/settings.component').then(c => c.SettingsComponent) },
       { path: 'profile', loadComponent: () => import('./features/profile/profile.component').then(c => c.ProfileComponent) }
     ]

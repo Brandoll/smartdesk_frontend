@@ -17,11 +17,17 @@ export class WebsocketService {
   private notificationSubject = new Subject<WebSocketMessage>();
   private chatSubject = new Subject<any>();
 
+  private notifReconnectAttempts = 0;
+  private chatReconnectAttempts = 0;
+  private readonly MAX_RECONNECT = 5;
+
+  private lastNotifParams: { userId: string; tenantId: string; role: string } | null = null;
+  private lastChatParams: { ticketId: string; tenantId: string } | null = null;
+
   private getWsUrl(endpoint: string): string {
     try {
       const url = new URL(environment.apiUrl);
       const protocol = url.protocol === 'https:' ? 'wss:' : 'ws:';
-      // url.pathname is usually /api/v1
       const path = url.pathname.endsWith('/') ? url.pathname.slice(0, -1) : url.pathname;
       return `${protocol}//${url.host}${path}${endpoint}`;
     } catch (e) {
@@ -35,9 +41,15 @@ export class WebsocketService {
       this.notificationSocket.close();
     }
     
+    this.lastNotifParams = { userId, tenantId, role };
     const url = `${this.getWsUrl('/ws/notifications')}?userId=${userId}&tenantId=${tenantId}&role=${role}`;
     this.notificationSocket = new WebSocket(url);
     
+    this.notificationSocket.onopen = () => {
+      console.log('Notification WebSocket connected');
+      this.notifReconnectAttempts = 0;
+    };
+
     this.notificationSocket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
@@ -53,8 +65,24 @@ export class WebsocketService {
     
     this.notificationSocket.onclose = () => {
       console.log('Notification WebSocket closed');
-      // Optional: implement reconnect logic here
+      this.reconnectNotifications();
     };
+  }
+
+  private reconnectNotifications() {
+    if (!this.lastNotifParams || this.notifReconnectAttempts >= this.MAX_RECONNECT) return;
+    this.notifReconnectAttempts++;
+    const delay = Math.min(1000 * Math.pow(2, this.notifReconnectAttempts), 30000);
+    console.log(`Reconnecting notifications in ${delay}ms (attempt ${this.notifReconnectAttempts})`);
+    setTimeout(() => {
+      if (this.lastNotifParams) {
+        this.connectNotifications(
+          this.lastNotifParams.userId,
+          this.lastNotifParams.tenantId,
+          this.lastNotifParams.role
+        );
+      }
+    }, delay);
   }
 
   public getNotifications(): Observable<WebSocketMessage> {
@@ -62,6 +90,7 @@ export class WebsocketService {
   }
 
   public disconnectNotifications() {
+    this.lastNotifParams = null;
     if (this.notificationSocket) {
       this.notificationSocket.close();
       this.notificationSocket = null;
@@ -73,9 +102,15 @@ export class WebsocketService {
       this.chatSocket.close();
     }
     
+    this.lastChatParams = { ticketId, tenantId };
     const url = `${this.getWsUrl('/ws/chat')}?ticketId=${ticketId}&tenantId=${tenantId}`;
     this.chatSocket = new WebSocket(url);
     
+    this.chatSocket.onopen = () => {
+      console.log('Chat WebSocket connected');
+      this.chatReconnectAttempts = 0;
+    };
+
     this.chatSocket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
@@ -84,6 +119,27 @@ export class WebsocketService {
         console.error('Failed to parse chat websocket message', e);
       }
     };
+
+    this.chatSocket.onerror = (error) => {
+      console.error('Chat WebSocket error:', error);
+    };
+
+    this.chatSocket.onclose = () => {
+      console.log('Chat WebSocket closed');
+      this.reconnectChat();
+    };
+  }
+
+  private reconnectChat() {
+    if (!this.lastChatParams || this.chatReconnectAttempts >= this.MAX_RECONNECT) return;
+    this.chatReconnectAttempts++;
+    const delay = Math.min(1000 * Math.pow(2, this.chatReconnectAttempts), 30000);
+    console.log(`Reconnecting chat in ${delay}ms (attempt ${this.chatReconnectAttempts})`);
+    setTimeout(() => {
+      if (this.lastChatParams) {
+        this.connectChat(this.lastChatParams.ticketId, this.lastChatParams.tenantId);
+      }
+    }, delay);
   }
 
   public getChatMessages(): Observable<any> {
@@ -91,6 +147,7 @@ export class WebsocketService {
   }
 
   public disconnectChat() {
+    this.lastChatParams = null;
     if (this.chatSocket) {
       this.chatSocket.close();
       this.chatSocket = null;

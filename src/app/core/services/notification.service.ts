@@ -9,12 +9,24 @@ export interface Toast {
   duration?: number; // ms
 }
 
+export interface AppNotification {
+  id: string;
+  type: string;
+  message: string;
+  timestamp: Date;
+  read: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
   private readonly _toasts = signal<Toast[]>([]);
   public readonly toasts = computed(() => this._toasts());
+
+  private readonly _notifications = signal<AppNotification[]>([]);
+  public readonly notifications = computed(() => this._notifications());
+  public readonly unreadCount = computed(() => this._notifications().filter(n => !n.read).length);
 
   public show(type: ToastType, message: string, duration: number = 3000): void {
     const id = Math.random().toString(36).substring(2, 9);
@@ -41,5 +53,26 @@ export class NotificationService {
 
   public remove(id: string): void {
     this._toasts.update(toasts => toasts.filter(t => t.id !== id));
+  }
+
+  /** Add a persistent notification to the history */
+  public addNotification(type: string, message: string): void {
+    const id = Math.random().toString(36).substring(2, 9);
+    const notification: AppNotification = {
+      id,
+      type,
+      message,
+      timestamp: new Date(),
+      read: false
+    };
+    this._notifications.update(list => [notification, ...list].slice(0, 50)); // keep last 50
+  }
+
+  public markAllRead(): void {
+    this._notifications.update(list => list.map(n => ({ ...n, read: true })));
+  }
+
+  public clearNotifications(): void {
+    this._notifications.set([]);
   }
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { TopbarComponent } from './topbar/topbar.component';
 import { WebsocketService } from '../core/services/websocket.service';
@@ -11,7 +12,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [RouterOutlet, SidebarComponent, TopbarComponent],
+  imports: [RouterOutlet, SidebarComponent, TopbarComponent, CommonModule],
   template: `
     <div class="app-shell">
       <app-sidebar></app-sidebar>
@@ -23,6 +24,19 @@ import { Subscription } from 'rxjs';
           </div>
         </main>
       </div>
+    </div>
+
+    <!-- Floating Toast Notifications -->
+    <div class="toast-container">
+      @for (toast of notification.toasts(); track toast.id) {
+        <div class="toast-item" [attr.data-type]="toast.type" (click)="notification.remove(toast.id)">
+          <span class="material-symbols-outlined toast-icon">
+            {{ toast.type === 'success' ? 'check_circle' : toast.type === 'error' ? 'error' : 'info' }}
+          </span>
+          <span class="toast-message">{{ toast.message }}</span>
+          <span class="material-symbols-outlined toast-close">close</span>
+        </div>
+      }
     </div>
   `,
   styles: [`
@@ -60,12 +74,78 @@ import { Subscription } from 'rxjs';
         padding: 20px;
       }
     }
+
+    /* Toast Container */
+    .toast-container {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 400px;
+    }
+
+    .toast-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      background: var(--surface-container-lowest, white);
+      border: 1px solid var(--outline-variant);
+      border-radius: 14px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+      cursor: pointer;
+      animation: toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 0.15s, opacity 0.15s;
+    }
+
+    .toast-item:hover {
+      transform: translateX(-4px);
+    }
+
+    .toast-item[data-type="success"] {
+      border-left: 4px solid #22c55e;
+    }
+    .toast-item[data-type="success"] .toast-icon { color: #22c55e; }
+
+    .toast-item[data-type="error"] {
+      border-left: 4px solid var(--error, #ba1a1a);
+    }
+    .toast-item[data-type="error"] .toast-icon { color: var(--error, #ba1a1a); }
+
+    .toast-item[data-type="info"] {
+      border-left: 4px solid var(--primary, #1b1b1b);
+    }
+    .toast-item[data-type="info"] .toast-icon { color: var(--primary, #1b1b1b); }
+
+    .toast-icon { font-size: 22px; font-variation-settings: 'FILL' 1; flex-shrink: 0; }
+    .toast-message {
+      flex: 1;
+      font-family: 'Hanken Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--on-surface);
+      line-height: 1.4;
+    }
+    .toast-close {
+      font-size: 16px;
+      color: var(--on-surface-variant);
+      opacity: 0.4;
+      flex-shrink: 0;
+    }
+
+    @keyframes toastSlideIn {
+      from { opacity: 0; transform: translateX(60px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
   `]
 })
 export class LayoutComponent implements OnInit, OnDestroy {
   private ws = inject(WebsocketService);
   private audioService = inject(AudioNotificationService);
-  private notification = inject(NotificationService);
+  public notification = inject(NotificationService);
   private appState = inject(AppStateService);
   private notifSub?: Subscription;
 
@@ -77,9 +157,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.ws.connectNotifications(user.id, tenant.id, user.role);
       
       this.notifSub = this.ws.getNotifications().subscribe(msg => {
-        // Play sound and show toast
+        // Play sound
         this.audioService.play();
-        this.notification.info(msg['message'] || 'Nueva notificación', 5000);
+        // Show floating toast
+        const message = msg['message'] || 'Nueva notificación';
+        this.notification.info(message, 5000);
+        // Store in history
+        this.notification.addNotification(msg['type'] || 'info', message);
       });
     }
   }

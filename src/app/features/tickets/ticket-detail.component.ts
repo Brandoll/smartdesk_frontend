@@ -58,7 +58,7 @@ import { Subscription } from 'rxjs';
                     <div class="message-body-internal">
                       <div class="message-meta-right">
                         <span class="msg-time">{{ msg.time }}</span>
-                        <span class="internal-label">Internal Note</span>
+                        <span class="internal-label">Nota Interna</span>
                         <span class="material-symbols-outlined" style="font-size:16px; color:var(--primary,#1b1b1b)" >lock</span>
                       </div>
                       <div class="bubble-internal">{{ msg.text }}</div>
@@ -104,8 +104,8 @@ import { Subscription } from 'rxjs';
               <div class="reply-box" [class.focused]="replyFocused">
                 <!-- Tabs -->
                 <div class="reply-tabs">
-                  <button class="reply-tab" [class.active]="replyMode === 'reply'" (click)="replyMode = 'reply'">Reply</button>
-                  <button class="reply-tab" [class.active]="replyMode === 'internal'" (click)="replyMode = 'internal'">Internal Note</button>
+                  <button class="reply-tab" [class.active]="replyMode === 'reply'" (click)="replyMode = 'reply'">Responder</button>
+                  <button class="reply-tab" [class.active]="replyMode === 'internal'" (click)="replyMode = 'internal'">Nota Interna</button>
                   <div class="tab-spacer"></div>
                   <div class="format-actions">
                     <button class="format-btn"><span class="material-symbols-outlined">format_bold</span></button>
@@ -118,7 +118,7 @@ import { Subscription } from 'rxjs';
                 <textarea
                   class="reply-input"
                   [(ngModel)]="replyText"
-                  placeholder="Type your message here..."
+                  placeholder="Escribe tu mensaje aquí..."
                   (focus)="replyFocused = true"
                   (blur)="replyFocused = false"
                   rows="4"></textarea>
@@ -130,9 +130,9 @@ import { Subscription } from 'rxjs';
                     <button class="attach-btn"><span class="material-symbols-outlined">alternate_email</span></button>
                   </div>
                   <div class="reply-send">
-                    <button class="btn-discard" (click)="replyText = ''">Discard</button>
+                    <button class="btn-discard" (click)="replyText = ''">Descartar</button>
                     <button class="btn-send-response" (click)="sendMessage()" [disabled]="!replyText.trim()">
-                      Send Response
+                      Enviar
                     </button>
                   </div>
                 </div>
@@ -142,97 +142,114 @@ import { Subscription } from 'rxjs';
 
           <!-- ===================== RIGHT COLUMN: Sidebar ===================== -->
           <div class="sidebar-column">
-            <!-- AI Insights -->
+            <!-- Sugerencia IA -->
             <div class="sidebar-section">
               <div class="ai-insights-card">
                 <div class="ai-insights-header">
                   <div class="ai-insights-title">
                     <span class="material-symbols-outlined" style="font-size:20px; font-variation-settings:'FILL' 1">auto_awesome</span>
-                    <span class="insights-label">AI INSIGHTS</span>
+                    <span class="insights-label">SUGERENCIA IA</span>
                   </div>
-                  <span class="material-symbols-outlined" style="font-size:18px; color:var(--outline,#7e7576)">info</span>
+                  @if (ticket().aiClassified) {
+                    <span class="ai-badge-done">Analizado</span>
+                  }
                 </div>
                 <div class="insights-body">
-                  <div class="insights-row">
-                    <p class="insights-sub-label">CLASSIFICATION LOGIC</p>
-                    <p class="insights-text">
-                      Identified <u>{{ getAICategory() }}</u> pattern in logs.
-                      High correlation with <strong>{{ getAIKeyword() }}</strong> issues.
-                    </p>
-                  </div>
-                  <div class="confidence-row">
-                    <span>Confidence</span>
-                    <span class="confidence-value">98.4%</span>
-                  </div>
+                  @if (ticket().aiSuggestedSolution) {
+                    <div class="insights-row">
+                      <p class="insights-sub-label">SOLUCIÓN PROPUESTA</p>
+                      <p class="insights-text">{{ ticket().aiSuggestedSolution }}</p>
+                    </div>
+                  } @else if (ticket().aiClassified) {
+                    <div class="insights-row">
+                      <p class="insights-text" style="opacity:0.6">La IA analizó este caso pero no generó una sugerencia de solución.</p>
+                    </div>
+                  } @else {
+                    <div class="insights-row">
+                      <p class="insights-text" style="opacity:0.6">La IA está analizando este caso. La sugerencia aparecerá pronto...</p>
+                    </div>
+                  }
+                  @if (ticket().aiSuggestedTitle) {
+                    <div class="confidence-row">
+                      <span>Título sugerido</span>
+                      <span class="confidence-value">{{ ticket().aiSuggestedTitle }}</span>
+                    </div>
+                  }
                 </div>
               </div>
             </div>
 
-            <!-- Status -->
+            <!-- Estado y Metadatos -->
             <div class="sidebar-section meta-section">
-              <div class="meta-group">
-                <label class="meta-label">STATUS</label>
-                <div class="select-wrapper">
-                  <select class="meta-select" [ngModel]="ticket().status" (ngModelChange)="updateStatus($event)">
-                    <option value="ABIERTO">Abierto</option>
-                    <option value="ASIGNADO">Asignado</option>
-                    <option value="EN_PROCESO">En Proceso</option>
-                    <option value="PROPUESTO">Propuesto</option>
-                    <option value="RESUELTO">Resuelto</option>
-                    <option value="CERRADO">Cerrado</option>
-                  </select>
-                  <span class="material-symbols-outlined select-arrow">expand_more</span>
+              @if (isAdminOrResolutor()) {
+                <div class="meta-group">
+                  <label class="meta-label">ESTADO</label>
+                  <div class="select-wrapper">
+                    <select class="meta-select" [ngModel]="ticket().status" (ngModelChange)="updateStatus($event)">
+                      <option value="ABIERTO">Abierto</option>
+                      <option value="ASIGNADO">Asignado</option>
+                      <option value="EN_PROCESO">En Proceso</option>
+                      <option value="PROPUESTO">Propuesto</option>
+                      <option value="RESUELTO">Resuelto</option>
+                      <option value="CERRADO">Cerrado</option>
+                    </select>
+                    <span class="material-symbols-outlined select-arrow">expand_more</span>
+                  </div>
                 </div>
-              </div>
+              } @else {
+                <div class="meta-group">
+                  <label class="meta-label">ESTADO</label>
+                  <div class="priority-tag">{{ getStatusLabel(ticket().status) }}</div>
+                </div>
+              }
 
-              <!-- Priority + Area Grid -->
+              <!-- Prioridad + Área -->
               <div class="meta-grid">
                 <div class="meta-group">
-                  <label class="meta-label">PRIORITY</label>
+                  <label class="meta-label">PRIORIDAD</label>
                   <div class="priority-tag" [attr.data-priority]="ticket().priority">
                     <span class="material-symbols-outlined" style="font-size:16px; font-variation-settings:'FILL' 1">priority_high</span>
                     {{ getPriorityLabel(ticket().priority) }}
                   </div>
                 </div>
                 <div class="meta-group">
-                  <label class="meta-label">AREA</label>
+                  <label class="meta-label">ÁREA</label>
+                  @if (isAdminOrResolutor()) {
+                    <div class="select-wrapper">
+                      <select class="meta-select" [ngModel]="ticket().areaId || ''" (ngModelChange)="updateArea($event)">
+                        <option value="">Sin Área</option>
+                        @for (area of areas(); track area.id) {
+                          <option [value]="area.id">{{ area.name }}</option>
+                        }
+                      </select>
+                      <span class="material-symbols-outlined select-arrow">expand_more</span>
+                    </div>
+                  } @else {
+                    <div class="priority-tag">{{ getAreaName(ticket().areaId) }}</div>
+                  }
+                </div>
+              </div>
+
+              <!-- Asignado a -->
+              @if (isAdminOrResolutor()) {
+                <div class="meta-group">
+                  <label class="meta-label">ASIGNADO A</label>
                   <div class="select-wrapper">
-                    <select class="meta-select" [ngModel]="ticket().areaId || ''" (ngModelChange)="updateArea($event)">
-                      <option value="">Sin Área</option>
-                      @for (area of areas(); track area.id) {
-                        <option [value]="area.id">{{ area.name }}</option>
+                    <select class="meta-select" [ngModel]="ticket().assignedToId || ''" (ngModelChange)="updateAssignee($event)">
+                      <option value="">Sin asignar</option>
+                      @for (user of users(); track user.id) {
+                        <option [value]="user.id">{{ user.name }}</option>
                       }
                     </select>
                     <span class="material-symbols-outlined select-arrow">expand_more</span>
                   </div>
                 </div>
-              </div>
-
-              <!-- Assignee -->
-              <div class="meta-group">
-                <label class="meta-label">ASSIGNEE</label>
-                <div class="select-wrapper">
-                  <select class="meta-select" [ngModel]="ticket().assignedToId || ''" (ngModelChange)="updateAssignee($event)">
-                    <option value="">Sin asignar</option>
-                    @for (user of users(); track user.id) {
-                      <option [value]="user.id">{{ user.name }}</option>
-                    }
-                  </select>
-                  <span class="material-symbols-outlined select-arrow">expand_more</span>
+              } @else {
+                <div class="meta-group">
+                  <label class="meta-label">ASIGNADO A</label>
+                  <div class="priority-tag">{{ ticket().assignedToName || 'Sin asignar' }}</div>
                 </div>
-              </div>
-
-              <!-- SLA Countdown -->
-              <div class="sla-card">
-                <div class="sla-header">
-                  <span class="sla-label">SLA COUNTDOWN</span>
-                  <span class="sla-status-badge">ACTIVE</span>
-                </div>
-                <div class="sla-time">{{ slaTime }}</div>
-                <div class="sla-bar">
-                  <div class="sla-progress" [style.width]="slaPercent + '%'"></div>
-                </div>
-              </div>
+              }
             </div>
 
             <!-- Ticket History -->
@@ -240,7 +257,7 @@ import { Subscription } from 'rxjs';
               <div class="history-panel">
                 <h3 class="history-title">
                   <span class="material-symbols-outlined" style="font-size:18px">history</span>
-                  Ticket History
+                  Historial
                 </h3>
                 <div class="history-timeline">
                   @for (event of historyEvents(); track event.id) {
@@ -486,7 +503,11 @@ import { Subscription } from 'rxjs';
       border: 1px solid var(--outline-variant, #cfc4c5); border-radius: 8px;
       font-size: 12px;
     }
-    .confidence-value { font-weight: 700; color: var(--primary, #1b1b1b); }
+    .confidence-value { font-weight: 700; color: var(--primary, #1b1b1b); font-size: 12px; }
+    .ai-badge-done {
+      padding: 2px 10px; background: rgba(34, 197, 94, 0.1); color: #16a34a;
+      border-radius: 9999px; font-size: 11px; font-weight: 700;
+    }
 
     /* Meta Section */
     .meta-section { display: flex; flex-direction: column; gap: 16px; }
@@ -627,9 +648,6 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
   replyMode: 'reply' | 'internal' = 'reply';
   replyFocused = false;
 
-  slaTime = '00:42:18';
-  slaPercent = 65;
-
   ngOnInit() {
     // Load areas and users for dropdowns
     this.areaService.getAll().subscribe({
@@ -648,20 +666,6 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
         this.loadTicket(id);
       }
     });
-
-    // SLA countdown
-    setInterval(() => {
-      const parts = this.slaTime.split(':').map(Number);
-      let secs = parts[0] * 3600 + parts[1] * 60 + parts[2];
-      if (secs > 0) {
-        secs--;
-        const h = Math.floor(secs / 3600).toString().padStart(2, '0');
-        const m = Math.floor((secs % 3600) / 60).toString().padStart(2, '0');
-        const s = (secs % 60).toString().padStart(2, '0');
-        this.slaTime = `${h}:${m}:${s}`;
-        this.slaPercent = Math.max(0, this.slaPercent - 0.01);
-      }
-    }, 1000);
   }
 
   loadTicket(id: string) {
@@ -875,21 +879,6 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
   }
 
-  getAICategory(): string {
-    const t = this.ticket();
-    if (!t) return 'Unknown';
-    const categories: Record<string, string> = {
-      'CRITICA': 'Critical Outage', 'ALTA': 'High Priority Issue',
-      'MEDIA': 'Service Degradation', 'BAJA': 'Minor Issue'
-    };
-    return categories[t.priority] || 'Service Issue';
-  }
-
-  getAIKeyword(): string {
-    const t = this.ticket();
-    return t?.areaName || 'Infrastructure';
-  }
-
   getStatusLabel(status: string): string {
     const labels: Record<string, string> = {
       'ABIERTO': 'Abierto', 'ASIGNADO': 'Asignado', 'EN_PROCESO': 'En Proceso',
@@ -900,8 +889,18 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
 
   getPriorityLabel(priority: string): string {
     const labels: Record<string, string> = {
-      'BAJA': 'P3 - Low', 'MEDIA': 'P2 - Med', 'ALTA': 'P1 - High', 'CRITICA': 'P0 - Critical'
+      'BAJA': 'Baja', 'MEDIA': 'Media', 'ALTA': 'Alta', 'CRITICA': 'Crítica'
     };
     return labels[priority] || priority;
+  }
+
+  getAreaName(areaId: string): string {
+    if (!areaId) return 'Sin Área';
+    return this.areas().find(a => a.id === areaId)?.name || 'Sin Área';
+  }
+
+  isAdminOrResolutor(): boolean {
+    const role = this.appState.currentUser()?.role?.replace('ROLE_', '');
+    return role === 'ADMIN_TENANT' || role === 'COLABORADOR_RESOLUTOR';
   }
 }

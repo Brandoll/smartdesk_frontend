@@ -34,22 +34,22 @@ import { AuthService } from '../../core/services/auth.service';
           <span class="icon-box group-hover:!bg-[var(--surface-container-highest)]"><span class="material-symbols-outlined">confirmation_number</span></span>
           <span>Mis Tickets</span>
         </a>
-        <a routerLink="/app/area-tickets" routerLinkActive="nav-item-active" class="nav-link group">
-          <span class="icon-box group-hover:!bg-[var(--surface-container-highest)]"><span class="material-symbols-outlined">group_work</span></span>
-          <span>Tickets de Área</span>
-        </a>
-        <a routerLink="/app/users" routerLinkActive="nav-item-active" class="nav-link group">
-          <span class="icon-box group-hover:!bg-[var(--surface-container-highest)]"><span class="material-symbols-outlined">group</span></span>
-          <span>Colaboradores</span>
-        </a>
-        <a routerLink="/app/areas" routerLinkActive="nav-item-active" class="nav-link group">
-          <span class="icon-box group-hover:!bg-[var(--surface-container-highest)]"><span class="material-symbols-outlined">domain</span></span>
-          <span>Áreas</span>
-        </a>
-        <a routerLink="/app/reports" routerLinkActive="nav-item-active" class="nav-link group">
-          <span class="icon-box group-hover:!bg-[var(--surface-container-highest)]"><span class="material-symbols-outlined">analytics</span></span>
-          <span>Reportes</span>
-        </a>
+        @if (isAdminOrResolutor()) {
+          <a routerLink="/app/area-tickets" routerLinkActive="nav-item-active" class="nav-link group">
+            <span class="icon-box group-hover:!bg-[var(--surface-container-highest)]"><span class="material-symbols-outlined">group_work</span></span>
+            <span>Tickets de Área</span>
+          </a>
+        }
+        @if (isAdmin()) {
+          <a routerLink="/app/users" routerLinkActive="nav-item-active" class="nav-link group">
+            <span class="icon-box group-hover:!bg-[var(--surface-container-highest)]"><span class="material-symbols-outlined">group</span></span>
+            <span>Colaboradores</span>
+          </a>
+          <a routerLink="/app/areas" routerLinkActive="nav-item-active" class="nav-link group">
+            <span class="icon-box group-hover:!bg-[var(--surface-container-highest)]"><span class="material-symbols-outlined">domain</span></span>
+            <span>Áreas</span>
+          </a>
+        }
         <a routerLink="/app/settings" routerLinkActive="nav-item-active" class="nav-link group">
           <span class="icon-box group-hover:!bg-[var(--surface-container-highest)]"><span class="material-symbols-outlined">settings</span></span>
           <span>Configuración</span>
@@ -322,5 +322,15 @@ export class SidebarComponent {
       case 'COLABORADOR': return 'COLABORADOR';
       default: return cleanRole;
     }
+  }
+
+  isAdmin(): boolean {
+    const role = this.appState.currentUser()?.role?.replace('ROLE_', '');
+    return role === 'ADMIN_TENANT';
+  }
+
+  isAdminOrResolutor(): boolean {
+    const role = this.appState.currentUser()?.role?.replace('ROLE_', '');
+    return role === 'ADMIN_TENANT' || role === 'COLABORADOR_RESOLUTOR';
   }
 }

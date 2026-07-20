@@ -193,10 +193,6 @@ import { AuthService } from '../../core/services/auth.service';
       background: rgba(255, 255, 255, 0.12);
     }
 
-    .dark .nav-link.nav-item-active .icon-box {
-      background: rgba(0, 0, 0, 0.12);
-    }
-
     .sidebar-footer {
       padding-top: 16px;
       margin-top: auto;

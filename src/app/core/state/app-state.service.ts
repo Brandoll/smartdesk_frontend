@@ -21,7 +21,6 @@ export class AppStateService {
   // Signals
   private readonly _currentUser = signal<User | null>(null);
   private readonly _currentTenant = signal<Tenant | null>(null);
-  private readonly _theme = signal<'light' | 'dark'>('light');
   private readonly _isLoading = signal<boolean>(false);
 
   constructor() {
@@ -38,7 +37,6 @@ export class AppStateService {
   // Computed properties for read-only access in templates
   public readonly currentUser = computed(() => this._currentUser());
   public readonly currentTenant = computed(() => this._currentTenant());
-  public readonly theme = computed(() => this._theme());
   public readonly isLoading = computed(() => this._isLoading());
 
   public readonly isAuthenticated = computed(() => this._currentUser() !== null);
@@ -51,10 +49,6 @@ export class AppStateService {
 
   public setCurrentTenant(tenant: Tenant | null): void {
     this._currentTenant.set(tenant);
-  }
-
-  public setTheme(theme: 'light' | 'dark'): void {
-    this._theme.set(theme);
   }
 
   public setLoading(loading: boolean): void {

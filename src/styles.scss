@@ -52,49 +52,6 @@
   --error-container: #ffdad6;
 }
 
-/* DARK THEME */
-.dark {
-  --surface: #121212;
-  --surface-dim: #0a0a0a;
-  --surface-bright: #1a1c1e;
-  --surface-container-lowest: #000000;
-  --surface-container-low: #111111;
-  --surface-container: #1c1d1f;
-  --surface-container-high: #2a2c2e;
-  --surface-container-highest: #333537;
-  --surface-variant: #2d2f31;
-
-  /* Content Colors */
-  --on-surface: #e1e3e4;
-  --on-surface-variant: #c0c7cf;
-  --on-background: #e1e3e4;
-  --background: #121212;
-
-  /* Primary (Naranja Brand para Modo Oscuro) */
-  --primary: #FFBCA6;
-  --primary-container: #A82F0B;
-  --on-primary: #411200;
-  --on-primary-container: #FFDBCE;
-  --primary-fixed: #D04018;
-  --primary-fixed-dim: #F05023;
-
-  --primary-gradient: linear-gradient(135deg, #FFBCA6 0%, #F05023 100%);
-
-  /* Secondary */
-  --secondary: #c6c6c9;
-  --secondary-container: #454749;
-  --on-secondary: #2e3132;
-  --on-secondary-container: #e2e2e5;
-
-  /* Outline */
-  --outline: #8f6f6c;
-  --outline-variant: #444444;
-
-  /* Error */
-  --error: #ffb4ab;
-  --error-container: #93000a;
-}
-
 html {
   font-family: 'Manrope', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -153,10 +110,6 @@ body {
   transform: translateY(-2px);
 }
 
-.dark .premium-card {
-  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.5);
-}
-
 /* ====== AI Glow Border ====== */
 .ai-glow-border {
   position: relative;
@@ -184,10 +137,6 @@ body {
 
 .nav-item-active .icon-box {
   background: rgba(255, 255, 255, 0.1);
-}
-
-.dark .nav-item-active .icon-box {
-  background: rgba(0, 0, 0, 0.1);
 }
 
 .icon-box {

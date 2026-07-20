@@ -204,26 +204,6 @@ import { UserService } from '../../core/services/user.service';
       <div class="tab-content fade-in">
         <div class="settings-layout">
           <div class="premium-card settings-card">
-            <h3 class="text-headline-md" style="margin-bottom:24px">Apariencia</h3>
-            
-            <div class="settings-row">
-              <div class="settings-info">
-                <h4>Tema de la Interfaz</h4>
-                <p>Cambia entre el modo claro y oscuro.</p>
-              </div>
-              <div class="theme-toggles">
-                <button class="theme-btn" [class.active]="appState.theme() === 'light'" (click)="appState.setTheme('light')">
-                  <span class="material-symbols-outlined">light_mode</span>
-                  Claro
-                </button>
-                <button class="theme-btn" [class.active]="appState.theme() === 'dark'" (click)="appState.setTheme('dark')">
-                  <span class="material-symbols-outlined">dark_mode</span>
-                  Oscuro
-                </button>
-              </div>
-            </div>
-
-            <div class="settings-divider"></div>
 
             <h3 class="text-headline-md" style="margin-bottom:24px">Notificaciones</h3>
             
@@ -403,14 +383,7 @@ import { UserService } from '../../core/services/user.service';
     .settings-info h4 { font-family: 'Geist', sans-serif; font-size: 15px; font-weight: 600; color: var(--on-surface); margin-bottom: 4px; }
     .settings-info p { font-family: 'Manrope', sans-serif; font-size: 14px; color: var(--on-surface-variant); opacity: 0.7; }
     
-    .theme-toggles { display: flex; background: var(--surface-container-low); padding: 4px; border-radius: 12px; border: 1px solid var(--outline-variant); }
-    .theme-btn {
-      display: flex; align-items: center; gap: 8px; padding: 8px 16px; border: none; background: transparent;
-      border-radius: 8px; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500;
-      color: var(--on-surface-variant); cursor: pointer; transition: all 0.2s;
-    }
-    .theme-btn.active { background: var(--surface); color: var(--on-surface); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .theme-btn .material-symbols-outlined { font-size: 18px; }
+    .settings-info p { font-family: 'Manrope', sans-serif; font-size: 14px; color: var(--on-surface-variant); opacity: 0.7; }
 
     /* Toggles */
     .toggle-switch { cursor: pointer; }

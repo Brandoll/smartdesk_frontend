@@ -21,8 +21,7 @@ export class AuthService {
   private http = inject(HttpClient);
   private appState = inject(AppStateService);
   
-  // Replace with actual environment variable later
-  private apiUrl = 'http://localhost:8080/api/v1/auth';
+  private apiUrl = `${environment.apiUrl}/auth`;
 
   register(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, data);

@@ -283,9 +283,14 @@ export class LoginComponent {
     const credentials = this.loginForm.getRawValue();
 
     this.authService.login(credentials).subscribe({
-      next: () => {
+      next: (res) => {
         this.loading.set(false);
-        this.router.navigate(['/app/dashboard']);
+        // Only Admins go to the dashboard by default, others go directly to tickets
+        if (res.role === 'ADMIN_TENANT') {
+          this.router.navigate(['/app/dashboard']);
+        } else {
+          this.router.navigate(['/app/tickets']);
+        }
         this.notification.success('Bienvenido a SmartDesk');
       },
       error: (err) => {

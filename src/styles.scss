@@ -11,35 +11,40 @@
 
 :root {
   /* LIGHT THEME (Default) */
-  --surface: #fbf8ff;
-  --surface-dim: #dad9e3;
-  --surface-bright: #fbf8ff;
+  --surface: #f8f9fa;
+  --surface-dim: #d9dadb;
+  --surface-bright: #ffffff;
   --surface-container-lowest: #ffffff;
-  --surface-container-low: #f4f2fd;
-  --surface-container: #eeedf7;
-  --surface-container-high: #e8e7f1;
-  --surface-container-highest: #e3e1ec;
-  --surface-variant: #e3e1ec;
+  --surface-container-low: #f3f4f5;
+  --surface-container: #edeeef;
+  --surface-container-high: #e7e8e9;
+  --surface-container-highest: #e1e3e4;
+  --surface-variant: #e1e3e4;
 
   /* Content Colors */
-  --on-surface: #1a1b22;
-  --on-surface-variant: #4c4546;
-  --on-background: #1a1b22;
-  --background: #fbf8ff;
+  --on-surface: #191c1d;
+  --on-surface-variant: #5b403d;
+  --on-background: #191c1d;
+  --background: #f8f9fa;
 
-  /* Primary */
-  --primary: #000000;
-  --primary-container: #1b1b1b;
+  /* Primary (Naranja Brand) */
+  --primary: #F05023;
+  --primary-container: #FFDBCE;
   --on-primary: #ffffff;
-  --primary-fixed: #e2e2e2;
-  --primary-fixed-dim: #c6c6c6;
+  --on-primary-container: #411200;
+  --primary-fixed: #FFBCA6;
+  --primary-fixed-dim: #D04018;
+  
+  --primary-gradient: linear-gradient(135deg, #F05023 0%, #FF9A55 100%);
 
   /* Secondary */
-  --secondary: #5d5e60;
+  --secondary: #5d5e61;
+  --secondary-container: #e2e2e5;
   --on-secondary: #ffffff;
+  --on-secondary-container: #1a1c1e;
 
   /* Outline */
-  --outline: #7e7576;
+  --outline: #8f6f6c;
   --outline-variant: #cfc4c5;
 
   /* Error */
@@ -51,33 +56,38 @@
 .dark {
   --surface: #121212;
   --surface-dim: #0a0a0a;
-  --surface-bright: #1a1b22;
+  --surface-bright: #1a1c1e;
   --surface-container-lowest: #000000;
   --surface-container-low: #111111;
-  --surface-container: #1c1c1c;
-  --surface-container-high: #2a2a2a;
-  --surface-container-highest: #333333;
-  --surface-variant: #2d2d2d;
+  --surface-container: #1c1d1f;
+  --surface-container-high: #2a2c2e;
+  --surface-container-highest: #333537;
+  --surface-variant: #2d2f31;
 
   /* Content Colors */
-  --on-surface: #ffffff;
-  --on-surface-variant: #a0a0a0;
-  --on-background: #ffffff;
+  --on-surface: #e1e3e4;
+  --on-surface-variant: #c0c7cf;
+  --on-background: #e1e3e4;
   --background: #121212;
 
-  /* Primary */
-  --primary: #ffffff;
-  --primary-container: #e2e2e2;
-  --on-primary: #000000;
-  --primary-fixed: #1b1b1b;
-  --primary-fixed-dim: #333333;
+  /* Primary (Naranja Brand para Modo Oscuro) */
+  --primary: #FFBCA6;
+  --primary-container: #A82F0B;
+  --on-primary: #411200;
+  --on-primary-container: #FFDBCE;
+  --primary-fixed: #D04018;
+  --primary-fixed-dim: #F05023;
+
+  --primary-gradient: linear-gradient(135deg, #FFBCA6 0%, #F05023 100%);
 
   /* Secondary */
-  --secondary: #a0a0a0;
-  --on-secondary: #000000;
+  --secondary: #c6c6c9;
+  --secondary-container: #454749;
+  --on-secondary: #2e3132;
+  --on-secondary-container: #e2e2e5;
 
   /* Outline */
-  --outline: #7e7576;
+  --outline: #8f6f6c;
   --outline-variant: #444444;
 
   /* Error */

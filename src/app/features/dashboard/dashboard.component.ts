@@ -207,34 +207,36 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
     .time-filter {
       display: flex;
       align-items: center;
-      gap: 2px;
+      gap: 4px;
       background: var(--surface-container-low);
-      padding: 3px;
+      padding: 4px;
       border-radius: 9999px;
       border: 1px solid var(--outline-variant);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
     }
 
     .time-btn {
-      padding: 6px 24px;
+      padding: 6px 20px;
       border: none;
       background: transparent;
       font-family: 'Geist', sans-serif;
       font-size: 14px;
-      font-weight: 500;
+      font-weight: 600;
       color: var(--on-surface-variant);
       border-radius: 9999px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .time-btn.active {
-      background: var(--primary);
+      background: var(--primary-gradient);
       color: var(--on-primary);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(240, 80, 35, 0.3);
     }
 
     .time-btn:hover:not(.active) {
       color: var(--on-surface);
+      background: var(--surface-variant);
     }
 
     /* KPI Grid */
@@ -245,7 +247,26 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
       margin-bottom: 32px;
     }
 
-    .kpi-card { padding: 32px; }
+    .kpi-card { 
+      padding: 32px; 
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: var(--primary-gradient);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .group:hover.kpi-card::before {
+      opacity: 1;
+    }
+
     .kpi-card.skeleton-pulse {
       height: 180px;
       animation: pulse 1.5s infinite;
@@ -263,12 +284,15 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
     }
 
     .kpi-icon {
-      transition: all 0.2s;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
     .group:hover .kpi-icon {
-      background: var(--primary);
+      background: var(--primary-gradient);
       color: var(--on-primary);
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 0 8px 16px rgba(240, 80, 35, 0.25);
     }
 
     .kpi-badge {
@@ -309,16 +333,31 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
     }
 
     .kpi-bar {
-      height: 2px;
+      height: 4px;
       background: var(--surface-container-highest);
       border-radius: 9999px;
+      overflow: hidden;
     }
 
     .kpi-bar-fill {
       height: 100%;
-      background: var(--primary);
+      background: var(--primary-gradient);
       border-radius: 9999px;
-      transition: width 1s ease;
+      transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+    
+    .kpi-bar-fill::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      animation: shimmer 2s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
 
     /* Insights Grid */
@@ -406,13 +445,35 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
       padding: 32px;
       display: flex;
       flex-direction: column;
+      background: var(--surface-container-lowest);
+      border-radius: 1rem;
+      position: relative;
+      box-shadow: 0 8px 32px rgba(240, 80, 35, 0.08);
+      border: 1px solid var(--outline-variant);
+    }
+    
+    .ai-card::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: -1px; right: -1px; bottom: -1px;
+      background: var(--primary-gradient);
+      z-index: -1;
+      border-radius: 1.1rem;
+      opacity: 0.5;
+      filter: blur(8px);
     }
 
     .ai-header {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
       margin-bottom: 24px;
+    }
+    
+    .ai-header .material-symbols-outlined {
+      color: var(--primary);
+      font-size: 28px;
+      filter: drop-shadow(0 2px 8px rgba(240, 80, 35, 0.4));
     }
 
     .ai-ring-container {
@@ -425,6 +486,7 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
     .ai-ring {
       width: 160px;
       height: 160px;
+      filter: drop-shadow(0 4px 12px rgba(240, 80, 35, 0.3));
     }
 
     .ai-ring-label {
@@ -438,66 +500,79 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
 
     .ai-ring-value {
       font-family: 'Geist', sans-serif;
-      font-size: 32px;
-      font-weight: 600;
+      font-size: 38px;
+      font-weight: 700;
       color: var(--primary);
+      text-shadow: 0 2px 10px rgba(240, 80, 35, 0.2);
     }
 
     .ai-ring-percent {
-      font-size: 14px;
-      opacity: 0.5;
+      font-size: 16px;
+      opacity: 0.7;
     }
 
     .ai-ring-text {
       font-family: 'Geist', sans-serif;
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--on-surface-variant);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary-fixed-dim);
       text-transform: uppercase;
-      letter-spacing: 0.2em;
-      margin-top: 2px;
+      letter-spacing: 0.25em;
+      margin-top: 4px;
     }
 
     .ai-metrics {
-      margin-top: 20px;
+      margin-top: 24px;
+      background: var(--surface-container-low);
+      border-radius: 12px;
+      padding: 8px 16px;
+      border: 1px solid var(--surface-container);
     }
 
     .ai-metric-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(207, 196, 197, 0.3);
+      padding: 12px 0;
+      border-bottom: 1px dashed rgba(207, 196, 197, 0.4);
       font-family: 'Manrope', sans-serif;
       font-size: 14px;
       color: var(--on-surface-variant);
     }
+    
+    .ai-metric-row:last-child {
+      border-bottom: none;
+    }
 
     .ai-metric-val {
       font-family: 'Geist', sans-serif;
-      font-weight: 500;
+      font-weight: 700;
       color: var(--on-surface);
+      background: var(--surface-container-highest);
+      padding: 2px 8px;
+      border-radius: 6px;
     }
 
     .ai-config-btn {
       margin-top: 24px;
       width: 100%;
-      padding: 14px;
-      border: 1px solid var(--outline-variant);
-      border-radius: 9999px;
-      background: transparent;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      background: var(--surface-container-high);
       font-family: 'Geist', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
+      font-size: 15px;
+      font-weight: 600;
       color: var(--on-surface);
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .ai-config-btn:hover {
-      background: var(--primary);
+      background: var(--primary-gradient);
       color: var(--on-primary);
-      border-color: var(--primary);
+      box-shadow: 0 8px 24px rgba(240, 80, 35, 0.25);
+      transform: translateY(-2px);
     }
 
     .ai-config-btn:active {

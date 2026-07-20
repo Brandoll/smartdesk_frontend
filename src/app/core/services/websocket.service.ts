@@ -17,10 +17,17 @@ export class WebsocketService {
   private notificationSubject = new Subject<WebSocketMessage>();
   private chatSubject = new Subject<any>();
 
-  // Use the same domain as apiUrl but replace http with ws
   private getWsUrl(endpoint: string): string {
-    const baseUrl = environment.apiUrl.replace(/^http(s)?:\/\//, 'ws$1://').replace(/\/api$/, '');
-    return `${baseUrl}${endpoint}`;
+    try {
+      const url = new URL(environment.apiUrl);
+      const protocol = url.protocol === 'https:' ? 'wss:' : 'ws:';
+      // url.pathname is usually /api/v1
+      const path = url.pathname.endsWith('/') ? url.pathname.slice(0, -1) : url.pathname;
+      return `${protocol}//${url.host}${path}${endpoint}`;
+    } catch (e) {
+      const baseUrl = environment.apiUrl.replace(/^http(s)?:\/\//, 'ws$1://');
+      return `${baseUrl}${endpoint}`;
+    }
   }
 
   public connectNotifications(userId: string, tenantId: string, role: string) {

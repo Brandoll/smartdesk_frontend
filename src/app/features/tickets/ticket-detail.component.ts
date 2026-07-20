@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, ElementRef, ViewChild, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,6 +7,9 @@ import { AreaService } from '../../core/services/area.service';
 import { UserService } from '../../core/services/user.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { AppStateService } from '../../core/state/app-state.service';
+import { WebsocketService } from '../../core/services/websocket.service';
+import { AudioNotificationService } from '../../core/services/audio-notification.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-ticket-detail',
@@ -599,7 +602,7 @@ import { AppStateService } from '../../core/state/app-state.service';
     }
   `]
 })
-export class TicketDetailComponent implements OnInit {
+export class TicketDetailComponent implements OnInit, OnDestroy {
   @ViewChild('chatContainer') chatContainer!: ElementRef;
 
   private route = inject(ActivatedRoute);
@@ -609,6 +612,8 @@ export class TicketDetailComponent implements OnInit {
   private userService = inject(UserService);
   private notification = inject(NotificationService);
   private appState = inject(AppStateService);
+  private ws = inject(WebsocketService);
+  private audioService = inject(AudioNotificationService);
 
   ticket = signal<any>(null);
   loading = signal(true);
@@ -667,6 +672,7 @@ export class TicketDetailComponent implements OnInit {
         this.loadMessages(id);
         this.loadHistory(id);
         this.loading.set(false);
+        this.setupRealTimeChat(id);
       },
       error: () => {
         this.notification.error('Ticket no encontrado');
@@ -674,6 +680,39 @@ export class TicketDetailComponent implements OnInit {
         this.goBack();
       }
     });
+  }
+
+  private chatSub?: Subscription;
+
+  setupRealTimeChat(ticketId: string) {
+    const tenantId = this.appState.currentTenant()?.id || '';
+    this.ws.connectChat(ticketId, tenantId);
+    
+    this.chatSub = this.ws.getChatMessages().subscribe((m: any) => {
+      const currentUserId = this.appState.currentUser()?.id;
+      // Prevent duplicating optimistic updates
+      if (m.userId === currentUserId) return;
+
+      const newMsg = {
+        id: m.id,
+        type: m.isInternal ? 'internal' : 'normal',
+        isMe: false,
+        userName: m.senderName || 'Usuario',
+        text: m.message,
+        time: m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+
+      this.messages.update(msgs => [...msgs, newMsg]);
+      this.audioService.play();
+      this.scrollChat();
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.chatSub) {
+      this.chatSub.unsubscribe();
+    }
+    this.ws.disconnectChat();
   }
 
   loadMessages(id: string) {

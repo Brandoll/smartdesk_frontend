@@ -1,7 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { TopbarComponent } from './topbar/topbar.component';
+import { WebsocketService } from '../core/services/websocket.service';
+import { AudioNotificationService } from '../core/services/audio-notification.service';
+import { NotificationService } from '../core/services/notification.service';
+import { AppStateService } from '../core/state/app-state.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-layout',
@@ -57,4 +62,32 @@ import { TopbarComponent } from './topbar/topbar.component';
     }
   `]
 })
-export class LayoutComponent {}
+export class LayoutComponent implements OnInit, OnDestroy {
+  private ws = inject(WebsocketService);
+  private audioService = inject(AudioNotificationService);
+  private notification = inject(NotificationService);
+  private appState = inject(AppStateService);
+  private notifSub?: Subscription;
+
+  ngOnInit() {
+    const user = this.appState.currentUser();
+    const tenant = this.appState.currentTenant();
+    
+    if (user && tenant) {
+      this.ws.connectNotifications(user.id, tenant.id, user.role);
+      
+      this.notifSub = this.ws.getNotifications().subscribe(msg => {
+        // Play sound and show toast
+        this.audioService.play();
+        this.notification.info(msg['message'] || 'Nueva notificación', 5000);
+      });
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.notifSub) {
+      this.notifSub.unsubscribe();
+    }
+    this.ws.disconnectNotifications();
+  }
+}

@@ -10,8 +10,8 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
     <!-- Page Header -->
     <header class="page-header">
       <div>
-        <h2 class="text-headline-lg" style="letter-spacing:-0.01em">Panel Ejecutivo</h2>
-        <p class="text-body-md" style="color:var(--on-surface-variant); opacity:0.7; margin-top:4px">
+        <h2 class="text-headline-lg">Panel Ejecutivo</h2>
+        <p class="text-body-md" style="color:var(--on-surface-variant); opacity:0.8; margin-top:4px">
           Operaciones en tiempo real y métricas de rendimiento de IA.
         </p>
       </div>
@@ -45,7 +45,7 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
         <!-- In Progress -->
         <div class="premium-card kpi-card group">
           <div class="kpi-top">
-            <div class="icon-box kpi-icon"><span class="material-symbols-outlined">sync</span></div>
+            <div class="icon-box kpi-icon" style="color: var(--secondary)"><span class="material-symbols-outlined">sync</span></div>
             <span class="kpi-badge kpi-badge-stable">Estable</span>
           </div>
           <p class="kpi-label">En Progreso</p>
@@ -56,18 +56,18 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
         <!-- Resolved -->
         <div class="premium-card kpi-card group">
           <div class="kpi-top">
-            <div class="icon-box kpi-icon"><span class="material-symbols-outlined">check_circle</span></div>
-            <span class="kpi-badge kpi-badge-up" style="color:var(--on-surface)">+8%</span>
+            <div class="icon-box kpi-icon" style="color: var(--on-surface)"><span class="material-symbols-outlined">check_circle</span></div>
+            <span class="kpi-badge kpi-badge-up" style="color:var(--on-surface); border-color:var(--outline-variant); background:var(--surface-container)">+8%</span>
           </div>
           <p class="kpi-label">Resueltos</p>
           <h3 class="kpi-value">{{ metrics()?.resolvedTickets || 0 }}</h3>
-          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:92%"></div></div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" style="width:92%; background:var(--on-surface)"></div></div>
         </div>
 
         <!-- Users -->
         <div class="premium-card kpi-card group">
           <div class="kpi-top">
-            <div class="icon-box kpi-icon"><span class="material-symbols-outlined">group</span></div>
+            <div class="icon-box kpi-icon" style="color: var(--outline)"><span class="material-symbols-outlined">group</span></div>
             <span class="kpi-badge kpi-badge-stable">Total</span>
           </div>
           <p class="kpi-label">Colaboradores</p>
@@ -83,8 +83,8 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
       <div class="premium-card chart-card">
         <div class="chart-header">
           <div>
-            <h4 class="text-headline-md" style="letter-spacing:-0.01em">Dinámica de Volumen</h4>
-            <p class="text-body-md" style="color:var(--on-surface-variant); opacity:0.6; margin-top:2px">
+            <h4 class="text-headline-md">Dinámica de Volumen</h4>
+            <p class="text-body-md" style="color:var(--on-surface-variant); opacity:0.8; margin-top:2px">
               Comparativa de creación vs resolución
             </p>
           </div>
@@ -94,7 +94,7 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
               <span>Ingreso</span>
             </div>
             <div class="legend-item">
-              <span class="legend-dot" style="background:var(--outline)"></span>
+              <span class="legend-dot" style="background:var(--outline-variant)"></span>
               <span>Cierre</span>
             </div>
           </div>
@@ -114,15 +114,15 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
       </div>
 
       <!-- AI Diagnostics -->
-      <div class="ai-glow-border ai-card">
+      <div class="premium-card ai-card">
         <div class="ai-header">
-          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">auto_awesome</span>
-          <h4 class="text-headline-md" style="letter-spacing:-0.01em">IA Diagnósticos</h4>
+          <span class="material-symbols-outlined ai-header-icon">auto_awesome</span>
+          <h4 class="text-headline-md">IA Diagnósticos</h4>
         </div>
         <div class="ai-ring-container">
           <svg class="ai-ring" viewBox="0 0 160 160">
-            <circle cx="80" cy="80" r="74" fill="transparent" stroke="var(--surface-container-low)" stroke-width="3"></circle>
-            <circle cx="80" cy="80" r="74" fill="transparent" stroke="var(--primary)" stroke-width="3"
+            <circle cx="80" cy="80" r="74" fill="transparent" stroke="var(--surface-container)" stroke-width="6"></circle>
+            <circle cx="80" cy="80" r="74" fill="transparent" stroke="var(--primary)" stroke-width="6"
               stroke-dasharray="465" stroke-dashoffset="18" stroke-linecap="round"
               style="transform:rotate(-90deg); transform-origin:center; transition:stroke-dashoffset 1s ease"></circle>
           </svg>
@@ -147,7 +147,7 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
 
       <!-- Categorical Density -->
       <div class="premium-card density-card">
-        <h4 class="text-headline-md" style="letter-spacing:-0.01em; margin-bottom:24px">Densidad por Categoría</h4>
+        <h4 class="text-headline-md" style="margin-bottom:24px">Densidad por Categoría</h4>
         <div class="density-list">
           @for (cat of categories; track cat.name) {
             <div class="density-item">
@@ -162,7 +162,7 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
           }
         </div>
         <div class="density-insight">
-          <span class="material-symbols-outlined" style="color:var(--primary); margin-top:2px">info</span>
+          <span class="material-symbols-outlined insight-icon">lightbulb</span>
           <p class="text-body-md">Tickets de infraestructura dominan el volumen. IA sugiere redistribución de carga.</p>
         </div>
       </div>
@@ -171,24 +171,24 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
       <div class="premium-card area-summary-card">
         <div class="area-summary-header">
           <div>
-            <h4 class="text-headline-md" style="letter-spacing:-0.01em">Resumen por Áreas</h4>
-            <p class="text-body-md" style="color:var(--on-surface-variant); opacity:0.6; margin-top:2px">
+            <h4 class="text-headline-md">Resumen por Áreas</h4>
+            <p class="text-body-md" style="color:var(--on-surface-variant); opacity:0.8; margin-top:2px">
               Distribución de carga entre departamentos
             </p>
           </div>
         </div>
         <div class="area-regions">
           <div class="area-region">
-            <p class="text-headline-md" style="opacity:0.9">{{ metrics()?.totalAreas || 0 }}</p>
-            <p class="text-label-sm" style="color:var(--on-surface-variant); letter-spacing:0.1em; margin-top:4px">ÁREAS ACTIVAS</p>
+            <p class="text-headline-xl text-primary">{{ metrics()?.totalAreas || 0 }}</p>
+            <p class="text-label-sm area-label">ÁREAS ACTIVAS</p>
           </div>
-          <div class="area-region" style="opacity:0.5">
-            <p class="text-headline-md">{{ metrics()?.totalTickets || 0 }}</p>
-            <p class="text-label-sm" style="color:var(--on-surface-variant); letter-spacing:0.1em; margin-top:4px">TICKETS TOTALES</p>
+          <div class="area-region">
+            <p class="text-headline-xl">{{ metrics()?.totalTickets || 0 }}</p>
+            <p class="text-label-sm area-label">TICKETS TOTALES</p>
           </div>
-          <div class="area-region" style="opacity:0.5">
-            <p class="text-headline-md">{{ metrics()?.highPriority || 0 }}</p>
-            <p class="text-label-sm" style="color:var(--on-surface-variant); letter-spacing:0.1em; margin-top:4px">PRIORIDAD ALTA</p>
+          <div class="area-region">
+            <p class="text-headline-xl text-error">{{ metrics()?.highPriority || 0 }}</p>
+            <p class="text-label-sm area-label">PRIORIDAD ALTA</p>
           </div>
         </div>
       </div>
@@ -208,42 +208,42 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
       display: flex;
       align-items: center;
       gap: 4px;
-      background: var(--surface-container-low);
+      background: var(--surface-container-lowest);
       padding: 4px;
       border-radius: 9999px;
       border: 1px solid var(--outline-variant);
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
     }
 
     .time-btn {
       padding: 6px 20px;
       border: none;
       background: transparent;
-      font-family: 'Geist', sans-serif;
+      font-family: 'Space Grotesk', sans-serif;
       font-size: 14px;
       font-weight: 600;
       color: var(--on-surface-variant);
       border-radius: 9999px;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s;
     }
 
     .time-btn.active {
-      background: var(--primary-gradient);
-      color: var(--on-primary);
-      box-shadow: 0 4px 12px rgba(240, 80, 35, 0.3);
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
 
     .time-btn:hover:not(.active) {
       color: var(--on-surface);
-      background: var(--surface-variant);
+      background: rgba(0,0,0,0.02);
     }
 
     /* KPI Grid */
     .kpi-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
+      gap: 24px;
       margin-bottom: 32px;
     }
 
@@ -251,6 +251,9 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
       padding: 32px; 
       position: relative;
       overflow: hidden;
+      background: var(--surface-container-lowest);
+      border: 1px solid rgba(0,0,0,0.04);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.02);
     }
     
     .kpi-card::before {
@@ -258,9 +261,9 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 4px;
-      background: var(--primary-gradient);
+      background: var(--primary);
       opacity: 0;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.2s ease;
     }
     
     .group:hover.kpi-card::before {
@@ -284,80 +287,65 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
     }
 
     .kpi-icon {
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      background: var(--surface-container-low);
+      color: var(--primary);
+      transition: all 0.3s ease;
     }
 
     .group:hover .kpi-icon {
-      background: var(--primary-gradient);
-      color: var(--on-primary);
+      background: var(--primary-container);
+      color: var(--primary-fixed-dim);
       transform: scale(1.1) rotate(5deg);
-      box-shadow: 0 8px 16px rgba(240, 80, 35, 0.25);
     }
 
     .kpi-badge {
-      font-family: 'Geist', sans-serif;
+      font-family: 'Space Grotesk', sans-serif;
       font-size: 12px;
       font-weight: 600;
-      padding: 2px 10px;
+      padding: 4px 12px;
       border-radius: 9999px;
     }
 
     .kpi-badge-up {
       color: var(--error);
-      background: rgba(186, 26, 26, 0.06);
-      border: 1px solid rgba(186, 26, 26, 0.12);
+      background: var(--error-container);
+      border: 1px solid rgba(186, 26, 26, 0.1);
     }
 
     .kpi-badge-stable {
       color: var(--on-surface-variant);
-      background: var(--surface-container-highest);
+      background: var(--surface-container);
     }
 
     .kpi-label {
-      font-family: 'Geist', sans-serif;
-      font-size: 14px;
+      font-family: 'Hanken Grotesk', sans-serif;
+      font-size: 15px;
       font-weight: 500;
-      letter-spacing: 0.02em;
       color: var(--on-surface-variant);
-      margin-bottom: 4px;
+      margin-bottom: 8px;
     }
 
     .kpi-value {
-      font-family: 'Geist', sans-serif;
+      font-family: 'Space Grotesk', sans-serif;
       font-size: 48px;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-      font-weight: 600;
-      margin-bottom: 20px;
+      line-height: 1;
+      font-weight: 700;
+      color: var(--on-surface);
+      margin-bottom: 24px;
     }
 
     .kpi-bar {
-      height: 4px;
-      background: var(--surface-container-highest);
+      height: 6px;
+      background: var(--surface-container);
       border-radius: 9999px;
       overflow: hidden;
     }
 
     .kpi-bar-fill {
       height: 100%;
-      background: var(--primary-gradient);
+      background: var(--primary);
       border-radius: 9999px;
-      transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-    }
-    
-    .kpi-bar-fill::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-      animation: shimmer 2s infinite;
-    }
-    
-    @keyframes shimmer {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
+      transition: width 1s ease;
     }
 
     /* Insights Grid */
@@ -368,46 +356,46 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
     }
 
     /* Chart Card */
-    .chart-card { padding: 32px; display: flex; flex-direction: column; }
+    .chart-card { padding: 40px; display: flex; flex-direction: column; }
 
     .chart-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 32px;
+      margin-bottom: 40px;
     }
 
     .chart-legend {
       display: flex;
-      gap: 20px;
+      gap: 24px;
     }
 
     .legend-item {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-family: 'Geist', sans-serif;
+      gap: 8px;
+      font-family: 'Hanken Grotesk', sans-serif;
       font-size: 14px;
       font-weight: 500;
-      opacity: 0.7;
+      color: var(--on-surface-variant);
     }
 
     .legend-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 9999px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
     }
 
     .chart-bars {
       flex: 1;
-      min-height: 280px;
+      min-height: 300px;
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
-      gap: 16px;
+      gap: 20px;
       padding-top: 20px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid rgba(207, 196, 197, 0.2);
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--outline-variant);
     }
 
     .bar-group {
@@ -419,61 +407,47 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
 
     .bar {
       width: 100%;
-      background: rgba(0, 0, 0, 0.06);
+      background: var(--surface-container-high);
       border-radius: 8px 8px 0 0;
-      transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+      transition: all 0.5s ease;
       cursor: pointer;
     }
 
     .bar:hover {
-      background: rgba(0, 0, 0, 0.12);
+      background: var(--primary);
+      opacity: 0.8;
     }
 
     .chart-labels {
       display: flex;
       justify-content: space-between;
-      margin-top: 12px;
-      font-family: 'Geist', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
+      margin-top: 16px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
       color: var(--on-surface-variant);
-      opacity: 0.4;
     }
 
     /* AI Card */
     .ai-card {
-      padding: 32px;
+      padding: 40px;
       display: flex;
       flex-direction: column;
-      background: var(--surface-container-lowest);
-      border-radius: 1rem;
-      position: relative;
-      box-shadow: 0 8px 32px rgba(240, 80, 35, 0.08);
-      border: 1px solid var(--outline-variant);
-    }
-    
-    .ai-card::before {
-      content: '';
-      position: absolute;
-      top: -1px; left: -1px; right: -1px; bottom: -1px;
-      background: var(--primary-gradient);
-      z-index: -1;
-      border-radius: 1.1rem;
-      opacity: 0.5;
-      filter: blur(8px);
+      border: 1px solid rgba(240, 80, 35, 0.15);
+      background: linear-gradient(180deg, var(--surface-container-lowest) 0%, rgba(255, 219, 206, 0.2) 100%);
     }
 
     .ai-header {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 24px;
+      margin-bottom: 32px;
     }
     
-    .ai-header .material-symbols-outlined {
+    .ai-header-icon {
       color: var(--primary);
       font-size: 28px;
-      filter: drop-shadow(0 2px 8px rgba(240, 80, 35, 0.4));
+      font-variation-settings: 'FILL' 1;
     }
 
     .ai-ring-container {
@@ -484,9 +458,8 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
     }
 
     .ai-ring {
-      width: 160px;
-      height: 160px;
-      filter: drop-shadow(0 4px 12px rgba(240, 80, 35, 0.3));
+      width: 180px;
+      height: 180px;
     }
 
     .ai-ring-label {
@@ -499,80 +472,71 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
     }
 
     .ai-ring-value {
-      font-family: 'Geist', sans-serif;
-      font-size: 38px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 48px;
       font-weight: 700;
-      color: var(--primary);
-      text-shadow: 0 2px 10px rgba(240, 80, 35, 0.2);
+      color: var(--on-surface);
+      line-height: 1;
     }
 
     .ai-ring-percent {
-      font-size: 16px;
-      opacity: 0.7;
+      font-size: 20px;
+      color: var(--primary);
     }
 
     .ai-ring-text {
-      font-family: 'Geist', sans-serif;
-      font-size: 11px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px;
       font-weight: 700;
-      color: var(--primary-fixed-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.25em;
-      margin-top: 4px;
+      color: var(--on-surface-variant);
+      letter-spacing: 0.15em;
+      margin-top: 8px;
     }
 
     .ai-metrics {
-      margin-top: 24px;
-      background: var(--surface-container-low);
-      border-radius: 12px;
-      padding: 8px 16px;
-      border: 1px solid var(--surface-container);
+      margin-top: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
     .ai-metric-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px dashed rgba(207, 196, 197, 0.4);
-      font-family: 'Manrope', sans-serif;
-      font-size: 14px;
+      font-family: 'Hanken Grotesk', sans-serif;
+      font-size: 15px;
       color: var(--on-surface-variant);
-    }
-    
-    .ai-metric-row:last-child {
-      border-bottom: none;
     }
 
     .ai-metric-val {
-      font-family: 'Geist', sans-serif;
-      font-weight: 700;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
       color: var(--on-surface);
-      background: var(--surface-container-highest);
-      padding: 2px 8px;
-      border-radius: 6px;
+      background: var(--surface-container-lowest);
+      border: 1px solid var(--outline-variant);
+      padding: 4px 10px;
+      border-radius: 8px;
     }
 
     .ai-config-btn {
-      margin-top: 24px;
+      margin-top: 32px;
       width: 100%;
       padding: 16px;
-      border: none;
+      border: 1px solid var(--primary);
       border-radius: 12px;
-      background: var(--surface-container-high);
-      font-family: 'Geist', sans-serif;
+      background: transparent;
+      font-family: 'Space Grotesk', sans-serif;
       font-size: 15px;
       font-weight: 600;
-      color: var(--on-surface);
+      color: var(--primary);
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s;
     }
 
     .ai-config-btn:hover {
-      background: var(--primary-gradient);
+      background: var(--primary);
       color: var(--on-primary);
-      box-shadow: 0 8px 24px rgba(240, 80, 35, 0.25);
-      transform: translateY(-2px);
     }
 
     .ai-config-btn:active {
@@ -580,24 +544,24 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
     }
 
     /* Density Card */
-    .density-card { padding: 32px; }
+    .density-card { padding: 40px; }
 
     .density-list {
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      margin-bottom: 24px;
+      gap: 24px;
+      margin-bottom: 32px;
     }
 
     .density-item-header {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 6px;
+      margin-bottom: 10px;
     }
 
     .density-bar {
-      height: 4px;
-      background: var(--surface-container-low);
+      height: 6px;
+      background: var(--surface-container);
       border-radius: 9999px;
       overflow: hidden;
     }
@@ -611,38 +575,50 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
     .density-insight {
       display: flex;
       align-items: flex-start;
-      gap: 8px;
-      padding: 16px;
-      background: var(--surface-container-low);
+      gap: 12px;
+      padding: 20px;
+      background: rgba(240, 80, 35, 0.05);
       border-radius: 12px;
-      border: 1px solid rgba(207, 196, 197, 0.3);
+      border: 1px dashed rgba(240, 80, 35, 0.2);
+    }
+    
+    .insight-icon {
+      color: var(--primary);
     }
 
     .density-insight p {
-      color: var(--on-surface);
-      font-size: 14px;
+      color: var(--on-surface-variant);
+      font-family: 'Hanken Grotesk', sans-serif;
+      font-size: 15px;
       line-height: 1.5;
     }
 
     /* Area Summary */
-    .area-summary-card { padding: 32px; }
+    .area-summary-card { padding: 40px; }
 
     .area-summary-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 32px;
+      margin-bottom: 40px;
     }
 
     .area-regions {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 48px;
-      padding: 40px 0;
+      justify-content: space-around;
+      padding: 20px 0;
     }
 
     .area-region { text-align: center; }
+
+    .text-primary { color: var(--primary); }
+    .text-error { color: var(--error); }
+    
+    .area-label {
+      color: var(--on-surface-variant);
+      letter-spacing: 0.1em;
+      margin-top: 8px;
+    }
 
     @media (max-width: 1200px) {
       .kpi-grid { grid-template-columns: repeat(2, 1fr); }
@@ -652,6 +628,7 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
     @media (max-width: 768px) {
       .kpi-grid { grid-template-columns: 1fr; }
       .page-header { flex-direction: column; gap: 16px; align-items: flex-start; }
+      .area-regions { flex-direction: column; gap: 32px; }
     }
   `]
 })

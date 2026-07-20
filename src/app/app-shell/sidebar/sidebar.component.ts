@@ -86,7 +86,7 @@ import { AuthService } from '../../core/services/auth.service';
       width: 260px;
       flex-shrink: 0;
       height: 100vh;
-      background: var(--surface);
+      background: var(--surface-container-lowest);
       border-right: 1px solid var(--outline-variant);
       display: flex;
       flex-direction: column;
@@ -110,9 +110,9 @@ import { AuthService } from '../../core/services/auth.service';
     }
 
     .sidebar-title {
-      font-family: 'Geist', sans-serif;
-      font-size: 20px;
-      font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
       letter-spacing: -0.02em;
       color: var(--primary);
       line-height: 1.1;
@@ -127,18 +127,19 @@ import { AuthService } from '../../core/services/auth.service';
       color: var(--on-primary);
       border: none;
       padding: 14px 20px;
-      border-radius: 9999px;
-      font-family: 'Geist', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
+      border-radius: 12px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
       cursor: pointer;
       margin-bottom: 24px;
       transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(240, 80, 35, 0.2);
     }
 
     .new-ticket-btn:hover {
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(240, 80, 35, 0.3);
+      transform: translateY(-2px);
     }
 
     .new-ticket-btn:active {
@@ -158,7 +159,7 @@ import { AuthService } from '../../core/services/auth.service';
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 6px;
       overflow-y: auto;
       padding-right: 4px;
     }
@@ -167,12 +168,11 @@ import { AuthService } from '../../core/services/auth.service';
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 8px 12px;
-      border-radius: 9999px;
-      font-family: 'Geist', sans-serif;
-      font-size: 14px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-family: 'Hanken Grotesk', sans-serif;
+      font-size: 15px;
       font-weight: 500;
-      letter-spacing: 0.02em;
       color: var(--on-surface-variant);
       text-decoration: none;
       transition: all 0.2s;
@@ -181,16 +181,27 @@ import { AuthService } from '../../core/services/auth.service';
 
     .nav-link:hover {
       background: var(--surface-container-low);
+      color: var(--on-surface);
     }
 
     .nav-link.nav-item-active {
-      background: var(--primary-container);
-      color: var(--on-primary);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      background: rgba(240, 80, 35, 0.08);
+      color: var(--primary);
+      font-weight: 600;
     }
 
     .nav-link.nav-item-active .icon-box {
-      background: rgba(255, 255, 255, 0.12);
+      background: var(--primary);
+      color: white;
+    }
+
+    .icon-box {
+      background: transparent;
+      color: var(--on-surface-variant);
+    }
+
+    .nav-link:hover .icon-box {
+      color: var(--on-surface);
     }
 
     .sidebar-footer {
@@ -206,10 +217,10 @@ import { AuthService } from '../../core/services/auth.service';
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 8px 12px;
-      border-radius: 9999px;
-      font-family: 'Geist', sans-serif;
-      font-size: 14px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-family: 'Hanken Grotesk', sans-serif;
+      font-size: 15px;
       font-weight: 500;
       color: var(--on-surface-variant);
       text-decoration: none;
@@ -223,44 +234,51 @@ import { AuthService } from '../../core/services/auth.service';
 
     .nav-link-footer:hover {
       background: var(--surface-container-low);
+      color: var(--on-surface);
     }
 
     .nav-link-footer.text-error:hover {
-      background: rgba(239, 68, 68, 0.1);
+      background: rgba(186, 26, 26, 0.08);
       color: var(--error);
     }
 
     .sidebar-user {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 12px 8px;
+      gap: 12px;
+      padding: 12px 10px;
       margin-top: 12px;
+      background: var(--surface-container-low);
+      border-radius: 12px;
+      transition: background 0.2s;
+    }
+    
+    .sidebar-user:hover {
+      background: var(--surface-container);
     }
 
     .sidebar-user-avatar {
       width: 36px;
       height: 36px;
-      border-radius: 9999px;
-      background: var(--primary-container);
+      border-radius: 50%;
+      background: var(--primary-fixed);
       color: var(--on-primary-container);
-      border: 1px solid var(--outline-variant);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Geist', sans-serif;
-      font-weight: 600;
-      font-size: 13px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
       flex-shrink: 0;
     }
 
     .sidebar-user-info {
-      min-width: 0; /* allows text truncation */
+      min-width: 0;
     }
 
     .sidebar-user-name {
-      font-family: 'Geist', sans-serif;
-      font-size: 13px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
       font-weight: 600;
       color: var(--on-surface);
       white-space: nowrap;
@@ -269,13 +287,14 @@ import { AuthService } from '../../core/services/auth.service';
     }
 
     .sidebar-user-role {
-      font-family: 'Geist', sans-serif;
-      font-size: 11px;
+      font-family: 'Hanken Grotesk', sans-serif;
+      font-size: 12px;
       font-weight: 500;
       color: var(--on-surface-variant);
-      opacity: 0.5;
+      opacity: 0.8;
       text-transform: uppercase;
       letter-spacing: 0.05em;
+      margin-top: 2px;
     }
   `]
 })

@@ -10,7 +10,7 @@
 }
 
 :root {
-  /* LIGHT THEME (Default) */
+  /* LIGHT THEME (Match Tailwind Config from marketing site) */
   --surface: #f8f9fa;
   --surface-dim: #d9dadb;
   --surface-bright: #ffffff;
@@ -27,13 +27,13 @@
   --on-background: #191c1d;
   --background: #f8f9fa;
 
-  /* Primary (Naranja Brand) */
+  /* Primary */
   --primary: #F05023;
-  --primary-container: #FFDBCE;
+  --primary-container: #D04018;
   --on-primary: #ffffff;
-  --on-primary-container: #411200;
-  --primary-fixed: #FFBCA6;
-  --primary-fixed-dim: #D04018;
+  --on-primary-container: #FFE0D6;
+  --primary-fixed: #FFDBCE;
+  --primary-fixed-dim: #FFBCA6;
   
   --primary-gradient: linear-gradient(135deg, #F05023 0%, #FF9A55 100%);
 
@@ -53,7 +53,7 @@
 }
 
 html {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Hanken Grotesk', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
@@ -157,11 +157,11 @@ body {
 
 /* ====== Typography Helpers ====== */
 .font-geist {
-  font-family: 'Geist', sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
 }
 
 .text-headline-xl {
-  font-family: 'Geist', sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 48px;
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -169,7 +169,7 @@ body {
 }
 
 .text-headline-lg {
-  font-family: 'Geist', sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 32px;
   line-height: 1.2;
   letter-spacing: -0.01em;
@@ -177,37 +177,37 @@ body {
 }
 
 .text-headline-md {
-  font-family: 'Geist', sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 24px;
   line-height: 1.3;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .text-label-md {
-  font-family: 'Geist', sans-serif;
-  font-size: 14px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
   line-height: 1.2;
-  letter-spacing: 0.02em;
-  font-weight: 500;
+  letter-spacing: 0.01em;
+  font-weight: 600;
 }
 
 .text-label-sm {
-  font-family: 'Geist', sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 12px;
   line-height: 1.2;
   font-weight: 600;
 }
 
 .text-body-lg {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Hanken Grotesk', sans-serif;
   font-size: 18px;
   line-height: 1.6;
   font-weight: 400;
 }
 
 .text-body-md {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Hanken Grotesk', sans-serif;
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.5;
   font-weight: 400;
 }

@@ -124,7 +124,7 @@ import { AuthService } from '../../core/services/auth.service';
       background: var(--surface-container-lowest);
       border: 1px solid var(--outline-variant);
       border-radius: 9999px;
-      font-family: 'Manrope', sans-serif;
+      font-family: 'Hanken Grotesk', sans-serif;
       font-size: 14px;
       color: var(--on-surface);
       outline: none;
@@ -154,7 +154,7 @@ import { AuthService } from '../../core/services/auth.service';
       background: var(--surface-container);
       border: 1px solid var(--outline-variant);
       border-radius: 4px;
-      font-family: 'Geist', sans-serif;
+      font-family: 'Space Grotesk', sans-serif;
       font-size: 11px;
       color: var(--on-surface-variant);
       opacity: 0.6;
@@ -218,20 +218,20 @@ import { AuthService } from '../../core/services/auth.service';
     }
 
     .topbar-user-name {
-      font-family: 'Geist', sans-serif;
+      font-family: 'Space Grotesk', sans-serif;
       font-size: 14px;
-      font-weight: 500;
+      font-weight: 600;
       letter-spacing: 0.02em;
       color: var(--on-surface);
       transition: color 0.2s;
     }
 
     .topbar-user-role {
-      font-family: 'Geist', sans-serif;
-      font-size: 10px;
-      font-weight: 600;
+      font-family: 'Hanken Grotesk', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
       color: var(--on-surface-variant);
-      opacity: 0.4;
+      opacity: 0.7;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
@@ -241,14 +241,14 @@ import { AuthService } from '../../core/services/auth.service';
       height: 40px;
       border-radius: 9999px;
       overflow: hidden;
-      background: var(--primary-container);
+      background: var(--primary-fixed);
       color: var(--on-primary-container);
       border: 1px solid var(--outline-variant);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Geist', sans-serif;
-      font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
       font-size: 14px;
       transition: border-color 0.2s;
     }
@@ -277,17 +277,17 @@ import { AuthService } from '../../core/services/auth.service';
     }
 
     .dropdown-name {
-      font-family: 'Geist', sans-serif;
-      font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
       font-size: 14px;
       color: var(--on-surface);
     }
 
     .dropdown-email {
-      font-family: 'Manrope', sans-serif;
+      font-family: 'Hanken Grotesk', sans-serif;
       font-size: 12px;
       color: var(--on-surface-variant);
-      opacity: 0.7;
+      opacity: 0.8;
       margin-top: 2px;
     }
 
@@ -305,8 +305,8 @@ import { AuthService } from '../../core/services/auth.service';
       padding: 10px 20px;
       background: transparent;
       border: none;
-      font-family: 'Geist', sans-serif;
-      font-size: 14px;
+      font-family: 'Hanken Grotesk', sans-serif;
+      font-size: 15px;
       font-weight: 500;
       color: var(--on-surface);
       cursor: pointer;

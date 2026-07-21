@@ -42,11 +42,7 @@ interface SearchResult {
             (keydown.escape)="closeSearch()"
             autocomplete="off"
           />
-          @if (!searchTerm()) {
-            <div class="search-shortcut">
-            <span>⌘</span><span>K</span>
-            </div>
-          } @else {
+          @if (searchTerm()) {
             <button class="search-clear" type="button" (click)="clearSearch()" title="Limpiar búsqueda">
               <span class="material-symbols-outlined">close</span>
             </button>
@@ -129,7 +125,7 @@ interface SearchResult {
               <p class="topbar-user-role">{{ formatRole(appState.currentUser()?.role) }}</p>
             </div>
             <div class="topbar-user-avatar">
-              {{ getInitials(appState.currentUser()?.name) }}
+              <span class="material-symbols-outlined">person</span>
             </div>
           </div>
           
@@ -202,7 +198,7 @@ interface SearchResult {
 
     .search-input {
       width: 100%;
-      padding: 10px 60px 10px 44px;
+      padding: 10px 44px;
       background: var(--surface-container-lowest);
       border: 1px solid var(--outline-variant);
       border-radius: 9999px;
@@ -223,26 +219,6 @@ interface SearchResult {
     }
 
     .search-input:disabled { cursor:not-allowed; opacity:.55; background:var(--surface-container-low); }
-
-    .search-shortcut {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      display: flex;
-      gap: 3px;
-    }
-
-    .search-shortcut span {
-      padding: 2px 6px;
-      background: var(--surface-container);
-      border: 1px solid var(--outline-variant);
-      border-radius: 4px;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 11px;
-      color: var(--on-surface-variant);
-      opacity: 0.6;
-    }
 
     .search-clear {
       position:absolute; right:9px; top:50%; transform:translateY(-50%);
@@ -361,9 +337,9 @@ interface SearchResult {
       height: 40px;
       border-radius: 9999px;
       overflow: hidden;
-      background: var(--primary-fixed);
-      color: var(--on-primary-container);
-      border: 1px solid var(--outline-variant);
+      background: rgba(240, 80, 35, 0.1);
+      color: var(--primary);
+      border: 1px solid rgba(240, 80, 35, 0.2);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -375,7 +351,11 @@ interface SearchResult {
 
     .topbar-user:hover .topbar-user-avatar {
       border-color: var(--primary);
+      background: var(--primary);
+      color: var(--on-primary);
     }
+
+    .topbar-user-avatar .material-symbols-outlined { font-size:22px; font-variation-settings:'FILL' 1; }
 
     /* Dropdown Menu Styles */
     .user-dropdown-menu {

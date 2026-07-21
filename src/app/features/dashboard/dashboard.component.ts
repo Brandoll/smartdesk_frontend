@@ -14,7 +14,7 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
         <p class="page-description">Estado actual de los tickets, equipos y prioridades.</p>
       </div>
       <button class="refresh-button" (click)="loadMetrics()" [disabled]="loading()">
-        <span class="refresh-mark" [class.loading]="loading()"></span>
+        <span class="material-symbols-outlined refresh-icon" [class.loading]="loading()">refresh</span>
         {{ loading() ? 'Actualizando' : 'Actualizar datos' }}
       </button>
     </header>
@@ -136,8 +136,9 @@ import { DashboardService, DashboardMetrics } from '../../core/services/dashboar
     .refresh-button { display:flex; align-items:center; gap:9px; padding:10px 16px; border:1px solid var(--outline-variant); border-radius:10px; background:var(--surface-container-lowest); color:var(--on-surface); font:600 13px 'Hanken Grotesk',sans-serif; cursor:pointer; transition:.2s; }
     .refresh-button:hover { border-color:var(--primary); color:var(--primary); background:rgba(240,80,35,.04); }
     .refresh-button:disabled { opacity:.55; cursor:default; }
-    .refresh-mark { width:8px; height:8px; border:2px solid currentColor; border-radius:50%; border-right-color:transparent; }
-    .refresh-mark.loading { animation:spin .7s linear infinite; } @keyframes spin { to { transform:rotate(360deg); } }
+    .refresh-icon { font-size:18px; transition:transform .2s; }
+    .refresh-button:hover:not(:disabled) .refresh-icon { transform:rotate(35deg); }
+    .refresh-icon.loading { animation:spin .75s linear infinite; } @keyframes spin { to { transform:rotate(360deg); } }
 
     .summary-shell { display:grid; grid-template-columns:repeat(4,1fr); background:var(--surface-container-lowest); border:1px solid var(--outline-variant); border-radius:14px; overflow:hidden; margin-bottom:18px; }
     .summary-item { min-height:150px; padding:24px 26px; border-right:1px solid var(--outline-variant); position:relative; }

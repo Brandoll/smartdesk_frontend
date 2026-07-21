@@ -67,7 +67,7 @@ import { AuthService } from '../../core/services/auth.service';
       <!-- User Profile -->
       <div class="sidebar-user" routerLink="/app/profile" style="cursor:pointer" title="Ver perfil">
         <div class="sidebar-user-avatar">
-          {{ getInitials(appState.currentUser()?.name) }}
+          <span class="material-symbols-outlined">person</span>
         </div>
         <div class="sidebar-user-info">
           <p class="sidebar-user-name" [title]="appState.currentUser()?.name">{{ appState.currentUser()?.name || 'Usuario' }}</p>
@@ -257,8 +257,9 @@ import { AuthService } from '../../core/services/auth.service';
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      background: var(--primary-fixed);
-      color: var(--on-primary-container);
+      background: rgba(240, 80, 35, 0.1);
+      color: var(--primary);
+      border: 1px solid rgba(240, 80, 35, 0.2);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -267,6 +268,9 @@ import { AuthService } from '../../core/services/auth.service';
       font-size: 14px;
       flex-shrink: 0;
     }
+
+    .sidebar-user-avatar .material-symbols-outlined { font-size:20px; font-variation-settings:'FILL' 1; }
+    .sidebar-user:hover .sidebar-user-avatar { background:var(--primary); color:var(--on-primary); border-color:var(--primary); }
 
     .sidebar-user-info {
       min-width: 0;

@@ -5,11 +5,18 @@ import { environment } from '../../../environments/environment';
 
 export interface DashboardMetrics {
   totalTickets: number;
-  openTickets: number;
+  activeTickets: number;
   resolvedTickets: number;
-  highPriority: number;
+  unassignedTickets: number;
+  criticalTickets: number;
+  highPriorityTickets: number;
+  resolutionRate: number;
+  averageResolutionHours: number;
   totalUsers: number;
   totalAreas: number;
+  ticketsByStatus: Record<string, number>;
+  ticketsByPriority: Record<string, number>;
+  areaWorkload: Array<{ name: string; count: number }>;
 }
 
 @Injectable({

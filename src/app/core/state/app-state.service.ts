@@ -26,11 +26,11 @@ export class AppStateService {
   constructor() {
     const savedUser = localStorage.getItem('currentUser');
     if (savedUser) {
-      this._currentUser.set(JSON.parse(savedUser));
+      try { this._currentUser.set(JSON.parse(savedUser)); } catch { localStorage.removeItem('currentUser'); }
     }
     const savedTenant = localStorage.getItem('currentTenant');
     if (savedTenant) {
-      this._currentTenant.set(JSON.parse(savedTenant));
+      try { this._currentTenant.set(JSON.parse(savedTenant)); } catch { localStorage.removeItem('currentTenant'); }
     }
   }
 

@@ -58,10 +58,6 @@ import { AuthService } from '../../core/services/auth.service';
 
       <!-- Footer -->
       <div class="sidebar-footer">
-        <a href="#" class="nav-link-footer">
-          <span class="material-symbols-outlined" style="opacity:0.6">help</span>
-          <span>Soporte</span>
-        </a>
         <button class="nav-link-footer text-error" (click)="logout()">
           <span class="material-symbols-outlined" style="opacity:0.8">logout</span>
           <span>Cerrar Sesión</span>

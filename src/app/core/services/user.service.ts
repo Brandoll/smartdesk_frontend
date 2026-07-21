@@ -48,4 +48,8 @@ export class UserService {
   update(id: string, dto: UserDTO): Observable<UserDTO> {
     return this.http.put<UserDTO>(`${this.apiUrl}/${id}`, dto);
   }
+
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }

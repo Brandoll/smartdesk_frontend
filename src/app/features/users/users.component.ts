@@ -5,6 +5,7 @@ import { UserDTO, UserService } from '../../core/services/user.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ActivatedRoute } from '@angular/router';
 import { AreaDTO, AreaService } from '../../core/services/area.service';
+import { AppStateService } from '../../core/state/app-state.service';
 
 @Component({
   selector: 'app-users',
@@ -258,11 +259,33 @@ import { AreaDTO, AreaService } from '../../core/services/area.service';
             }
           </div>
 
+          @if (confirmingDelete()) {
+            <div class="delete-confirmation">
+              <div>
+                <strong>¿Eliminar este colaborador?</strong>
+                <p>Solo podrá eliminarse si no tiene tickets, mensajes o actividad vinculada.</p>
+              </div>
+              <div>
+                <button type="button" class="cancel-delete" (click)="confirmingDelete.set(false)">Conservar</button>
+                <button type="button" class="confirm-delete" (click)="deleteUser()" [disabled]="deletingUser()">
+                  {{ deletingUser() ? 'Eliminando...' : 'Sí, eliminar' }}
+                </button>
+              </div>
+            </div>
+          }
+
           <div class="modal-actions edit-actions">
-            <button type="button" class="btn-secondary" (click)="closeEditModal()">Cancelar</button>
-            <button type="button" class="btn-primary" (click)="saveUserChanges()" [disabled]="savingUser() || !editForm.name.trim()">
-              {{ savingUser() ? 'Guardando...' : 'Guardar cambios' }}
-            </button>
+            @if (canDeleteEditingUser()) {
+              <button type="button" class="delete-user-button" (click)="confirmingDelete.set(true)" [disabled]="savingUser() || deletingUser()">Eliminar colaborador</button>
+            } @else {
+              <span class="self-account-note">Esta es tu cuenta actual</span>
+            }
+            <div>
+              <button type="button" class="btn-secondary" (click)="closeEditModal()">Cancelar</button>
+              <button type="button" class="btn-primary" (click)="saveUserChanges()" [disabled]="savingUser() || deletingUser() || !editForm.name.trim()">
+                {{ savingUser() ? 'Guardando...' : 'Guardar cambios' }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -412,7 +435,19 @@ import { AreaDTO, AreaService } from '../../core/services/area.service';
     .area-option.selected::before { background:var(--primary); border-color:var(--primary); }
     .area-option.selected .material-symbols-outlined { color:var(--primary); }
     .no-areas { padding:14px; background:var(--surface-container-low); border-radius:9px; color:var(--on-surface-variant); text-align:center; font-size:12px; }
-    .edit-actions { padding:18px 26px; margin:0; border-top:1px solid var(--outline-variant); }
+    .delete-confirmation { display:flex; align-items:center; justify-content:space-between; gap:18px; margin:0 26px 20px; padding:15px; border:1px solid rgba(186,26,26,.2); border-radius:10px; background:rgba(186,26,26,.045); }
+    .delete-confirmation strong { color:var(--error); font-size:13px; }
+    .delete-confirmation p { margin-top:3px; color:var(--on-surface-variant); font-size:11px; }
+    .delete-confirmation > div:last-child { display:flex; flex-shrink:0; gap:7px; }
+    .cancel-delete,.confirm-delete,.delete-user-button { padding:8px 11px; border-radius:8px; font:600 12px 'Hanken Grotesk',sans-serif; cursor:pointer; }
+    .cancel-delete { border:1px solid var(--outline-variant); background:var(--surface-container-lowest); color:var(--on-surface); }
+    .confirm-delete { border:0; background:var(--error); color:white; }
+    .delete-user-button { border:1px solid rgba(186,26,26,.22); background:transparent; color:var(--error); }
+    .delete-user-button:hover { background:rgba(186,26,26,.05); border-color:var(--error); }
+    .self-account-note { align-self:center; color:var(--on-surface-variant); opacity:.65; font-size:11px; }
+    .confirm-delete:disabled,.delete-user-button:disabled { opacity:.5; cursor:not-allowed; }
+    .edit-actions { padding:18px 26px; margin:0; border-top:1px solid var(--outline-variant); justify-content:space-between; }
+    .edit-actions > div { display:flex; gap:10px; }
     .form-group { margin-bottom: 16px; }
     .form-label { display: block; margin-bottom: 6px; color: var(--on-surface-variant); letter-spacing: 0.05em; }
     .form-input {
@@ -454,6 +489,8 @@ import { AreaDTO, AreaService } from '../../core/services/area.service';
     @media (max-width: 640px) {
       .edit-form-grid,.area-options { grid-template-columns:1fr; }
       .full-width { grid-column:auto; }
+      .delete-confirmation,.edit-actions { align-items:stretch; flex-direction:column; }
+      .delete-confirmation > div:last-child,.edit-actions > div { display:grid; grid-template-columns:1fr 1fr; }
     }
   `]
 })
@@ -462,6 +499,7 @@ export class UsersComponent implements OnInit {
   private notification = inject(NotificationService);
   private route = inject(ActivatedRoute);
   private areaService = inject(AreaService);
+  private appState = inject(AppStateService);
 
   users = signal<UserDTO[]>([]);
   areas = signal<AreaDTO[]>([]);
@@ -478,6 +516,8 @@ export class UsersComponent implements OnInit {
   newUser = { name: '', email: '', role: 'COLABORADOR', password: '' };
   editingUser = signal<UserDTO | null>(null);
   savingUser = signal(false);
+  confirmingDelete = signal(false);
+  deletingUser = signal(false);
   editForm = { name: '', email: '', role: 'COLABORADOR', status: 'ACTIVO', areaIds: [] as string[] };
 
   ngOnInit() {
@@ -572,6 +612,7 @@ export class UsersComponent implements OnInit {
 
   openEditModal(user: UserDTO) {
     this.editingUser.set(user);
+    this.confirmingDelete.set(false);
     this.editForm = {
       name: user.name,
       email: user.email,
@@ -582,8 +623,13 @@ export class UsersComponent implements OnInit {
   }
 
   closeEditModal() {
-    if (this.savingUser()) return;
+    if (this.savingUser() || this.deletingUser()) return;
     this.editingUser.set(null);
+    this.confirmingDelete.set(false);
+  }
+
+  canDeleteEditingUser(): boolean {
+    return !!this.editingUser()?.id && this.editingUser()?.id !== this.appState.currentUser()?.id;
   }
 
   isAreaSelected(areaId?: string): boolean {
@@ -625,6 +671,26 @@ export class UsersComponent implements OnInit {
       error: () => {
         this.savingUser.set(false);
         this.notification.error('No se pudo actualizar el colaborador');
+      }
+    });
+  }
+
+  deleteUser() {
+    const current = this.editingUser();
+    if (!current?.id) return;
+    this.deletingUser.set(true);
+    this.userService.delete(current.id).subscribe({
+      next: () => {
+        this.users.update(users => users.filter(user => user.id !== current.id));
+        this.deletingUser.set(false);
+        this.confirmingDelete.set(false);
+        this.editingUser.set(null);
+        this.notification.success('Colaborador eliminado correctamente');
+      },
+      error: error => {
+        this.deletingUser.set(false);
+        this.confirmingDelete.set(false);
+        this.notification.error(error?.error?.message || 'No se pudo eliminar el colaborador');
       }
     });
   }

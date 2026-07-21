@@ -193,7 +193,13 @@ import { NotificationService } from '../../core/services/notification.service';
           </div>
           <div class="form-group">
             <label class="text-label-sm form-label">CONTRASEÑA TEMPORAL</label>
-            <input type="text" [(ngModel)]="newUser.password" placeholder="Mín. 8 caract., 1 mayús., 1 núm., 1 símb." class="form-input" />
+            <div class="password-row">
+              <input type="text" [(ngModel)]="newUser.password" placeholder="Mín. 8 caract., 1 mayús., 1 núm., 1 símb." class="form-input" />
+              <button type="button" class="generate-password-btn" (click)="generateTemporaryPassword()" title="Generar contraseña segura">
+                <span class="material-symbols-outlined">autorenew</span> Generar
+              </button>
+            </div>
+            <small class="password-help">Esta contraseña se enviará al colaborador por correo.</small>
           </div>
           <div class="form-group">
             <label class="text-label-sm form-label">ROL</label>
@@ -363,6 +369,17 @@ import { NotificationService } from '../../core/services/notification.service';
       color: var(--on-surface); outline: none; transition: border-color 0.2s;
     }
     .form-input:focus { border-color: var(--primary); }
+    .password-row { display: flex; gap: 8px; align-items: stretch; }
+    .password-row .form-input { flex: 1; min-width: 0; }
+    .generate-password-btn {
+      display: flex; align-items: center; gap: 6px; padding: 0 14px;
+      border: 1px solid var(--outline-variant); border-radius: 12px;
+      background: var(--surface-container-low); color: var(--on-surface);
+      font-family: 'Geist', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer;
+    }
+    .generate-password-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .generate-password-btn .material-symbols-outlined { font-size: 18px; }
+    .password-help { display: block; margin-top: 6px; color: var(--on-surface-variant); opacity: .7; }
     .modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
     .btn-secondary {
       padding: 10px 24px; border: 1px solid var(--outline-variant); background: transparent;
@@ -447,6 +464,29 @@ export class UsersComponent implements OnInit {
         this.notification.error('Error al invitar colaborador');
       }
     });
+  }
+
+  generateTemporaryPassword() {
+    const upper = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+    const lower = 'abcdefghijkmnopqrstuvwxyz';
+    const numbers = '23456789';
+    const symbols = '!@#$%*-_+';
+    const all = upper + lower + numbers + symbols;
+    const randomChar = (chars: string) => {
+      const value = new Uint32Array(1);
+      crypto.getRandomValues(value);
+      return chars[value[0] % chars.length];
+    };
+
+    const password = [randomChar(upper), randomChar(lower), randomChar(numbers), randomChar(symbols)];
+    while (password.length < 14) password.push(randomChar(all));
+    for (let i = password.length - 1; i > 0; i--) {
+      const value = new Uint32Array(1);
+      crypto.getRandomValues(value);
+      const j = value[0] % (i + 1);
+      [password[i], password[j]] = [password[j], password[i]];
+    }
+    this.newUser.password = password.join('');
   }
 
   toggleMenu(id: number, event: MouseEvent) {

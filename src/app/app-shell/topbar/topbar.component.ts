@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, HostListener, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AppStateService } from '../../core/state/app-state.service';
@@ -445,6 +445,17 @@ export class TopbarComponent {
     event.stopPropagation();
     this.showNotifMenu.set(!this.showNotifMenu());
     if (this.showNotifMenu()) {
+      this.showUserMenu.set(false);
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  closeMenusOnOutsideClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (this.showNotifMenu() && !target.closest('.notif-container')) {
+      this.showNotifMenu.set(false);
+    }
+    if (this.showUserMenu() && !target.closest('.topbar-user-container')) {
       this.showUserMenu.set(false);
     }
   }

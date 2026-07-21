@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class AudioNotificationService {
   private context: AudioContext | null = null;
   private unlocked = false;
+  readonly enabled = signal(localStorage.getItem('smartdesk_notification_sound') !== 'false');
 
   constructor() {
     const unlock = () => {
@@ -17,7 +18,7 @@ export class AudioNotificationService {
   }
 
   play(): void {
-    if (!this.unlocked) return;
+    if (!this.enabled() || !this.unlocked) return;
     const context = this.getContext();
     if (!context) return;
 
@@ -38,6 +39,12 @@ export class AudioNotificationService {
       oscillator.start(now);
       oscillator.stop(now + 0.26);
     }).catch(error => console.error('Audio play failed:', error));
+  }
+
+  setEnabled(enabled: boolean): void {
+    this.enabled.set(enabled);
+    localStorage.setItem('smartdesk_notification_sound', String(enabled));
+    if (enabled) this.play();
   }
 
   private getContext(): AudioContext | null {

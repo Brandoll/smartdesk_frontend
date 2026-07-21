@@ -12,6 +12,8 @@ export interface TicketDTO {
   clientId?: string;
   assignedToId?: string | null;
   areaId?: string;
+  assignedToName?: string;
+  areaName?: string;
   aiSuggestedTitle?: string;
   aiSuggestedAreaId?: string;
   aiSuggestedPriority?: string;

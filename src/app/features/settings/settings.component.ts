@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -6,6 +6,10 @@ import { AreaService, AreaDTO } from '../../core/services/area.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { AppStateService } from '../../core/state/app-state.service';
 import { UserService } from '../../core/services/user.service';
+import { TicketDTO, TicketService } from '../../core/services/ticket.service';
+import { WebsocketService } from '../../core/services/websocket.service';
+import { AudioNotificationService } from '../../core/services/audio-notification.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-settings',
@@ -43,92 +47,47 @@ import { UserService } from '../../core/services/user.service';
     @if (activeTab() === 'areas') {
       <div class="tab-content fade-in">
         <div class="section-header">
-          <h3 class="text-headline-md">Gestión de Áreas</h3>
-          <button class="add-area-btn" (click)="isAreaModalOpen.set(true)">
-            <span class="material-symbols-outlined" style="font-size:18px">add</span>
-            Añadir Nueva Área
-          </button>
+          <div>
+            <p class="section-label">ESTRUCTURA DE SOPORTE</p>
+            <h3 class="text-headline-md">Áreas y carga operativa</h3>
+            <p class="section-description">Información calculada con los tickets visibles en este momento.</p>
+          </div>
+          @if (isAdmin()) {
+            <button class="add-area-btn" (click)="isAreaModalOpen.set(true)">Añadir área</button>
+          }
         </div>
 
-        @if (loadingAreas()) {
-          <div class="areas-grid">
-            @for (i of [1,2,3]; track i) {
-              <div class="premium-card area-card skeleton-pulse"></div>
-            }
-          </div>
+        <div class="area-summary">
+          <div><span>Áreas configuradas</span><strong>{{ areas().length }}</strong></div>
+          <div><span>Tickets activos</span><strong>{{ activeTickets() }}</strong></div>
+          <div><span>Sin área asignada</span><strong>{{ ticketsWithoutArea() }}</strong></div>
+        </div>
+
+        @if (loadingAreas() || loadingTickets()) {
+          <div class="area-directory loading-directory"></div>
         } @else if (areas().length === 0) {
-          <div class="empty-state-card premium-card">
-            <span class="material-symbols-outlined" style="font-size:64px; opacity:0.15; margin-bottom:16px">domain</span>
-            <h3 class="text-headline-md" style="opacity:0.6; margin-bottom:8px">Sin áreas configuradas</h3>
-            <p class="text-body-md" style="color:var(--on-surface-variant); opacity:0.5; margin-bottom:20px">
-              Crea tu primera área para empezar a organizar los tickets.
-            </p>
-            <button class="add-area-btn" (click)="isAreaModalOpen.set(true)">
-              <span class="material-symbols-outlined" style="font-size:18px">add</span>
-              Crear Primera Área
-            </button>
+          <div class="empty-state-card">
+            <h3>No hay áreas configuradas</h3>
+            <p>Crea un área para organizar responsables y tickets.</p>
           </div>
         } @else {
-          <div class="areas-grid">
+          <div class="area-directory">
+            <div class="directory-header">
+              <span>Área</span><span>Activos</span><span>Resueltos</span><span>Total</span>
+            </div>
             @for (area of areas(); track area.id) {
-              <div class="premium-card area-card">
-                <div class="area-card-top">
-                  <div class="area-icon-box">
-                    <span class="material-symbols-outlined">{{ getAreaIcon(area.name) }}</span>
-                  </div>
-                  <span class="area-status-badge">ACTIVA</span>
+              <div class="directory-row">
+                <div class="area-identity">
+                  <div><strong>{{ area.name }}</strong><small>{{ area.description || 'Sin descripción' }}</small></div>
+                  <span class="active-badge">Activa</span>
                 </div>
-                <h3 class="area-name">{{ area.name }}</h3>
-                <p class="area-desc">{{ area.description || 'Sin descripción' }}</p>
-                <div class="area-meta">
-                  <div class="area-meta-row">
-                    <span>Líder de Área</span>
-                    <span class="area-meta-val">—</span>
-                  </div>
-                  <div class="area-meta-row">
-                    <span>Tickets Activos</span>
-                    <span class="area-meta-val">0</span>
-                  </div>
-                </div>
-                <div class="area-ai-bar">
-                  <div class="area-ai-label">
-                    <span>Precisión IA</span>
-                    <span class="area-ai-pct">—</span>
-                  </div>
-                  <div class="area-ai-track">
-                    <div class="area-ai-fill" style="width:0%"></div>
-                  </div>
-                </div>
+                <strong class="metric-value emphasis">{{ areaTicketCount(area.id, 'active') }}</strong>
+                <strong class="metric-value">{{ areaTicketCount(area.id, 'resolved') }}</strong>
+                <strong class="metric-value">{{ areaTicketCount(area.id, 'total') }}</strong>
               </div>
             }
           </div>
         }
-
-        <!-- Global Logic Mapping Card -->
-        <div class="logic-card" style="margin-top:24px">
-          <div class="logic-card-inner">
-            <span class="material-symbols-outlined" style="font-size:28px; font-variation-settings:'FILL' 1; color:white; opacity:0.8">settings_suggest</span>
-            <h3 class="logic-title">Mapeo de Lógica Global</h3>
-            <p class="logic-desc">Define el núcleo de inteligencia. Usa mapeo semántico para enrutar tickets automáticamente basado en detección de intención y clustering de palabras clave.</p>
-            <div class="logic-tags">
-              <div class="logic-tag-group">
-                <span class="logic-tag-label">FOCO DE KEYWORDS</span>
-                <div class="logic-tag-list">
-                  <span class="logic-tag">SERVIDOR_CAIDO</span>
-                  <span class="logic-tag">ERROR_VPN</span>
-                  <span class="logic-tag">CONSULTA_NÓMINA</span>
-                </div>
-              </div>
-              <div class="logic-tag-group">
-                <span class="logic-tag-label">CLASIFICADORES DE INTENCIÓN</span>
-                <div class="logic-tag-list" style="flex-direction:column; gap:4px">
-                  <span style="color:rgba(255,255,255,0.7); font-size:14px">✓ Soporte Técnico Urgente</span>
-                  <span style="color:rgba(255,255,255,0.7); font-size:14px">✓ Solicitud de Documentos</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     }
 
@@ -203,34 +162,31 @@ import { UserService } from '../../core/services/user.service';
     @if (activeTab() === 'settings') {
       <div class="tab-content fade-in">
         <div class="settings-layout">
-          <div class="premium-card settings-card">
-
-            <h3 class="text-headline-md" style="margin-bottom:24px">Notificaciones</h3>
-            
+          <div class="settings-card">
+            <div class="settings-heading">
+              <p class="section-label">PREFERENCIAS LOCALES</p>
+              <h3 class="text-headline-md">Notificaciones</h3>
+              <p>Estas opciones se aplican en este navegador.</p>
+            </div>
             <div class="settings-row">
               <div class="settings-info">
-                <h4>Notificaciones por Email</h4>
-                <p>Recibir correos cuando se asigna un ticket.</p>
+                <h4>Sonido de notificaciones</h4>
+                <p>Reproduce un aviso cuando llega una actualización en tiempo real.</p>
               </div>
-              <div class="toggle-switch">
-                <div class="toggle-track on">
-                  <div class="toggle-thumb" style="transform: translateX(20px)"></div>
+              <button type="button" class="toggle-switch" (click)="audioService.setEnabled(!audioService.enabled())" [attr.aria-pressed]="audioService.enabled()">
+                <div class="toggle-track" [class.on]="audioService.enabled()">
+                  <div class="toggle-thumb"></div>
                 </div>
-              </div>
+              </button>
             </div>
 
             <div class="settings-row">
               <div class="settings-info">
-                <h4>Notificaciones Push</h4>
-                <p>Alertas en el navegador en tiempo real.</p>
+                <h4>Actualizaciones en tiempo real</h4>
+                <p>Chat, asignaciones y cambios del ticket se sincronizan durante la sesión.</p>
               </div>
-              <div class="toggle-switch">
-                <div class="toggle-track on">
-                  <div class="toggle-thumb" style="transform: translateX(20px)"></div>
-                </div>
-              </div>
+              <span class="connection-status"><span></span>Activo</span>
             </div>
-            
           </div>
         </div>
       </div>
@@ -292,61 +248,39 @@ import { UserService } from '../../core/services/user.service';
     .tab-btn:hover { color: var(--on-surface); }
     .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
 
-    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .section-header { display:flex; justify-content:space-between; align-items:flex-end; gap:20px; margin-bottom:24px; }
+    .section-label { color:var(--primary); font:700 10px 'Space Grotesk',sans-serif; letter-spacing:.14em; margin-bottom:7px; }
+    .section-description { margin-top:5px; color:var(--on-surface-variant); opacity:.7; font-size:13px; }
 
     .add-area-btn {
       display: flex; align-items: center; gap: 6px; padding: 10px 20px;
       background: var(--primary); color: var(--on-primary); border: none;
-      border-radius: 9999px; font-family: 'Geist', sans-serif; font-size: 14px;
+      border-radius: 10px; font-family: 'Hanken Grotesk', sans-serif; font-size: 14px;
       font-weight: 500; cursor: pointer; transition: all 0.2s;
     }
     .add-area-btn:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.15); transform: translateY(-1px); }
 
-    /* Areas Styles */
-    .areas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-    .area-card { padding: 28px; }
-    .area-card.skeleton-pulse { height: 280px; animation: pulse 1.5s infinite; }
-
-    .area-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
-    .area-icon-box {
-      width: 44px; height: 44px; border-radius: 12px;
-      background: var(--surface-container-low); display: flex; align-items: center; justify-content: center;
-      color: var(--on-surface-variant);
-    }
-    .area-status-badge {
-      padding: 3px 10px; border-radius: 9999px; background: #d0e7ea; color: #364a4d;
-      font-family: 'Geist', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.05em;
-    }
-
-    .area-name { font-family: 'Geist', sans-serif; font-size: 20px; font-weight: 600; margin-bottom: 6px; }
-    .area-desc {
-      font-family: 'Manrope', sans-serif; font-size: 14px; color: var(--on-surface-variant);
-      opacity: 0.7; margin-bottom: 20px; line-height: 1.5;
-    }
-
-    .area-meta { margin-bottom: 20px; }
-    .area-meta-row { display: flex; justify-content: space-between; padding: 8px 0; font-family: 'Manrope', sans-serif; font-size: 14px; color: var(--on-surface-variant); }
-    .area-meta-val { font-family: 'Geist', sans-serif; font-weight: 600; color: var(--on-surface); }
-
-    .area-ai-bar { border-top: 1px solid var(--surface-container); padding-top: 16px; }
-    .area-ai-label { display: flex; justify-content: space-between; margin-bottom: 8px; font-family: 'Manrope', sans-serif; font-size: 14px; color: var(--on-surface-variant); }
-    .area-ai-pct { font-family: 'Geist', sans-serif; font-weight: 600; color: var(--on-surface); }
-    .area-ai-track { height: 4px; background: var(--surface-container-low); border-radius: 9999px; overflow: hidden; }
-    .area-ai-fill { height: 100%; background: #2dd4bf; border-radius: 9999px; transition: width 1s ease; }
-
-    /* Logic Card */
-    .logic-card { background: var(--primary-container); border-radius: 1rem; overflow: hidden; }
-    .logic-card-inner { padding: 32px; }
-    .logic-title { font-family: 'Geist', sans-serif; font-size: 24px; font-weight: 600; color: white; margin: 12px 0 8px; }
-    .logic-desc { font-family: 'Manrope', sans-serif; font-size: 15px; line-height: 1.6; color: rgba(255,255,255,0.6); margin-bottom: 24px; }
-    .logic-tags { display: flex; gap: 32px; }
-    .logic-tag-group { flex: 1; }
-    .logic-tag-label { font-family: 'Geist', sans-serif; font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.4); letter-spacing: 0.08em; display: block; margin-bottom: 10px; }
-    .logic-tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
-    .logic-tag { padding: 4px 12px; border-radius: 6px; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); font-family: 'Geist', sans-serif; font-size: 12px; font-weight: 500; }
+    .area-summary { display:grid; grid-template-columns:repeat(3,1fr); border:1px solid var(--outline-variant); border-radius:14px; overflow:hidden; background:var(--surface-container-lowest); margin-bottom:18px; }
+    .area-summary div { min-height:105px; padding:20px 24px; border-right:1px solid var(--outline-variant); }
+    .area-summary div:last-child { border-right:0; }
+    .area-summary span { display:block; color:var(--on-surface-variant); font-size:12px; font-weight:600; }
+    .area-summary strong { display:block; margin-top:12px; font:700 28px 'Space Grotesk',sans-serif; }
+    .area-directory { border:1px solid var(--outline-variant); border-radius:14px; overflow:hidden; background:var(--surface-container-lowest); }
+    .directory-header,.directory-row { display:grid; grid-template-columns:minmax(250px,1fr) 90px 90px 70px; align-items:center; gap:18px; }
+    .directory-header { padding:11px 20px; background:var(--surface-container-low); color:var(--on-surface-variant); font:700 10px 'Space Grotesk',sans-serif; letter-spacing:.08em; text-transform:uppercase; }
+    .directory-row { min-height:78px; padding:14px 20px; border-top:1px solid var(--outline-variant); }
+    .area-identity { display:flex; align-items:center; gap:12px; min-width:0; }
+    .area-identity div { min-width:0; display:flex; flex-direction:column; gap:4px; }
+    .area-identity strong { font:600 14px 'Space Grotesk',sans-serif; }
+    .area-identity small { color:var(--on-surface-variant); opacity:.7; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .active-badge { margin-left:auto; padding:4px 8px; border-radius:999px; background:rgba(21,128,61,.08); color:#15803d; font-size:10px; font-weight:700; }
+    .metric-value { font:700 14px 'Space Grotesk',sans-serif; color:var(--on-surface-variant); }
+    .metric-value.emphasis { color:var(--primary); }
+    .loading-directory { min-height:250px; animation:pulse 1.4s infinite; }
 
     /* Empty State */
-    .empty-state-card { padding: 64px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .empty-state-card { padding:64px; text-align:center; border:1px solid var(--outline-variant); border-radius:14px; background:var(--surface-container-lowest); }
+    .empty-state-card p { margin-top:6px; color:var(--on-surface-variant); }
 
     /* Profile Layout */
     .profile-layout { display: grid; grid-template-columns: 320px 1fr; gap: 24px; }
@@ -375,8 +309,10 @@ import { UserService } from '../../core/services/user.service';
     .form-actions { display: flex; justify-content: flex-end; margin-top: 32px; }
 
     /* Settings Layout */
-    .settings-layout { max-width: 800px; }
-    .settings-card { padding: 32px; }
+    .settings-layout { max-width:860px; }
+    .settings-card { padding:28px; border:1px solid var(--outline-variant); border-radius:14px; background:var(--surface-container-lowest); }
+    .settings-heading { padding-bottom:20px; border-bottom:1px solid var(--outline-variant); }
+    .settings-heading > p:last-child { margin-top:5px; color:var(--on-surface-variant); opacity:.7; font-size:13px; }
     .settings-divider { height: 1px; background: var(--surface-container); margin: 32px 0; }
     .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--surface-container); }
     .settings-row:last-child { border-bottom: none; padding-bottom: 0; }
@@ -386,10 +322,13 @@ import { UserService } from '../../core/services/user.service';
     .settings-info p { font-family: 'Manrope', sans-serif; font-size: 14px; color: var(--on-surface-variant); opacity: 0.7; }
 
     /* Toggles */
-    .toggle-switch { cursor: pointer; }
+    .toggle-switch { padding:0; border:0; background:transparent; cursor:pointer; }
     .toggle-track { width: 44px; height: 24px; background: var(--surface-container-highest); border-radius: 12px; position: relative; transition: background 0.2s; }
     .toggle-track.on { background: var(--primary); }
     .toggle-thumb { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; background: white; border-radius: 9px; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+    .toggle-track.on .toggle-thumb { transform:translateX(20px); }
+    .connection-status { display:flex; align-items:center; gap:7px; padding:6px 10px; border-radius:999px; background:rgba(21,128,61,.08); color:#15803d; font-size:11px; font-weight:700; }
+    .connection-status span { width:7px; height:7px; border-radius:50%; background:#15803d; }
 
     /* Modal */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 100; }
@@ -414,29 +353,42 @@ import { UserService } from '../../core/services/user.service';
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
     @media (max-width: 1024px) {
-      .areas-grid { grid-template-columns: repeat(2, 1fr); }
       .profile-layout { grid-template-columns: 1fr; }
     }
     @media (max-width: 640px) {
-      .areas-grid { grid-template-columns: 1fr; }
+      .section-header { align-items:flex-start; flex-direction:column; }
+      .area-summary { grid-template-columns:1fr; }
+      .area-summary div { border-right:0; border-bottom:1px solid var(--outline-variant); }
+      .area-summary div:last-child { border-bottom:0; }
+      .directory-header { display:none; }
+      .directory-row { grid-template-columns:1fr repeat(3,48px); gap:10px; padding:15px; }
+      .active-badge { display:none; }
       .form-grid { grid-template-columns: 1fr; }
     }
   `]
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent implements OnInit, OnDestroy {
   private areaService = inject(AreaService);
   private userService = inject(UserService);
+  private ticketService = inject(TicketService);
+  private websocketService = inject(WebsocketService);
   private fb = inject(FormBuilder);
   private notification = inject(NotificationService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   public appState = inject(AppStateService);
+  public audioService = inject(AudioNotificationService);
+  private notificationSub?: Subscription;
 
   activeTab = signal<'areas' | 'profile' | 'settings'>('areas');
 
   // Areas State
   areas = signal<AreaDTO[]>([]);
   loadingAreas = signal<boolean>(true);
+  tickets = signal<TicketDTO[]>([]);
+  loadingTickets = signal<boolean>(true);
+  activeTickets = computed(() => this.tickets().filter(ticket => this.isTicketActive(ticket)).length);
+  ticketsWithoutArea = computed(() => this.tickets().filter(ticket => this.isTicketActive(ticket) && !ticket.areaId).length);
   isAreaModalOpen = signal<boolean>(false);
   savingArea = signal<boolean>(false);
 
@@ -462,8 +414,14 @@ export class SettingsComponent implements OnInit {
     });
 
     this.loadAreas();
+    this.loadTickets();
     this.initProfileForm();
+    this.notificationSub = this.websocketService.getNotifications().subscribe(message => {
+      if (message['ticketId']) this.loadTickets(false);
+    });
   }
+
+  ngOnDestroy() { this.notificationSub?.unsubscribe(); }
 
   setTab(tab: 'areas' | 'profile' | 'settings') {
     this.activeTab.set(tab);
@@ -533,6 +491,33 @@ export class SettingsComponent implements OnInit {
         this.notification.error('Error cargando áreas');
       }
     });
+  }
+
+  loadTickets(showLoading = true) {
+    if (showLoading) this.loadingTickets.set(true);
+    this.ticketService.getAll(0, 500).subscribe({
+      next: response => {
+        this.tickets.set(response.content || []);
+        this.loadingTickets.set(false);
+      },
+      error: () => this.loadingTickets.set(false)
+    });
+  }
+
+  areaTicketCount(areaId: string | undefined, kind: 'active' | 'resolved' | 'total'): number {
+    if (!areaId) return 0;
+    const tickets = this.tickets().filter(ticket => ticket.areaId === areaId);
+    if (kind === 'active') return tickets.filter(ticket => this.isTicketActive(ticket)).length;
+    if (kind === 'resolved') return tickets.filter(ticket => ticket.status === 'RESUELTO' || ticket.status === 'CERRADO').length;
+    return tickets.length;
+  }
+
+  private isTicketActive(ticket: TicketDTO): boolean {
+    return ticket.status !== 'RESUELTO' && ticket.status !== 'CERRADO';
+  }
+
+  isAdmin(): boolean {
+    return this.appState.currentUser()?.role?.replace('ROLE_', '') === 'ADMIN_TENANT';
   }
 
   getAreaIcon(name: string): string {

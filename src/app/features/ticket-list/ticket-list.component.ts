@@ -1,8 +1,10 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TicketService } from '../../core/services/ticket.service';
+import { WebsocketService } from '../../core/services/websocket.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-ticket-list',
@@ -607,9 +609,11 @@ import { TicketService } from '../../core/services/ticket.service';
     }
   `]
 })
-export class TicketListComponent implements OnInit {
+export class TicketListComponent implements OnInit, OnDestroy {
   private ticketService = inject(TicketService);
+  private websocketService = inject(WebsocketService);
   private router = inject(Router);
+  private notificationSub?: Subscription;
 
   tickets = signal<any[]>([]);
   loading = signal(true);
@@ -665,6 +669,19 @@ export class TicketListComponent implements OnInit {
   });
 
   ngOnInit() {
+    this.loadTickets();
+    this.notificationSub = this.websocketService.getNotifications().subscribe(message => {
+      if (message['ticketId']) this.refreshTicket(message['ticketId']);
+    });
+  }
+
+  ngOnDestroy() { this.notificationSub?.unsubscribe(); }
+
+  @HostListener('window:focus')
+  refreshOnFocus() { this.loadTickets(false); }
+
+  private loadTickets(showLoading = true) {
+    if (showLoading) this.loading.set(true);
     this.ticketService.getAll().subscribe({
       next: (res: any) => {
         const content = res.content || res || [];
@@ -672,6 +689,17 @@ export class TicketListComponent implements OnInit {
         this.loading.set(false);
       },
       error: () => this.loading.set(false)
+    });
+  }
+
+  private refreshTicket(ticketId: string) {
+    this.ticketService.getById(ticketId).subscribe({
+      next: updated => this.tickets.update(current => {
+        const exists = current.some(ticket => ticket.id === updated.id);
+        return exists
+          ? current.map(ticket => ticket.id === updated.id ? updated : ticket)
+          : [updated, ...current];
+      })
     });
   }
 

@@ -649,6 +649,14 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
   replyFocused = false;
 
   ngOnInit() {
+    this.aiNotifSub = this.ws.getNotifications().subscribe((msg: any) => {
+      if (msg.type === 'AI_CLASSIFIED' && msg.ticketId === this.ticketId) {
+        this.ticketService.getById(this.ticketId).subscribe({
+          next: (ticket: any) => this.ticket.set(ticket)
+        });
+      }
+    });
+
     // Load areas and users for dropdowns
     this.areaService.getAll().subscribe({
       next: (res: any) => this.areas.set(Array.isArray(res) ? res : res.content || []),
@@ -687,6 +695,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
   }
 
   private chatSub?: Subscription;
+  private aiNotifSub?: Subscription;
 
   setupRealTimeChat(ticketId: string) {
     const tenantId = this.appState.currentTenant()?.id || '';
@@ -715,6 +724,9 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.chatSub) {
       this.chatSub.unsubscribe();
+    }
+    if (this.aiNotifSub) {
+      this.aiNotifSub.unsubscribe();
     }
     this.ws.disconnectChat();
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, HostListener, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../core/services/user.service';
@@ -96,13 +96,15 @@ import { ActivatedRoute } from '@angular/router';
                   </td>
                   <td class="activity-text">{{ user.lastLogin || 'Nunca' }}</td>
                   <td>
-                    <div style="position:relative;">
+                    <div class="user-actions">
                       <button class="action-btn" (click)="toggleMenu(user.id, $event)">
                         <span class="material-symbols-outlined">more_horiz</span>
                       </button>
                       
                       @if (openMenuId() === user.id) {
-                        <div class="dropdown-menu">
+                        <div class="dropdown-menu" [class.open-up]="menuPosition().openUp"
+                             [style.top.px]="menuPosition().top" [style.left.px]="menuPosition().left"
+                             (click)="$event.stopPropagation()">
                           <div class="dropdown-group">
                             <span class="dropdown-label">Cambiar Rol</span>
                             <button class="dropdown-item" (click)="changeRole(user, 'ADMIN_TENANT')">
@@ -218,10 +220,6 @@ import { ActivatedRoute } from '@angular/router';
       </div>
     }
 
-    <!-- Global Click Overlay for closing dropdowns -->
-    @if (openMenuId() !== null) {
-      <div style="position:fixed;inset:0;z-index:90" (click)="openMenuId.set(null)"></div>
-    }
   `,
   styles: [`
     :host { display: block; }
@@ -305,14 +303,16 @@ import { ActivatedRoute } from '@angular/router';
       cursor: pointer; transition: all 0.2s;
     }
     .action-btn:hover { background: var(--surface-container); }
+    .user-actions { display:inline-flex; position:relative; }
 
     /* Dropdown Styles */
     .dropdown-menu {
-      position: absolute; right: 0; top: 100%; width: 220px;
+      position: fixed; width: 220px;
       background: var(--surface-container-lowest); border: 1px solid var(--outline-variant);
       border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.1);
-      padding: 8px 0; z-index: 100; animation: slideDown 0.2s cubic-bezier(0.16,1,0.3,1);
+      padding: 8px 0; z-index: 200; animation: slideDown 0.16s cubic-bezier(0.16,1,0.3,1);
     }
+    .dropdown-menu.open-up { transform-origin:bottom right; animation-name:slideUp; }
     .dropdown-group { padding: 4px 0; }
     .dropdown-label {
       display: block; padding: 4px 16px; font-family: 'Geist', sans-serif;
@@ -330,6 +330,7 @@ import { ActivatedRoute } from '@angular/router';
     .dropdown-item.text-error .material-symbols-outlined { color: var(--error); opacity: 1; }
     .dropdown-divider { height: 1px; background: var(--outline-variant); margin: 4px 0; }
     @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
 
     .table-footer {
@@ -420,7 +421,8 @@ export class UsersComponent implements OnInit {
   showInviteModal = false;
   newUser = { name: '', email: '', role: 'COLABORADOR', password: '' };
   
-  openMenuId = signal<number | null>(null);
+  openMenuId = signal<string | null>(null);
+  menuPosition = signal({ top: 0, left: 0, openUp: false });
 
   ngOnInit() {
     this.route.queryParamMap.subscribe(params => {
@@ -511,14 +513,33 @@ export class UsersComponent implements OnInit {
     this.newUser.password = password.join('');
   }
 
-  toggleMenu(id: number, event: MouseEvent) {
+  toggleMenu(id: string, event: MouseEvent) {
     event.stopPropagation();
     if (this.openMenuId() === id) {
       this.openMenuId.set(null);
     } else {
+      const button = event.currentTarget as HTMLElement;
+      const rect = button.getBoundingClientRect();
+      const menuWidth = 220;
+      const menuHeight = 226;
+      const gap = 7;
+      const openUp = window.innerHeight - rect.bottom < menuHeight + gap;
+      const top = openUp ? Math.max(8, rect.top - menuHeight - gap) : rect.bottom + gap;
+      const left = Math.max(8, Math.min(rect.right - menuWidth, window.innerWidth - menuWidth - 8));
+      this.menuPosition.set({ top, left, openUp });
       this.openMenuId.set(id);
     }
   }
+
+  @HostListener('document:click', ['$event'])
+  closeMenuOnOutsideClick(event: MouseEvent) {
+    if (this.openMenuId() !== null && !(event.target as HTMLElement).closest('.user-actions')) {
+      this.openMenuId.set(null);
+    }
+  }
+
+  @HostListener('window:resize')
+  closeMenuOnResize() { this.openMenuId.set(null); }
 
   changeRole(user: any, newRole: string) {
     this.openMenuId.set(null);

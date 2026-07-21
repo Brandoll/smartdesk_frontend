@@ -650,9 +650,13 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.aiNotifSub = this.ws.getNotifications().subscribe((msg: any) => {
-      if (msg.type === 'AI_CLASSIFIED' && msg.ticketId === this.ticketId) {
+      const ticketEvents = ['AI_CLASSIFIED', 'STATUS_CHANGED', 'PRIORITY_CHANGED', 'AREA_CHANGED', 'ASSIGNED'];
+      if (ticketEvents.includes(msg.type) && msg.ticketId === this.ticketId) {
         this.ticketService.getById(this.ticketId).subscribe({
-          next: (ticket: any) => this.ticket.set(ticket)
+          next: (ticket: any) => {
+            this.ticket.set(ticket);
+            this.loadHistory(this.ticketId);
+          }
         });
       }
     });

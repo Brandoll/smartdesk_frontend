@@ -1,38 +1,51 @@
 import { Injectable } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AudioNotificationService {
-  private audio = new Audio();
-  // Using a short, professional "pop" or "ding" sound
-  private readonly SOUND_URL = 'https://actions.google.com/sounds/v1/ui/message_notification.ogg';
-  private userInteracted = false;
+  private context: AudioContext | null = null;
+  private unlocked = false;
 
   constructor() {
-    this.audio.src = this.SOUND_URL;
-    this.audio.load();
-
-    // Browsers block autoplay until the user interacts with the document
-    const unlockAudio = () => {
-      this.userInteracted = true;
-      document.removeEventListener('click', unlockAudio);
-      document.removeEventListener('keydown', unlockAudio);
+    const unlock = () => {
+      this.unlocked = true;
+      this.getContext()?.resume().catch(() => undefined);
+      document.removeEventListener('pointerdown', unlock);
+      document.removeEventListener('keydown', unlock);
     };
-
-    document.addEventListener('click', unlockAudio);
-    document.addEventListener('keydown', unlockAudio);
+    document.addEventListener('pointerdown', unlock);
+    document.addEventListener('keydown', unlock);
   }
 
-  play() {
-    if (!this.userInteracted) {
-      console.warn('Audio playback blocked: user has not interacted with the page yet.');
-      return;
+  play(): void {
+    if (!this.unlocked) return;
+    const context = this.getContext();
+    if (!context) return;
+
+    context.resume().then(() => {
+      const now = context.currentTime;
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(880, now);
+      oscillator.frequency.setValueAtTime(1174.66, now + 0.09);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.22, now + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.25);
+
+      oscillator.connect(gain);
+      gain.connect(context.destination);
+      oscillator.start(now);
+      oscillator.stop(now + 0.26);
+    }).catch(error => console.error('Audio play failed:', error));
+  }
+
+  private getContext(): AudioContext | null {
+    if (!this.context) {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) return null;
+      this.context = new AudioContextClass();
     }
-    
-    // Clone node to allow rapid successive plays
-    const sound = this.audio.cloneNode() as HTMLAudioElement;
-    sound.volume = 0.6; // Slightly softer volume
-    sound.play().catch(e => console.error('Audio play failed:', e));
+    return this.context;
   }
 }

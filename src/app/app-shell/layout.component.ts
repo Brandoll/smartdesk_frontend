@@ -25,19 +25,6 @@ import { Subscription } from 'rxjs';
         </main>
       </div>
     </div>
-
-    <!-- Floating Toast Notifications -->
-    <div class="toast-container">
-      @for (toast of notification.toasts(); track toast.id) {
-        <div class="toast-item" [attr.data-type]="toast.type" (click)="notification.remove(toast.id)">
-          <span class="material-symbols-outlined toast-icon">
-            {{ toast.type === 'success' ? 'check_circle' : toast.type === 'error' ? 'error' : 'info' }}
-          </span>
-          <span class="toast-message">{{ toast.message }}</span>
-          <span class="material-symbols-outlined toast-close">close</span>
-        </div>
-      }
-    </div>
   `,
   styles: [`
     .app-shell {
@@ -73,72 +60,6 @@ import { Subscription } from 'rxjs';
       .app-content {
         padding: 20px;
       }
-    }
-
-    /* Toast Container */
-    .toast-container {
-      position: fixed;
-      top: 24px;
-      right: 24px;
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      max-width: 400px;
-    }
-
-    .toast-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 16px 20px;
-      background: var(--surface-container-lowest, white);
-      border: 1px solid var(--outline-variant);
-      border-radius: 14px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
-      cursor: pointer;
-      animation: toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-      transition: transform 0.15s, opacity 0.15s;
-    }
-
-    .toast-item:hover {
-      transform: translateX(-4px);
-    }
-
-    .toast-item[data-type="success"] {
-      border-left: 4px solid #22c55e;
-    }
-    .toast-item[data-type="success"] .toast-icon { color: #22c55e; }
-
-    .toast-item[data-type="error"] {
-      border-left: 4px solid var(--error, #ba1a1a);
-    }
-    .toast-item[data-type="error"] .toast-icon { color: var(--error, #ba1a1a); }
-
-    .toast-item[data-type="info"] {
-      border-left: 4px solid var(--primary, #1b1b1b);
-    }
-    .toast-item[data-type="info"] .toast-icon { color: var(--primary, #1b1b1b); }
-
-    .toast-icon { font-size: 22px; font-variation-settings: 'FILL' 1; flex-shrink: 0; }
-    .toast-message {
-      flex: 1;
-      font-family: 'Hanken Grotesk', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--on-surface);
-      line-height: 1.4;
-    }
-    .toast-close {
-      font-size: 16px;
-      color: var(--on-surface-variant);
-      opacity: 0.4;
-      flex-shrink: 0;
-    }
-
-    @keyframes toastSlideIn {
-      from { opacity: 0; transform: translateX(60px); }
-      to { opacity: 1; transform: translateX(0); }
     }
   `]
 })

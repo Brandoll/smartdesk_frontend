@@ -52,13 +52,13 @@ import { NotificationService } from '../../core/services/notification.service';
                     </div>
                   } @else {
                     @for (n of notifService.notifications(); track n.id) {
-                      <div class="notif-item" [class.unread]="!n.read">
+                      <button type="button" class="notif-item" [class.unread]="!n.read" (click)="openNotification(n)">
                         <span class="material-symbols-outlined notif-item-icon" style="font-variation-settings:'FILL' 1">circle_notifications</span>
                         <div class="notif-item-content">
                           <p class="notif-item-msg">{{ n.message }}</p>
                           <p class="notif-item-time">{{ n.timestamp | date:'short' }}</p>
                         </div>
-                      </div>
+                      </button>
                     }
                   }
                 </div>
@@ -415,6 +415,7 @@ import { NotificationService } from '../../core/services/notification.service';
       font-size: 14px;
     }
     .notif-item {
+      width: 100%; border: 0; text-align: left; font-family: inherit;
       display: flex; align-items: flex-start; gap: 12px;
       padding: 14px 20px; transition: background 0.15s; cursor: default;
     }
@@ -445,6 +446,14 @@ export class TopbarComponent {
     this.showNotifMenu.set(!this.showNotifMenu());
     if (this.showNotifMenu()) {
       this.showUserMenu.set(false);
+    }
+  }
+
+  openNotification(notification: { id: string; ticketId?: string }) {
+    this.notifService.markRead(notification.id);
+    this.showNotifMenu.set(false);
+    if (notification.ticketId) {
+      this.router.navigate(['/app/tickets', notification.ticketId]);
     }
   }
 

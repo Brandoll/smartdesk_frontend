@@ -163,7 +163,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         const message = msg['message'] || 'Nueva notificación';
         this.notification.info(message, 5000);
         // Store in history
-        this.notification.addNotification(msg['type'] || 'info', message);
+        this.notification.addNotification(msg['type'] || 'info', message, msg['ticketId']);
       });
     }
   }

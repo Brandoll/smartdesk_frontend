@@ -1,9 +1,10 @@
-import { Component, HostListener, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { UserService } from '../../core/services/user.service';
+import { UserDTO, UserService } from '../../core/services/user.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ActivatedRoute } from '@angular/router';
+import { AreaDTO, AreaService } from '../../core/services/area.service';
 
 @Component({
   selector: 'app-users',
@@ -59,7 +60,7 @@ import { ActivatedRoute } from '@angular/router';
               <th>Nombre</th>
               <th>Rol</th>
               <th>Estado</th>
-              <th>Última Actividad</th>
+              <th>Áreas asignadas</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -94,41 +95,12 @@ import { ActivatedRoute } from '@angular/router';
                     <span class="status-dot" [attr.data-status]="user.status"></span>
                     <span class="status-text">{{ user.status }}</span>
                   </td>
-                  <td class="activity-text">{{ user.lastLogin || 'Nunca' }}</td>
+                  <td class="activity-text">{{ getAreaLabels(user.areaIds) }}</td>
                   <td>
                     <div class="user-actions">
-                      <button class="action-btn" (click)="toggleMenu(user.id, $event)">
+                      <button class="action-btn" (click)="openEditModal(user)" title="Administrar colaborador">
                         <span class="material-symbols-outlined">more_horiz</span>
                       </button>
-                      
-                      @if (openMenuId() === user.id) {
-                        <div class="dropdown-menu" [class.open-up]="menuPosition().openUp"
-                             [style.top.px]="menuPosition().top" [style.left.px]="menuPosition().left"
-                             (click)="$event.stopPropagation()">
-                          <div class="dropdown-group">
-                            <span class="dropdown-label">Cambiar Rol</span>
-                            <button class="dropdown-item" (click)="changeRole(user, 'ADMIN_TENANT')">
-                              <span class="material-symbols-outlined">admin_panel_settings</span> Administrador
-                            </button>
-                            <button class="dropdown-item" (click)="changeRole(user, 'COLABORADOR_RESOLUTOR')">
-                              <span class="material-symbols-outlined">support_agent</span> Resolutor
-                            </button>
-                            <button class="dropdown-item" (click)="changeRole(user, 'COLABORADOR')">
-                              <span class="material-symbols-outlined">person</span> Colaborador
-                            </button>
-                          </div>
-                          <div class="dropdown-divider"></div>
-                          @if (user.status !== 'SUSPENDIDO') {
-                            <button class="dropdown-item text-error" (click)="toggleStatus(user)">
-                              <span class="material-symbols-outlined">block</span> Suspender Usuario
-                            </button>
-                          } @else {
-                            <button class="dropdown-item" style="color:var(--primary)" (click)="toggleStatus(user)">
-                              <span class="material-symbols-outlined">check_circle</span> Activar Usuario
-                            </button>
-                          }
-                        </div>
-                      }
                     </div>
                   </td>
                 </tr>
@@ -220,6 +192,82 @@ import { ActivatedRoute } from '@angular/router';
       </div>
     }
 
+    @if (editingUser()) {
+      <div class="modal-overlay" (click)="closeEditModal()">
+        <div class="modal-card edit-user-modal" (click)="$event.stopPropagation()">
+          <div class="edit-modal-header">
+            <div>
+              <p class="modal-eyebrow">ADMINISTRAR COLABORADOR</p>
+              <h3>Información de la cuenta</h3>
+            </div>
+            <button type="button" class="modal-close" (click)="closeEditModal()">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+
+          <div class="edit-user-summary">
+            <div class="user-avatar large">{{ getInitials(editingUser()!.name) }}</div>
+            <div><strong>{{ editingUser()!.name }}</strong><span>{{ editingUser()!.email }}</span></div>
+          </div>
+
+          <div class="edit-form-grid">
+            <div class="form-group full-width">
+              <label class="text-label-sm form-label">NOMBRE COMPLETO</label>
+              <input type="text" [(ngModel)]="editForm.name" class="form-input" />
+            </div>
+            <div class="form-group full-width">
+              <label class="text-label-sm form-label">CORREO ELECTRÓNICO</label>
+              <input type="email" [value]="editForm.email" class="form-input readonly-input" readonly />
+              <small class="field-help">El correo no puede modificarse desde esta operación.</small>
+            </div>
+            <div class="form-group">
+              <label class="text-label-sm form-label">ROL</label>
+              <select [(ngModel)]="editForm.role" class="form-input">
+                <option value="ADMIN_TENANT">Administrador</option>
+                <option value="COLABORADOR_RESOLUTOR">Resolutor</option>
+                <option value="COLABORADOR">Colaborador</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="text-label-sm form-label">ESTADO</label>
+              <select [(ngModel)]="editForm.status" class="form-input">
+                <option value="ACTIVO">Activo</option>
+                <option value="INVITADO">Invitado</option>
+                <option value="SUSPENDIDO">Suspendido</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="areas-editor">
+            <div class="areas-editor-heading">
+              <strong>Áreas asignadas</strong>
+              <span>{{ editForm.areaIds.length }} seleccionadas</span>
+            </div>
+            @if (areas().length === 0) {
+              <p class="no-areas">No hay áreas configuradas.</p>
+            } @else {
+              <div class="area-options">
+                @for (area of areas(); track area.id) {
+                  <label class="area-option" [class.selected]="isAreaSelected(area.id)">
+                    <input type="checkbox" [checked]="isAreaSelected(area.id)" (change)="toggleArea(area.id)" />
+                    <span>{{ area.name }}</span>
+                    <span class="material-symbols-outlined">check</span>
+                  </label>
+                }
+              </div>
+            }
+          </div>
+
+          <div class="modal-actions edit-actions">
+            <button type="button" class="btn-secondary" (click)="closeEditModal()">Cancelar</button>
+            <button type="button" class="btn-primary" (click)="saveUserChanges()" [disabled]="savingUser() || !editForm.name.trim()">
+              {{ savingUser() ? 'Guardando...' : 'Guardar cambios' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+
   `,
   styles: [`
     :host { display: block; }
@@ -305,34 +353,6 @@ import { ActivatedRoute } from '@angular/router';
     .action-btn:hover { background: var(--surface-container); }
     .user-actions { display:inline-flex; position:relative; }
 
-    /* Dropdown Styles */
-    .dropdown-menu {
-      position: fixed; width: 220px;
-      background: var(--surface-container-lowest); border: 1px solid var(--outline-variant);
-      border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.1);
-      padding: 8px 0; z-index: 200; animation: slideDown 0.16s cubic-bezier(0.16,1,0.3,1);
-    }
-    .dropdown-menu.open-up { transform-origin:bottom right; animation-name:slideUp; }
-    .dropdown-group { padding: 4px 0; }
-    .dropdown-label {
-      display: block; padding: 4px 16px; font-family: 'Geist', sans-serif;
-      font-size: 11px; font-weight: 600; color: var(--on-surface-variant); opacity: 0.6;
-      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;
-    }
-    .dropdown-item {
-      width: 100%; display: flex; align-items: center; gap: 12px; padding: 8px 16px;
-      background: transparent; border: none; font-family: 'Geist', sans-serif; font-size: 13px;
-      color: var(--on-surface); cursor: pointer; text-align: left; transition: background 0.15s;
-    }
-    .dropdown-item:hover { background: var(--surface-container-low); }
-    .dropdown-item .material-symbols-outlined { font-size: 16px; opacity: 0.7; }
-    .dropdown-item.text-error { color: var(--error); }
-    .dropdown-item.text-error .material-symbols-outlined { color: var(--error); opacity: 1; }
-    .dropdown-divider { height: 1px; background: var(--outline-variant); margin: 4px 0; }
-    @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes slideUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-
-
     .table-footer {
       display: flex; justify-content: space-between; align-items: center; padding: 16px 20px;
       border-top: 1px solid var(--surface-container);
@@ -363,6 +383,36 @@ import { ActivatedRoute } from '@angular/router';
       display: flex; align-items: center; justify-content: center; z-index: 100;
     }
     .modal-card { width: 480px; padding: 32px; }
+    .edit-user-modal { width:min(620px,calc(100vw - 32px)); max-height:calc(100vh - 32px); overflow-y:auto; padding:0; border:1px solid var(--outline-variant); border-radius:16px; background:var(--surface-container-lowest); }
+    .edit-modal-header { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; padding:24px 26px; border-bottom:1px solid var(--outline-variant); }
+    .edit-modal-header h3 { font:700 19px 'Space Grotesk',sans-serif; }
+    .modal-eyebrow { color:var(--primary); font:700 9px 'Space Grotesk',sans-serif; letter-spacing:.13em; margin-bottom:6px; }
+    .modal-close { width:34px; height:34px; display:grid; place-items:center; border:0; border-radius:999px; background:transparent; color:var(--on-surface-variant); cursor:pointer; }
+    .modal-close:hover { background:var(--surface-container-low); }
+    .modal-close .material-symbols-outlined { font-size:20px; }
+    .edit-user-summary { display:flex; align-items:center; gap:13px; padding:18px 26px; background:var(--surface-container-low); border-bottom:1px solid var(--outline-variant); }
+    .user-avatar.large { width:46px; height:46px; background:rgba(240,80,35,.1); color:var(--primary); border:1px solid rgba(240,80,35,.18); }
+    .edit-user-summary div:last-child { display:flex; flex-direction:column; gap:3px; }
+    .edit-user-summary strong { font:600 14px 'Space Grotesk',sans-serif; }
+    .edit-user-summary span { color:var(--on-surface-variant); font-size:12px; }
+    .edit-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:0 16px; padding:24px 26px 4px; }
+    .full-width { grid-column:1/-1; }
+    .readonly-input { background:var(--surface-container-low); opacity:.72; cursor:not-allowed; }
+    .field-help { display:block; margin-top:5px; color:var(--on-surface-variant); opacity:.65; font-size:11px; }
+    .areas-editor { margin:0 26px; padding:18px 0 22px; border-top:1px solid var(--outline-variant); }
+    .areas-editor-heading { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+    .areas-editor-heading strong { font:600 13px 'Space Grotesk',sans-serif; }
+    .areas-editor-heading span { color:var(--on-surface-variant); font-size:11px; }
+    .area-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+    .area-option { display:grid; grid-template-columns:18px 1fr 18px; align-items:center; gap:8px; padding:10px 12px; border:1px solid var(--outline-variant); border-radius:9px; cursor:pointer; font-size:12px; }
+    .area-option input { position:absolute; opacity:0; pointer-events:none; }
+    .area-option::before { content:''; width:14px; height:14px; border:1px solid var(--outline-variant); border-radius:4px; }
+    .area-option .material-symbols-outlined { font-size:16px; color:transparent; }
+    .area-option.selected { border-color:rgba(240,80,35,.35); background:rgba(240,80,35,.05); color:var(--primary); }
+    .area-option.selected::before { background:var(--primary); border-color:var(--primary); }
+    .area-option.selected .material-symbols-outlined { color:var(--primary); }
+    .no-areas { padding:14px; background:var(--surface-container-low); border-radius:9px; color:var(--on-surface-variant); text-align:center; font-size:12px; }
+    .edit-actions { padding:18px 26px; margin:0; border-top:1px solid var(--outline-variant); }
     .form-group { margin-bottom: 16px; }
     .form-label { display: block; margin-bottom: 6px; color: var(--on-surface-variant); letter-spacing: 0.05em; }
     .form-input {
@@ -401,14 +451,20 @@ import { ActivatedRoute } from '@angular/router';
       .roles-grid { grid-template-columns: 1fr; }
       .page-header { flex-direction: column; gap: 16px; }
     }
+    @media (max-width: 640px) {
+      .edit-form-grid,.area-options { grid-template-columns:1fr; }
+      .full-width { grid-column:auto; }
+    }
   `]
 })
 export class UsersComponent implements OnInit {
   private userService = inject(UserService);
   private notification = inject(NotificationService);
   private route = inject(ActivatedRoute);
+  private areaService = inject(AreaService);
 
-  users = signal<any[]>([]);
+  users = signal<UserDTO[]>([]);
+  areas = signal<AreaDTO[]>([]);
   loading = signal(true);
   searchTerm = signal('');
   focusedUserId = '';
@@ -420,9 +476,9 @@ export class UsersComponent implements OnInit {
   });
   showInviteModal = false;
   newUser = { name: '', email: '', role: 'COLABORADOR', password: '' };
-  
-  openMenuId = signal<string | null>(null);
-  menuPosition = signal({ top: 0, left: 0, openUp: false });
+  editingUser = signal<UserDTO | null>(null);
+  savingUser = signal(false);
+  editForm = { name: '', email: '', role: 'COLABORADOR', status: 'ACTIVO', areaIds: [] as string[] };
 
   ngOnInit() {
     this.route.queryParamMap.subscribe(params => {
@@ -431,6 +487,7 @@ export class UsersComponent implements OnInit {
       this.scrollToFocusedUser();
     });
     this.loadUsers();
+    this.areaService.getAll().subscribe({ next: areas => this.areas.set(areas) });
   }
 
   loadUsers() {
@@ -513,70 +570,61 @@ export class UsersComponent implements OnInit {
     this.newUser.password = password.join('');
   }
 
-  toggleMenu(id: string, event: MouseEvent) {
-    event.stopPropagation();
-    if (this.openMenuId() === id) {
-      this.openMenuId.set(null);
-    } else {
-      const button = event.currentTarget as HTMLElement;
-      const rect = button.getBoundingClientRect();
-      const menuWidth = 220;
-      const menuHeight = 226;
-      const gap = 7;
-      const openUp = window.innerHeight - rect.bottom < menuHeight + gap;
-      const top = openUp ? Math.max(8, rect.top - menuHeight - gap) : rect.bottom + gap;
-      const left = Math.max(8, Math.min(rect.right - menuWidth, window.innerWidth - menuWidth - 8));
-      this.menuPosition.set({ top, left, openUp });
-      this.openMenuId.set(id);
-    }
+  openEditModal(user: UserDTO) {
+    this.editingUser.set(user);
+    this.editForm = {
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      status: user.status || 'ACTIVO',
+      areaIds: [...(user.areaIds || [])]
+    };
   }
 
-  @HostListener('document:click', ['$event'])
-  closeMenuOnOutsideClick(event: MouseEvent) {
-    if (this.openMenuId() !== null && !(event.target as HTMLElement).closest('.user-actions')) {
-      this.openMenuId.set(null);
-    }
+  closeEditModal() {
+    if (this.savingUser()) return;
+    this.editingUser.set(null);
   }
 
-  @HostListener('window:resize')
-  closeMenuOnResize() { this.openMenuId.set(null); }
+  isAreaSelected(areaId?: string): boolean {
+    return !!areaId && this.editForm.areaIds.includes(areaId);
+  }
 
-  changeRole(user: any, newRole: string) {
-    this.openMenuId.set(null);
-    if (user.role === newRole) return;
-    
-    const oldRole = user.role;
-    // Optimistic update
-    this.users.update(list => list.map(u => u.id === user.id ? { ...u, role: newRole } : u));
-    
-    this.userService.update(user.id, { ...user, role: newRole }).subscribe({
-      next: () => {
-        this.notification.success(`Rol cambiado a ${this.getRoleLabel(newRole)}`);
+  toggleArea(areaId?: string) {
+    if (!areaId) return;
+    this.editForm.areaIds = this.isAreaSelected(areaId)
+      ? this.editForm.areaIds.filter(id => id !== areaId)
+      : [...this.editForm.areaIds, areaId];
+  }
+
+  getAreaLabels(areaIds?: string[]): string {
+    if (!areaIds?.length) return 'Sin áreas';
+    const names = areaIds.map(id => this.areas().find(area => area.id === id)?.name).filter(Boolean);
+    return names.length ? names.join(', ') : `${areaIds.length} área${areaIds.length === 1 ? '' : 's'}`;
+  }
+
+  saveUserChanges() {
+    const current = this.editingUser();
+    if (!current?.id || !this.editForm.name.trim()) return;
+    this.savingUser.set(true);
+    const update: UserDTO = {
+      ...current,
+      name: this.editForm.name.trim(),
+      email: current.email,
+      role: this.editForm.role,
+      status: this.editForm.status,
+      areaIds: this.editForm.areaIds
+    };
+    this.userService.update(current.id, update).subscribe({
+      next: updated => {
+        this.users.update(users => users.map(user => user.id === updated.id ? updated : user));
+        this.savingUser.set(false);
+        this.editingUser.set(null);
+        this.notification.success('Colaborador actualizado correctamente');
       },
       error: () => {
-        // Revert on error
-        this.users.update(list => list.map(u => u.id === user.id ? { ...u, role: oldRole } : u));
-        this.notification.error('Error al cambiar el rol');
-      }
-    });
-  }
-
-  toggleStatus(user: any) {
-    this.openMenuId.set(null);
-    const newStatus = user.status === 'SUSPENDIDO' ? 'ACTIVO' : 'SUSPENDIDO';
-    const oldStatus = user.status;
-    
-    // Optimistic update - change UI immediately
-    this.users.update(list => list.map(u => u.id === user.id ? { ...u, status: newStatus } : u));
-    
-    this.userService.update(user.id, { ...user, status: newStatus }).subscribe({
-      next: () => {
-        this.notification.success(`Usuario ${newStatus.toLowerCase()}`);
-      },
-      error: () => {
-        // Revert on error
-        this.users.update(list => list.map(u => u.id === user.id ? { ...u, status: oldStatus } : u));
-        this.notification.error('Error al cambiar el estado del usuario');
+        this.savingUser.set(false);
+        this.notification.error('No se pudo actualizar el colaborador');
       }
     });
   }

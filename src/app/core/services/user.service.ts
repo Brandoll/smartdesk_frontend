@@ -9,6 +9,8 @@ export interface UserDTO {
   email: string;
   role: string;
   status?: string;
+  areaIds?: string[];
+  createdAt?: string;
 }
 
 export interface Page<T> {

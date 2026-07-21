@@ -110,7 +110,7 @@ import { AuthService } from '../../core/services/auth.service';
       font-size: 22px;
       font-weight: 700;
       letter-spacing: -0.02em;
-      color: var(--primary);
+      color: #111111;
       line-height: 1.1;
     }
 

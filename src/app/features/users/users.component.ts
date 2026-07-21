@@ -1,8 +1,9 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../core/services/user.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-users',
@@ -67,7 +68,7 @@ import { NotificationService } from '../../core/services/notification.service';
               @for (i of [1,2,3]; track i) {
                 <tr><td colspan="5"><div class="skeleton-line"></div></td></tr>
               }
-            } @else if (users().length === 0) {
+            } @else if (filteredUsers().length === 0) {
               <tr>
                 <td colspan="5" class="empty-state">
                   <span class="material-symbols-outlined" style="font-size:48px; opacity:0.2; margin-bottom:12px">group</span>
@@ -75,8 +76,8 @@ import { NotificationService } from '../../core/services/notification.service';
                 </td>
               </tr>
             } @else {
-              @for (user of users(); track user.id) {
-                <tr class="user-row">
+              @for (user of filteredUsers(); track user.id) {
+                <tr class="user-row" [class.focused-resource]="focusedUserId === user.id?.toString()" [attr.id]="'user-' + user.id">
                   <td>
                     <div class="user-info">
                       <div class="user-avatar">{{ getInitials(user.name) }}</div>
@@ -134,10 +135,10 @@ import { NotificationService } from '../../core/services/notification.service';
           </tbody>
         </table>
       </div>
-      @if (users().length > 0) {
+      @if (filteredUsers().length > 0) {
         <div class="table-footer">
           <span class="text-label-sm" style="color:var(--on-surface-variant)">
-            Mostrando 1 a {{ users().length }} de {{ users().length }} miembros
+            Mostrando 1 a {{ filteredUsers().length }} de {{ filteredUsers().length }} miembros
           </span>
           <div class="pagination-btns">
             <button class="page-btn"><span class="material-symbols-outlined">chevron_left</span></button>
@@ -269,6 +270,7 @@ import { NotificationService } from '../../core/services/notification.service';
     }
     .user-row { transition: background 0.15s; }
     .user-row:hover { background: var(--surface-container-low); }
+    .user-row.focused-resource { background:rgba(240,80,35,.06); box-shadow:inset 3px 0 0 var(--primary); }
     .user-row td { padding: 16px 20px; vertical-align: middle; border-bottom: 1px solid var(--surface-container); }
 
     .user-info { display: flex; align-items: center; gap: 12px; }
@@ -403,15 +405,29 @@ import { NotificationService } from '../../core/services/notification.service';
 export class UsersComponent implements OnInit {
   private userService = inject(UserService);
   private notification = inject(NotificationService);
+  private route = inject(ActivatedRoute);
 
   users = signal<any[]>([]);
   loading = signal(true);
+  searchTerm = signal('');
+  focusedUserId = '';
+  filteredUsers = computed(() => {
+    const term = this.searchTerm().toLocaleLowerCase('es');
+    if (!term) return this.users();
+    return this.users().filter(user => [user.name, user.email, user.role, user.status]
+      .some(value => String(value || '').toLocaleLowerCase('es').includes(term)));
+  });
   showInviteModal = false;
   newUser = { name: '', email: '', role: 'COLABORADOR', password: '' };
   
   openMenuId = signal<number | null>(null);
 
   ngOnInit() {
+    this.route.queryParamMap.subscribe(params => {
+      this.searchTerm.set(params.get('search') || '');
+      this.focusedUserId = params.get('focus') || '';
+      this.scrollToFocusedUser();
+    });
     this.loadUsers();
   }
 
@@ -421,9 +437,15 @@ export class UsersComponent implements OnInit {
       next: (data: any) => {
         this.users.set(Array.isArray(data) ? data : data.content || []);
         this.loading.set(false);
+        this.scrollToFocusedUser();
       },
       error: () => this.loading.set(false)
     });
+  }
+
+  private scrollToFocusedUser() {
+    if (!this.focusedUserId) return;
+    setTimeout(() => document.getElementById(`user-${this.focusedUserId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
   }
 
   getInitials(name: string): string {

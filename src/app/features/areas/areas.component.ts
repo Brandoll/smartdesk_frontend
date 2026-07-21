@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AreaService, AreaDTO } from '../../core/services/area.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-areas',
@@ -39,7 +40,7 @@ import { NotificationService } from '../../core/services/notification.service';
       <!-- Area Cards Grid -->
       <div class="areas-grid">
         @for (area of filteredAreas(); track area.id) {
-          <div class="area-card">
+          <div class="area-card" [class.focused-resource]="focusedAreaId === area.id?.toString()" [attr.id]="'area-' + area.id">
             <div class="card-header">
               <div class="icon-box">
                 <span class="material-symbols-outlined text-primary">{{ getIconForArea(area.name) }}</span>
@@ -193,6 +194,7 @@ import { NotificationService } from '../../core/services/notification.service';
       border-radius: 16px; padding: 24px; transition: border-color 0.2s;
     }
     .area-card:hover { border-color: var(--primary, #1b1b1b); }
+    .area-card.focused-resource { border-color:var(--primary); box-shadow:0 0 0 3px rgba(240,80,35,.09); }
     .card-header {
       display: flex; justify-content: space-between; align-items: flex-start;
       margin-bottom: 16px;
@@ -289,10 +291,12 @@ import { NotificationService } from '../../core/services/notification.service';
 export class AreasComponent implements OnInit {
   private areaService = inject(AreaService);
   private notification = inject(NotificationService);
+  private route = inject(ActivatedRoute);
 
   areas = signal<AreaDTO[]>([]);
   loading = signal(false);
   searchTerm = '';
+  focusedAreaId = '';
 
   // Modal State
   showModal = false;
@@ -301,6 +305,11 @@ export class AreasComponent implements OnInit {
   areaToDelete: AreaDTO | null = null;
 
   ngOnInit() {
+    this.route.queryParamMap.subscribe(params => {
+      this.searchTerm = params.get('search') || '';
+      this.focusedAreaId = params.get('focus') || '';
+      this.scrollToFocusedArea();
+    });
     this.loadAreas();
   }
 
@@ -311,12 +320,18 @@ export class AreasComponent implements OnInit {
         const list = Array.isArray(res) ? res : res.content || [];
         this.areas.set(list);
         this.loading.set(false);
+        this.scrollToFocusedArea();
       },
       error: () => {
         this.notification.error('Error al cargar áreas');
         this.loading.set(false);
       }
     });
+  }
+
+  private scrollToFocusedArea() {
+    if (!this.focusedAreaId) return;
+    setTimeout(() => document.getElementById(`area-${this.focusedAreaId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
   }
 
   filteredAreas() {

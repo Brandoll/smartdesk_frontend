@@ -1,28 +1,79 @@
-import { Component, HostListener, inject, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { NavigationEnd, Router } from '@angular/router';
+import { Subscription, filter } from 'rxjs';
 import { AppStateService } from '../../core/state/app-state.service';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { TicketService } from '../../core/services/ticket.service';
+import { AreaService } from '../../core/services/area.service';
+import { UserService } from '../../core/services/user.service';
+
+type SearchContext = 'tickets' | 'areas' | 'users' | 'none';
+
+interface SearchResult {
+  id: string;
+  type: Exclude<SearchContext, 'none'>;
+  title: string;
+  subtitle: string;
+  badge: string;
+}
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   template: `
     <header class="topbar">
       <!-- Search -->
       <div class="topbar-search-wrapper">
-        <div class="topbar-search">
+        <div class="topbar-search" [class.is-open]="showSearchResults()">
           <span class="material-symbols-outlined search-icon">search</span>
           <input
+            #searchInput
             type="text"
-            placeholder="Buscar tickets, operaciones o áreas..."
+            [placeholder]="searchPlaceholder()"
             class="search-input"
+            [disabled]="searchContext() === 'none'"
+            [ngModel]="searchTerm()"
+            (ngModelChange)="onSearchChange($event)"
+            (focus)="onSearchFocus()"
+            (keydown.escape)="closeSearch()"
+            autocomplete="off"
           />
-          <div class="search-shortcut">
+          @if (!searchTerm()) {
+            <div class="search-shortcut">
             <span>⌘</span><span>K</span>
-          </div>
+            </div>
+          } @else {
+            <button class="search-clear" type="button" (click)="clearSearch()" title="Limpiar búsqueda">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          }
+
+          @if (showSearchResults()) {
+            <div class="search-results">
+              <div class="search-results-heading">
+                <span>{{ contextLabel() }}</span>
+                @if (searching()) { <span class="searching-label">Buscando...</span> }
+              </div>
+              @if (!searching() && searchResults().length === 0) {
+                <div class="search-empty">No encontramos resultados para “{{ searchTerm() }}”.</div>
+              } @else {
+                @for (result of searchResults(); track result.type + result.id) {
+                  <button type="button" class="search-result" (click)="openSearchResult(result)">
+                    <span class="result-copy">
+                      <strong>{{ result.title }}</strong>
+                      <small>{{ result.subtitle }}</small>
+                    </span>
+                    <span class="result-badge">{{ result.badge }}</span>
+                    <span class="material-symbols-outlined result-arrow">arrow_forward</span>
+                  </button>
+                }
+              }
+            </div>
+          }
         </div>
       </div>
 
@@ -118,9 +169,7 @@ import { NotificationService } from '../../core/services/notification.service';
       position: sticky;
       top: 0;
       z-index: 50;
-      background: rgba(251, 248, 255, 0.8);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: var(--surface-container-lowest);
       border-bottom: 1px solid var(--outline-variant);
       display: flex;
       justify-content: space-between;
@@ -138,6 +187,7 @@ import { NotificationService } from '../../core/services/notification.service';
       position: relative;
       width: 100%;
       max-width: 480px;
+      z-index: 103;
     }
 
     .search-icon {
@@ -169,8 +219,10 @@ import { NotificationService } from '../../core/services/notification.service';
 
     .search-input:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 1px var(--primary);
+      box-shadow: 0 0 0 3px rgba(240, 80, 35, 0.08);
     }
+
+    .search-input:disabled { cursor:not-allowed; opacity:.55; background:var(--surface-container-low); }
 
     .search-shortcut {
       position: absolute;
@@ -191,6 +243,42 @@ import { NotificationService } from '../../core/services/notification.service';
       color: var(--on-surface-variant);
       opacity: 0.6;
     }
+
+    .search-clear {
+      position:absolute; right:9px; top:50%; transform:translateY(-50%);
+      width:30px; height:30px; display:grid; place-items:center;
+      border:0; border-radius:999px; background:transparent; color:var(--on-surface-variant); cursor:pointer;
+    }
+    .search-clear:hover { background:var(--surface-container-low); color:var(--on-surface); }
+    .search-clear .material-symbols-outlined { font-size:18px; }
+
+    .search-results {
+      position:absolute; top:calc(100% + 10px); left:0; width:100%;
+      background:var(--surface-container-lowest); border:1px solid var(--outline-variant);
+      border-radius:14px; box-shadow:0 16px 40px rgba(24,20,18,.12);
+      overflow:hidden; z-index:105; animation:slideDown .16s ease-out;
+    }
+    .search-results-heading {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:11px 15px; border-bottom:1px solid var(--outline-variant);
+      color:var(--on-surface-variant); font:700 10px 'Space Grotesk',sans-serif;
+      letter-spacing:.1em; text-transform:uppercase;
+    }
+    .searching-label { color:var(--primary); letter-spacing:0; text-transform:none; }
+    .search-result {
+      width:100%; display:grid; grid-template-columns:minmax(0,1fr) auto 18px; align-items:center; gap:12px;
+      padding:13px 15px; border:0; border-bottom:1px solid var(--surface-container);
+      background:var(--surface-container-lowest); color:var(--on-surface); text-align:left; cursor:pointer;
+      font-family:'Hanken Grotesk',sans-serif; transition:background .15s;
+    }
+    .search-result:last-child { border-bottom:0; }
+    .search-result:hover,.search-result:focus-visible { background:rgba(240,80,35,.055); outline:0; }
+    .result-copy { min-width:0; display:flex; flex-direction:column; gap:3px; }
+    .result-copy strong { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:600 13px 'Space Grotesk',sans-serif; }
+    .result-copy small { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--on-surface-variant); font-size:11px; }
+    .result-badge { padding:4px 8px; border-radius:999px; background:var(--surface-container-low); color:var(--on-surface-variant); font-size:10px; font-weight:700; }
+    .result-arrow { color:var(--primary); font-size:17px; opacity:.75; }
+    .search-empty { padding:28px 18px; color:var(--on-surface-variant); text-align:center; font-size:13px; }
 
     .topbar-actions {
       display: flex;
@@ -432,14 +520,147 @@ import { NotificationService } from '../../core/services/notification.service';
     }
   `]
 })
-export class TopbarComponent {
+export class TopbarComponent implements OnInit, OnDestroy {
+  @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>;
+
   private router = inject(Router);
   public appState = inject(AppStateService);
   private authService = inject(AuthService);
   public notifService = inject(NotificationService);
+  private ticketService = inject(TicketService);
+  private areaService = inject(AreaService);
+  private userService = inject(UserService);
+  private routerSub?: Subscription;
+  private searchTimer?: ReturnType<typeof setTimeout>;
+  private searchRequest = 0;
 
   showUserMenu = signal(false);
   showNotifMenu = signal(false);
+  showSearchResults = signal(false);
+  searching = signal(false);
+  searchTerm = signal('');
+  searchResults = signal<SearchResult[]>([]);
+  searchContext = signal<SearchContext>('none');
+  searchPlaceholder = computed(() => ({
+    tickets: 'Buscar por título, ID, estado o prioridad...',
+    areas: 'Buscar áreas por nombre o descripción...',
+    users: 'Buscar colaboradores por nombre o correo...',
+    none: 'Búsqueda no disponible en esta sección'
+  })[this.searchContext()]);
+  contextLabel = computed(() => ({
+    tickets: 'Tickets', areas: 'Áreas', users: 'Colaboradores', none: 'Resultados'
+  })[this.searchContext()]);
+
+  ngOnInit() {
+    this.updateSearchContext(this.router.url);
+    this.routerSub = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
+      this.updateSearchContext((event as NavigationEnd).urlAfterRedirects);
+    });
+  }
+
+  ngOnDestroy() {
+    this.routerSub?.unsubscribe();
+    if (this.searchTimer) clearTimeout(this.searchTimer);
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  focusSearch(event: KeyboardEvent) {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k' && this.searchContext() !== 'none') {
+      event.preventDefault();
+      this.searchInput?.nativeElement.focus();
+    }
+  }
+
+  onSearchChange(value: string) {
+    this.searchTerm.set(value);
+    this.searchResults.set([]);
+    this.showSearchResults.set(value.trim().length >= 2);
+    if (this.searchTimer) clearTimeout(this.searchTimer);
+    if (value.trim().length < 2) {
+      this.searching.set(false);
+      return;
+    }
+    this.searchTimer = setTimeout(() => this.performSearch(value.trim()), 250);
+  }
+
+  onSearchFocus() {
+    if (this.searchTerm().trim().length >= 2) this.showSearchResults.set(true);
+  }
+
+  clearSearch() {
+    this.searchTerm.set('');
+    this.searchResults.set([]);
+    this.showSearchResults.set(false);
+    this.searchInput?.nativeElement.focus();
+  }
+
+  closeSearch() { this.showSearchResults.set(false); }
+
+  openSearchResult(result: SearchResult) {
+    this.closeSearch();
+    this.searchTerm.set('');
+    if (result.type === 'tickets') {
+      this.router.navigate(['/app/tickets', result.id]);
+    } else if (result.type === 'areas') {
+      this.router.navigate(['/app/areas'], { queryParams: { search: result.title, focus: result.id } });
+    } else {
+      this.router.navigate(['/app/users'], { queryParams: { search: result.title, focus: result.id } });
+    }
+  }
+
+  private updateSearchContext(url: string) {
+    let context: SearchContext = 'none';
+    if (url.startsWith('/app/tickets') || url.startsWith('/app/area-tickets')) context = 'tickets';
+    else if (url.startsWith('/app/areas')) context = 'areas';
+    else if (url.startsWith('/app/users')) context = 'users';
+    this.searchContext.set(context);
+    this.searchTerm.set('');
+    this.searchResults.set([]);
+    this.showSearchResults.set(false);
+  }
+
+  private performSearch(term: string) {
+    const request = ++this.searchRequest;
+    const normalized = term.toLocaleLowerCase('es');
+    this.searching.set(true);
+    const finish = (results: SearchResult[]) => {
+      if (request !== this.searchRequest) return;
+      this.searchResults.set(results.slice(0, 8));
+      this.searching.set(false);
+      this.showSearchResults.set(this.searchTerm().trim().length >= 2);
+    };
+    const fail = () => { if (request === this.searchRequest) { this.searching.set(false); this.searchResults.set([]); } };
+
+    if (this.searchContext() === 'tickets') {
+      this.ticketService.getAll(0, 200).subscribe({
+        next: response => finish((response.content || []).filter(ticket => {
+          const item = ticket as any;
+          return [item.id, item.title, item.description, item.status, item.priority, item.areaName, item.assignedToName]
+            .some(value => String(value || '').toLocaleLowerCase('es').includes(normalized));
+        }).map(ticket => ({
+          id: String(ticket.id), type: 'tickets' as const, title: ticket.title,
+          subtitle: `#SD-${String(ticket.id).slice(0, 8)} · ${ticket.status || 'Sin estado'}`,
+          badge: ticket.priority || 'Ticket'
+        }))), error: fail
+      });
+    } else if (this.searchContext() === 'areas') {
+      this.areaService.getAll().subscribe({
+        next: response => finish((Array.isArray(response) ? response : []).filter(area =>
+          [area.name, area.description].some(value => String(value || '').toLocaleLowerCase('es').includes(normalized))
+        ).map(area => ({ id: String(area.id), type: 'areas' as const, title: area.name, subtitle: area.description || 'Sin descripción', badge: 'Área' }))),
+        error: fail
+      });
+    } else if (this.searchContext() === 'users') {
+      this.userService.getAll(0, 200).subscribe({
+        next: response => finish((response.content || []).filter(user =>
+          [user.name, user.email, user.role].some(value => String(value || '').toLocaleLowerCase('es').includes(normalized))
+        ).map(user => ({ id: String(user.id), type: 'users' as const, title: user.name, subtitle: user.email, badge: this.formatRole(user.role) }))),
+        error: fail
+      });
+    } else {
+      finish([]);
+    }
+  }
 
   toggleNotifMenu(event: MouseEvent) {
     event.stopPropagation();
@@ -452,6 +673,9 @@ export class TopbarComponent {
   @HostListener('document:click', ['$event'])
   closeMenusOnOutsideClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
+    if (this.showSearchResults() && !target.closest('.topbar-search')) {
+      this.showSearchResults.set(false);
+    }
     if (this.showNotifMenu() && !target.closest('.notif-container')) {
       this.showNotifMenu.set(false);
     }

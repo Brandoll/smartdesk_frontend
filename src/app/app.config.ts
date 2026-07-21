@@ -11,7 +11,9 @@ import { mockInterceptor } from './core/interceptors/mock.interceptor';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor, tenantInterceptor, mockInterceptor])),
+    // Descomenta el 'mockInterceptor' si el backend se vuelve a caer y necesitas el entorno local
+    // provideHttpClient(withInterceptors([authInterceptor, tenantInterceptor, mockInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, tenantInterceptor])),
     provideAnimationsAsync()
   ]
 };

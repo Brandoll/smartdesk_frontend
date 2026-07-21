@@ -43,14 +43,15 @@ export class WebsocketService {
     
     this.lastNotifParams = { userId, tenantId, role };
     const url = `${this.getWsUrl('/ws/notifications')}?userId=${userId}&tenantId=${tenantId}&role=${role}`;
-    this.notificationSocket = new WebSocket(url);
+    const socket = new WebSocket(url);
+    this.notificationSocket = socket;
     
-    this.notificationSocket.onopen = () => {
+    socket.onopen = () => {
       console.log('Notification WebSocket connected');
       this.notifReconnectAttempts = 0;
     };
 
-    this.notificationSocket.onmessage = (event) => {
+    socket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
         this.notificationSubject.next(data);
@@ -59,11 +60,13 @@ export class WebsocketService {
       }
     };
     
-    this.notificationSocket.onerror = (error) => {
+    socket.onerror = (error) => {
       console.error('Notification WebSocket error:', error);
     };
     
-    this.notificationSocket.onclose = () => {
+    socket.onclose = () => {
+      if (this.notificationSocket !== socket) return;
+      this.notificationSocket = null;
       console.log('Notification WebSocket closed');
       this.reconnectNotifications();
     };
@@ -104,14 +107,15 @@ export class WebsocketService {
     
     this.lastChatParams = { ticketId, tenantId };
     const url = `${this.getWsUrl('/ws/chat')}?ticketId=${ticketId}&tenantId=${tenantId}`;
-    this.chatSocket = new WebSocket(url);
+    const socket = new WebSocket(url);
+    this.chatSocket = socket;
     
-    this.chatSocket.onopen = () => {
+    socket.onopen = () => {
       console.log('Chat WebSocket connected');
       this.chatReconnectAttempts = 0;
     };
 
-    this.chatSocket.onmessage = (event) => {
+    socket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
         this.chatSubject.next(data);
@@ -120,11 +124,13 @@ export class WebsocketService {
       }
     };
 
-    this.chatSocket.onerror = (error) => {
+    socket.onerror = (error) => {
       console.error('Chat WebSocket error:', error);
     };
 
-    this.chatSocket.onclose = () => {
+    socket.onclose = () => {
+      if (this.chatSocket !== socket) return;
+      this.chatSocket = null;
       console.log('Chat WebSocket closed');
       this.reconnectChat();
     };

@@ -158,12 +158,14 @@ export class LayoutComponent implements OnInit, OnDestroy {
       
       this.notifSub = this.ws.getNotifications().subscribe(msg => {
         // Play sound
-        this.audioService.play();
         // Show floating toast
         const message = msg['message'] || 'Nueva notificación';
-        this.notification.info(message, 5000);
         // Store in history
-        this.notification.addNotification(msg['type'] || 'info', message, msg['ticketId']);
+        const added = this.notification.addNotification(msg['type'] || 'info', message, msg['ticketId']);
+        if (added) {
+          this.audioService.play();
+          this.notification.info(message, 5000);
+        }
       });
     }
   }

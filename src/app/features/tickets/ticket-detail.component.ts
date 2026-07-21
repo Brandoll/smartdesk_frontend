@@ -652,12 +652,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     this.aiNotifSub = this.ws.getNotifications().subscribe((msg: any) => {
       const ticketEvents = ['AI_CLASSIFIED', 'STATUS_CHANGED', 'PRIORITY_CHANGED', 'AREA_CHANGED', 'ASSIGNED'];
       if (ticketEvents.includes(msg.type) && msg.ticketId === this.ticketId) {
-        this.ticketService.getById(this.ticketId).subscribe({
-          next: (ticket: any) => {
-            this.ticket.set(ticket);
-            this.loadHistory(this.ticketId);
-          }
-        });
+        this.refreshTicketMetadata();
       }
     });
 
@@ -706,6 +701,10 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     this.ws.connectChat(ticketId, tenantId);
     
     this.chatSub = this.ws.getChatMessages().subscribe((m: any) => {
+      if (m.type === 'TICKET_UPDATED' && m.ticketId === this.ticketId) {
+        this.refreshTicketMetadata();
+        return;
+      }
       const currentUserId = this.appState.currentUser()?.id;
       // Prevent duplicating optimistic updates
       if (m.userId === currentUserId) return;
@@ -722,6 +721,16 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
       this.messages.update(msgs => [...msgs, newMsg]);
       this.audioService.play();
       this.scrollChat();
+    });
+  }
+
+  private refreshTicketMetadata() {
+    if (!this.ticketId) return;
+    this.ticketService.getById(this.ticketId).subscribe({
+      next: (ticket: any) => {
+        this.ticket.set(ticket);
+        this.loadHistory(this.ticketId);
+      }
     });
   }
 

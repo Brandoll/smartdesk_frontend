@@ -22,6 +22,7 @@ export interface AppNotification {
   providedIn: 'root'
 })
 export class NotificationService {
+  private readonly recentlySeen = new Map<string, number>();
   private readonly _toasts = signal<Toast[]>([]);
   public readonly toasts = computed(() => this._toasts());
 
@@ -59,7 +60,12 @@ export class NotificationService {
   }
 
   /** Add a persistent notification to the history */
-  public addNotification(type: string, message: string, ticketId?: string): void {
+  public addNotification(type: string, message: string, ticketId?: string): boolean {
+    const dedupeKey = `${type}|${ticketId || ''}|${message}`;
+    const now = Date.now();
+    const lastSeen = this.recentlySeen.get(dedupeKey) || 0;
+    if (now - lastSeen < 3000) return false;
+    this.recentlySeen.set(dedupeKey, now);
     const id = Math.random().toString(36).substring(2, 9);
     const notification: AppNotification = {
       id,
@@ -70,6 +76,7 @@ export class NotificationService {
       ticketId
     };
     this._notifications.update(list => [notification, ...list].slice(0, 50)); // keep last 50
+    return true;
   }
 
   public markAllRead(): void {
